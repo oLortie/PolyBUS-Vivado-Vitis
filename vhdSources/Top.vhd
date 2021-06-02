@@ -95,7 +95,10 @@ architecture Behavioral of Top is
             Pmod_OLED_pin7_io : inout STD_LOGIC;
             Pmod_OLED_pin8_io : inout STD_LOGIC;
             Pmod_OLED_pin9_io : inout STD_LOGIC;
-            i_data_echantillon : in STD_LOGIC_VECTOR ( 11 downto 0 );
+            i_data_echantillon1 : in STD_LOGIC_VECTOR ( 11 downto 0 );
+            i_data_echantillon2 : in STD_LOGIC_VECTOR ( 11 downto 0 );
+            i_data_echantillon3 : in STD_LOGIC_VECTOR ( 11 downto 0 );
+            i_data_echantillon4 : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_sw_tri_i : in STD_LOGIC_VECTOR ( 3 downto 0 );
             o_data_out : out STD_LOGIC_VECTOR ( 31 downto 0 );
             o_leds_tri_o : out STD_LOGIC_VECTOR ( 3 downto 0 )
@@ -213,7 +216,10 @@ begin
             Pmod_OLED_pin8_io => Pmod_OLED(5),
             Pmod_OLED_pin9_io => Pmod_OLED(6),
             Pmod_OLED_pin10_io => Pmod_OLED(7),
-            i_data_echantillon => d_echantillon,
+            i_data_echantillon1 => d_echantillon,
+            i_data_echantillon2 => X"000",
+            i_data_echantillon3 => X"000",
+            i_data_echantillon4 => X"000",
             i_sw_tri_i => i_sw,
             o_data_out => open,
             o_leds_tri_o => o_leds

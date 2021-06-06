@@ -7,6 +7,14 @@ PolyBUS
 2. Aller dans la console TCL et s'assurer d'être dans le bon folder ( .../PolyBUS/scripts) 
 3. executer la commande suivante : source ./PolyBUS.tcl
 
+**INFORMATION POUR GÉNÉRER LE PROJET VITIS À PARTIR DU TCL**
+1. S'assurer que le xsa a été généré à partir de vivado
+2. Changer les paramètres du script tcl pour générer le projet au bon endroit
+	2.1. Ouvrir le script tcl (scripts/vitisProj.tcl)
+	2.2. Changer les lignes 11, 14 et 17 pour que les paths correspondent à votre ordinateur
+	2.3. Ouvrir Xilinx software command line tool
+	2.4. Exécuter la commande D:/Git/PolyBUS/scripts/vitisProj.tcl (en changeant le path pour celui de votre ordinateur)
+3. Ouvrir vitis dans le workspace PolyBUS/work/VitisWorkspace et s'assurer que le projet a bien été généré
 
 **INFORMATION POUR SETUP DU SCRIPT DE GENERATION DE SIGNAUX**
 1. Ouvrir une console de commande

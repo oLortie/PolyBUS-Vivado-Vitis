@@ -14,7 +14,7 @@ import scipy
 def genPespiration(variation,step,frequence,temps):
     array = []
     current_pesp = random.uniform(VOLTAGE_MIN, VOLTAGE_MAX)
-    for i in range(0,frequence*temps,step):
+    for i in range(0,int(frequence*temps),step):
         delta = random.uniform( -(variation/2.0),variation/2.0)
         for y in range(0,step) :
             current_pesp = current_pesp+ float(delta/step)
@@ -60,7 +60,7 @@ parser= ag.ArgumentParser("Script de génération des échantillons VHDL qui sim
                           "Pouls :  70 bpm , Pression : 120/80, respiration : 0.25Hz (1 respiraiton au 4 seconde , pespiration : 1 (taux de variation entre chaque echantillon)")
 
 parser.add_argument("T",type = str,help = "Le type du signal a généré : les choix sont : pr ,po, re,pe \n pr = Pression, \n po = Pouls, \n re = respiration, \n pe= pespiration")
-parser.add_argument( "-t", type = int , default = 1, help = "La durée en seconde du signal généré")
+parser.add_argument( "-t", type = float , default = 1, help = "La durée en seconde du signal généré")
 parser.add_argument("-f" ,default = 100 ,type =int, help = "La fréquence d'échantillonage des modules DAC/ADC")
 parser.add_argument( "-b" ,type =int, default = 70, help = "le nombre de battement par minutes\n")
 parser.add_argument("-r",  type=float, default = 0.25,help="la fréquence en hz de la respiration \n")
@@ -99,7 +99,7 @@ elif "pr" in signaltype :
     #la valeur en Voltage d'une personne qui a une diastolique normal (80) est autour de 1.8 ,  pour une diastolique eleve(90), on est atour de 2.10, une diastolique basse (60) est autour de  1.4
 
     #prolongement du signal de pression selon le temps de signal voulu
-    for i in range(0,t):
+    for i in range(0,int(t)):
         for y in samples:
             ech_array.append(y)
 

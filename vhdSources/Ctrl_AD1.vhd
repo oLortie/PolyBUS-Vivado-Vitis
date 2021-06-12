@@ -42,11 +42,13 @@ architecture Behavioral of Ctrl_AD1 is
     end component;  
 
     component reg_dec12
-    Port ( i_clk : in STD_LOGIC;
-           i_rst : in STD_LOGIC;
-           i_en  : in STD_LOGIC;
-           i_dat : in STD_LOGIC;
-           o_dat : out STD_LOGIC_VECTOR (11 downto 0)
+    Port ( i_clk       : in std_logic;      -- horloge
+           i_reset     : in std_logic;      -- reinitialisation
+           i_load      : in std_logic;      -- activation chargement parallele
+           i_en        : in std_logic;      -- activation decalage
+           i_dat_bit   : in std_logic;      -- entree serie
+           i_dat_load  : in std_logic_vector(11 downto 0);    -- entree parallele
+           o_dat       : out  std_logic_vector(11 downto 0)   -- sortie parallele
            );
     end component;
     
@@ -78,9 +80,11 @@ begin
     inst_reg_dec12 : reg_dec12
     Port Map (
             i_clk       => clk_ADC,
-            i_rst       => reset,
+            i_reset     => reset,
+            i_load      => '0',
             i_en        => d_Decale,
-            i_dat       => i_DO,
+            i_dat_bit   => i_DO,
+            i_dat_load  => "000000000000",
             o_dat       => o_echantillon
      );
      

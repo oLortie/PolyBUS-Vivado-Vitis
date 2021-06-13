@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------------
--- Exercice1 Atelier #3 S4 Génie informatique - H21
+-- Exercice1 Atelier #3 S4 Gï¿½nie informatique - H21
 -- Larissa Njejimana
 -- v.3 
 ----------------------------------------------------------------------------------
@@ -1227,36 +1227,61 @@ architecture Behavioral of TopModule is
             o_leds_tri_o : out STD_LOGIC_VECTOR ( 3 downto 0 )
             );
     end component;
+    
+    component ctrl_DAC is
+        port ( 
+            reset                       : in    std_logic;  
+            clk_DAC                     : in    std_logic; 						-- Horloge ï¿½ fournir ï¿½ l'ADC
+            i_data                      : in    std_logic_vector (11 downto 0);                      -- Bit de donnï¿½e en provenance de l'ADC         
+            i_DAC_Strobe                : in    std_logic;                      -- Synchronisation: strobe dï¿½clencheur de la sï¿½quence de rï¿½ception    
+            
+            o_DAC_nCS                   : out   std_logic;                      -- Signal Chip select vers l'ADC 
+            o_bit_value                 : out   std_logic                -- valeur de l'ï¿½chantillon reï¿½u
+    );
+    end component;
+    
+    component Ctrl_AD1 is
+        port ( 
+            reset                       : in    std_logic;  
+            clk_ADC                     : in    std_logic; 						-- Horloge ï¿½ fournir ï¿½ l'ADC
+            i_DO                        : in    std_logic;                      -- Bit de donnï¿½e en provenance de l'ADC         
+            o_ADC_nCS                   : out   std_logic;                      -- Signal Chip select vers l'ADC 
+            
+            i_ADC_Strobe                : in    std_logic;                      -- Synchronisation: strobe dï¿½clencheur de la sï¿½quence de rï¿½ception    
+            o_echantillon_pret_strobe   : out   std_logic;                      -- strobe indicateur d'une rï¿½ception complï¿½te d'un ï¿½chantillon  
+            o_echantillon               : out   std_logic_vector (11 downto 0)  -- valeur de l'ï¿½chantillon reï¿½u
+        );
+    end component;
 
     component Ctrl_DAC
     Port (
         reset                       : in    std_logic;  
-        clk_DAC                     : in    std_logic; 						-- Horloge à fournir à l'ADC
-        i_data                      : in    std_logic_vector (11 downto 0); -- échantillon à envoyer        
-        i_DAC_Strobe                : in    std_logic;                      -- Synchronisation: strobe déclencheur de la séquence de réception
+        clk_DAC                     : in    std_logic; 						-- Horloge ï¿½ fournir ï¿½ l'ADC
+        i_data                      : in    std_logic_vector (11 downto 0); -- ï¿½chantillon ï¿½ envoyer        
+        i_DAC_Strobe                : in    std_logic;                      -- Synchronisation: strobe dï¿½clencheur de la sï¿½quence de rï¿½ception
         
         o_DAC_nCS                   : out   std_logic;                      -- Signal Chip select vers le DAC  
-        o_bit_value                 : out   std_logic                       -- valeur du bit à envoyer
+        o_bit_value                 : out   std_logic                       -- valeur du bit ï¿½ envoyer
         );
     end component;
     
     component Ctrl_AD1
     port ( 
         reset                       : in    std_logic;  
-        clk_ADC                     : in    std_logic; 						-- Horloge à fournir à l'ADC
-        i_DO                        : in    std_logic;                      -- Bit de donnée en provenance de l'ADC         
+        clk_ADC                     : in    std_logic; 						-- Horloge ï¿½ fournir ï¿½ l'ADC
+        i_DO                        : in    std_logic;                      -- Bit de donnï¿½e en provenance de l'ADC         
         o_ADC_nCS                   : out   std_logic;                      -- Signal Chip select vers l'ADC 
         
-        i_ADC_Strobe                : in    std_logic;                      -- Synchronisation: strobe déclencheur de la séquence de réception    
-        o_echantillon_pret_strobe   : out   std_logic;                      -- strobe indicateur d'une réception complète d'un échantillon  
-        o_echantillon               : out   std_logic_vector (11 downto 0)  -- valeur de l'échantillon reçu
+        i_ADC_Strobe                : in    std_logic;                      -- Synchronisation: strobe dï¿½clencheur de la sï¿½quence de rï¿½ception    
+        o_echantillon_pret_strobe   : out   std_logic;                      -- strobe indicateur d'une rï¿½ception complï¿½te d'un ï¿½chantillon  
+        o_echantillon               : out   std_logic_vector (11 downto 0)  -- valeur de l'ï¿½chantillon reï¿½u
     );
     end component;
    
     component Synchro_Horloges is
     generic (const_CLK_syst_MHz: integer := freq_sys_MHz);
     Port ( 
-        clkm        : in  std_logic;  -- Entrée  horloge maitre   (50 MHz soit 20 ns ou 100 MHz soit 10 ns)
+        clkm        : in  std_logic;  -- Entrï¿½e  horloge maitre   (50 MHz soit 20 ns ou 100 MHz soit 10 ns)
         o_S_5MHz    : out std_logic;  -- source horloge divisee          (clkm MHz / (2*constante_diviseur_p +2) devrait donner 5 MHz soit 200 ns)
         o_CLK_5MHz  : out std_logic;
         o_S_100Hz   : out  std_logic; -- source horloge 100 Hz : out  std_logic;   -- (100  Hz approx:  99,952 Hz) 
@@ -1313,6 +1338,30 @@ begin
         o_echantillon => d_echantillon1
     );
         
+    inst_ctrl_DAC : ctrl_DAC
+    PORT MAP (
+        reset => reset,         
+        clk_DAC => clk_5MHz,       
+        i_data  => d_DAC_data1,         
+        i_DAC_Strobe => d_strobe_100Hz,      
+        o_DAC_nCS =>  o_DAC_NCS,   
+        o_bit_value => o_DAC_D0        
+    );  
+        
+        
+    inst_ctrl_AD1 : ctrl_AD1
+    PORT MAP (
+        reset                    => reset,         
+        clk_ADC                  => clk_5MHz,       
+        i_DO                     => i_ADC_D0,         
+        o_ADC_nCS                => o_ADC_NCS, 
+                                     
+        i_ADC_Strobe             =>  d_strobe_100Hz ,  
+        o_echantillon_pret_strobe  => o_echantillon_pret_strobe,
+        o_echantillon            => d_echantillon1    
+    );  
+    
+    
      mux_select_Entree_AD1 : process (i_btn(3), i_ADC_D0, i_ADC_D1)
      begin
           if (i_btn(3) ='0') then 

@@ -12,13 +12,13 @@ use UNISIM.Vcomponents.ALL;
 entity Ctrl_AD1 is
 port ( 
     reset                       : in    std_logic;  
-    clk_ADC                     : in    std_logic; 						-- Horloge à fournir à l'ADC
-    i_DO                        : in    std_logic;                      -- Bit de donnée en provenance de l'ADC         
+    clk_ADC                     : in    std_logic; 						-- Horloge ï¿½ fournir ï¿½ l'ADC
+    i_DO                        : in    std_logic;                      -- Bit de donnï¿½e en provenance de l'ADC         
     o_ADC_nCS                   : out   std_logic;                      -- Signal Chip select vers l'ADC 
 	
-    i_ADC_Strobe                : in    std_logic;                      -- Synchronisation: strobe déclencheur de la séquence de réception    
-    o_echantillon_pret_strobe   : out   std_logic;                      -- strobe indicateur d'une réception complète d'un échantillon  
-    o_echantillon               : out   std_logic_vector (11 downto 0)  -- valeur de l'échantillon reçu
+    i_ADC_Strobe                : in    std_logic;                      -- Synchronisation: strobe dï¿½clencheur de la sï¿½quence de rï¿½ception    
+    o_echantillon_pret_strobe   : out   std_logic;                      -- strobe indicateur d'une rï¿½ception complï¿½te d'un ï¿½chantillon  
+    o_echantillon               : out   std_logic_vector (11 downto 0)  -- valeur de l'ï¿½chantillon reï¿½u
 );
 end Ctrl_AD1;
 
@@ -35,9 +35,9 @@ architecture Behavioral of Ctrl_AD1 is
         i_ADC_Strobe            : in    std_logic;  --  cadence echantillonnage AD1
         i_Count_value           : in std_logic_vector (4 downto 0);
         o_ADC_nCS               : out   std_logic;  -- Signal Chip select vers l'ADC  
-        o_Decale                : out   std_logic;  -- Signal de décalage
+        o_Decale                : out   std_logic;  -- Signal de dï¿½calage
         o_reset_cpt             : out std_logic;
-        o_FinSequence_Strobe    : out   std_logic   -- Strobe de fin de séquence d'échantillonnage 
+        o_FinSequence_Strobe    : out   std_logic   -- Strobe de fin de sï¿½quence d'ï¿½chantillonnage 
     );
     end component;  
 

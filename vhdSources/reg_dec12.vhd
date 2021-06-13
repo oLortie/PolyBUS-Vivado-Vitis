@@ -16,8 +16,7 @@
 -- Revision 0.01 - File Created
 -- Additional Comments:
 -- 
-----------------------------------------------------------------------------------
-
+---------------------------------------------------------------------------------
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
@@ -41,7 +40,7 @@ architecture Behavioral of reg_dec12 is
     signal   q_shift_reg   : std_logic_vector(11 downto 0);   -- registre 
     
   begin 
-  -- registre a décalage,  MSB arrive premier, entre par la droite, decalage a gauche  
+  -- registre a dï¿½calage,  MSB arrive premier, entre par la droite, decalage a gauche  
   reg_dec: process (i_clk, i_reset)
      begin    
        if (i_reset = '1')  then

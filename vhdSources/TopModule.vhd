@@ -1227,31 +1227,6 @@ architecture Behavioral of TopModule is
             o_leds_tri_o : out STD_LOGIC_VECTOR ( 3 downto 0 )
             );
     end component;
-    
-    component ctrl_DAC is
-        port ( 
-            reset                       : in    std_logic;  
-            clk_DAC                     : in    std_logic; 						-- Horloge � fournir � l'ADC
-            i_data                      : in    std_logic_vector (11 downto 0);                      -- Bit de donn�e en provenance de l'ADC         
-            i_DAC_Strobe                : in    std_logic;                      -- Synchronisation: strobe d�clencheur de la s�quence de r�ception    
-            
-            o_DAC_nCS                   : out   std_logic;                      -- Signal Chip select vers l'ADC 
-            o_bit_value                 : out   std_logic                -- valeur de l'�chantillon re�u
-    );
-    end component;
-    
-    component Ctrl_AD1 is
-        port ( 
-            reset                       : in    std_logic;  
-            clk_ADC                     : in    std_logic; 						-- Horloge � fournir � l'ADC
-            i_DO                        : in    std_logic;                      -- Bit de donn�e en provenance de l'ADC         
-            o_ADC_nCS                   : out   std_logic;                      -- Signal Chip select vers l'ADC 
-            
-            i_ADC_Strobe                : in    std_logic;                      -- Synchronisation: strobe d�clencheur de la s�quence de r�ception    
-            o_echantillon_pret_strobe   : out   std_logic;                      -- strobe indicateur d'une r�ception compl�te d'un �chantillon  
-            o_echantillon               : out   std_logic_vector (11 downto 0)  -- valeur de l'�chantillon re�u
-        );
-    end component;
 
     component Ctrl_DAC
     Port (
@@ -1337,29 +1312,6 @@ begin
         o_echantillon_pret_strobe => o_echantillon_pret_strobe,
         o_echantillon => d_echantillon1
     );
-        
-    inst_ctrl_DAC : ctrl_DAC
-    PORT MAP (
-        reset => reset,         
-        clk_DAC => clk_5MHz,       
-        i_data  => d_DAC_data1,         
-        i_DAC_Strobe => d_strobe_100Hz,      
-        o_DAC_nCS =>  o_DAC_NCS,   
-        o_bit_value => o_DAC_D0        
-    );  
-        
-        
-    inst_ctrl_AD1 : ctrl_AD1
-    PORT MAP (
-        reset                    => reset,         
-        clk_ADC                  => clk_5MHz,       
-        i_DO                     => i_ADC_D0,         
-        o_ADC_nCS                => o_ADC_NCS, 
-                                     
-        i_ADC_Strobe             =>  d_strobe_100Hz ,  
-        o_echantillon_pret_strobe  => o_echantillon_pret_strobe,
-        o_echantillon            => d_echantillon1    
-    );  
     
     
      mux_select_Entree_AD1 : process (i_btn(3), i_ADC_D0, i_ADC_D1)

@@ -217,6 +217,66 @@ int do_http_get(int sd, char *req, int rlen)
 		}
 
     }
+    else if (s4i_is_cmd_perspiration(req)) {
+
+        float perspirationVoltage = s4i_GetPerspirationVoltage();
+
+        char* perspirationVoltage_buf;
+        sprintf(perspirationVoltage_buf, "{perspiration : %f}", perspirationVoltage);
+
+        unsigned int perspirationVoltage_len = strlen(perspirationVoltage_buf);
+        unsigned int len = generate_http_header(buf, "js", perspirationVoltage_len);
+
+        strcat(buf, perspirationVoltage_buf);
+        len += perspirationVoltage_len;
+
+        if (lwip_write(sd, buf, len) != len) {
+    		xil_printf("Error writing GET response to socket\r\n");
+    		xil_printf("http header = %s\r\n", buf);
+    		return -1;
+    	}
+
+    }
+    else if (s4i_is_cmd_pouls(req)) {
+
+        float poulsVoltage = s4i_GetPoulsVoltage();
+
+        char* poulsVoltage_buf;
+        sprintf(poulsVoltage_buf, "{pouls : %f}", poulsVoltage);
+
+        unsigned int poulsVoltage_len = strlen(poulsVoltage_buf);
+        unsigned int len = generate_http_header(buf, "js", poulsVoltage_len);
+
+        strcat(buf, poulsVoltage_buf);
+        len += poulsVoltage_len;
+
+        if (lwip_write(sd, buf, len) != len) {
+        	xil_printf("Error writing GET response to socket\r\n");
+        	xil_printf("http header = %s\r\n", buf);
+        	return -1;
+        }
+
+    }
+    else if (s4i_is_cmd_pression(req)) {
+
+        float pressionVoltage = s4i_GetPressionVoltage();
+
+        char* pressionVoltage_buf;
+        sprintf(pressionVoltage_buf, "{pression : %f}", pressionVoltage);
+
+        unsigned int pressionVoltage_len = strlen(pressionVoltage_buf);
+        unsigned int len = generate_http_header(buf, "js", pressionVoltage_len);
+
+        strcat(buf, pressionVoltage_buf);
+        len += pressionVoltage_len;
+
+        if (lwip_write(sd, buf, len) != len) {
+            xil_printf("Error writing GET response to socket\r\n");
+            xil_printf("http header = %s\r\n", buf);
+            return -1;
+        }
+
+    }
     else {
         // Si la requête n'est pas un point d'accès ("route") connu, on tente de
         // charger un fichier depuis la carte microSD.

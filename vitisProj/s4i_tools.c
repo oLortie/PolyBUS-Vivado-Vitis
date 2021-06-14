@@ -41,6 +41,21 @@ int s4i_is_cmd_respiration(char *buf)
 	return (!strncmp(buf + 5, "cmd/respiration", 15));
 }
 
+int s4i_is_cmd_perspiration(char *buf)
+{
+	return (!strncmp(buf + 5, "cmd/perspiration", 16));
+}
+
+int s4i_is_cmd_pouls(char *buf)
+{
+	return (!strncmp(buf + 5, "cmd/pouls", 9));
+}
+
+int s4i_is_cmd_pression(char *buf)
+{
+	return (!strncmp(buf + 5, "cmd/pression", 12));
+}
+
 unsigned int s4i_get_sws_state()
 {
     // Retourne l'Å½tat des 4 interrupteurs dans un entier (un bit par
@@ -66,3 +81,61 @@ float s4i_GetRespirationVoltage()
 	return respirationVoltage;
 
 }
+
+u16 s4i_getSamplePerspirationRaw()
+{
+	u16 rawData =  MYADCIP_mReadReg(MY_AD1_IP_BASEADDRESS, 0x0) & 0xFFF;
+	return rawData;
+}
+
+
+float s4i_GetPerspirationVoltage()
+{
+	float conversionFactor = ReferenceVoltage / ((1 << PERSPIRATION_NUM_BITS) - 1);
+
+	u16 rawSample = s4i_getSamplePerspirationRaw();
+
+	float PerspirationVoltage = ((float)rawSample) * conversionFactor;
+
+	return PerspirationVoltage;
+
+}
+
+u16 s4i_getSamplePoulsRaw()
+{
+	u16 rawData =  MYADCIP_mReadReg(MY_AD1_IP_BASEADDRESS, 0x0) & 0xFFF;
+	return rawData;
+}
+
+
+float s4i_GetPoulsVoltage()
+{
+	float conversionFactor = ReferenceVoltage / ((1 << POULS_NUM_BITS) - 1);
+
+	u16 rawSample = s4i_getSamplePoulsRaw();
+
+	float PoulsVoltage = ((float)rawSample) * conversionFactor;
+
+	return PoulsVoltage;
+
+}
+
+u16 s4i_getSamplePressionRaw()
+{
+	u16 rawData =  MYADCIP_mReadReg(MY_AD1_IP_BASEADDRESS, 0x0) & 0xFFF;
+	return rawData;
+}
+
+
+float s4i_GetPressionVoltage()
+{
+	float conversionFactor = ReferenceVoltage / ((1 << PRESSION_NUM_BITS) - 1);
+
+	u16 rawSample = s4i_getSamplePressionRaw();
+
+	float PressionVoltage = ((float)rawSample) * conversionFactor;
+
+	return PressionVoltage;
+
+}
+

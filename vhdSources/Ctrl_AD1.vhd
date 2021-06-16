@@ -13,12 +13,14 @@ entity Ctrl_AD1 is
 port ( 
     reset                       : in    std_logic;  
     clk_ADC                     : in    std_logic; 						-- Horloge � fournir � l'ADC
-    i_DO                        : in    std_logic;                      -- Bit de donn�e en provenance de l'ADC         
+    i_DO1                       : in    std_logic;                      -- Bit de donn�e en provenance de l'ADC         
+    i_DO2                       : in    std_logic;                      -- Bit de donn�e en provenance de l'ADC 
     o_ADC_nCS                   : out   std_logic;                      -- Signal Chip select vers l'ADC 
 	
     i_ADC_Strobe                : in    std_logic;                      -- Synchronisation: strobe d�clencheur de la s�quence de r�ception    
     o_echantillon_pret_strobe   : out   std_logic;                      -- strobe indicateur d'une r�ception compl�te d'un �chantillon  
-    o_echantillon               : out   std_logic_vector (11 downto 0)  -- valeur de l'�chantillon re�u
+    o_echantillon1              : out   std_logic_vector (11 downto 0); -- valeur de l'�chantillon re�u
+    o_echantillon2              : out   std_logic_vector (11 downto 0)  -- valeur de l'�chantillon re�u
 );
 end Ctrl_AD1;
 
@@ -77,15 +79,26 @@ begin
         o_FinSequence_Strobe    => o_echantillon_pret_strobe
     );
     
-    inst_reg_dec12 : reg_dec12
+    inst_reg_dec12_1 : reg_dec12
     Port Map (
             i_clk       => clk_ADC,
             i_reset     => reset,
             i_load      => '0',
             i_en        => d_Decale,
-            i_dat_bit   => i_DO,
+            i_dat_bit   => i_DO1,
             i_dat_load  => "000000000000",
-            o_dat       => o_echantillon
+            o_dat       => o_echantillon1
+     );
+     
+     inst_reg_dec12_2 : reg_dec12
+     Port Map (
+            i_clk       => clk_ADC,
+            i_reset     => reset,
+            i_load      => '0',
+            i_en        => d_Decale,
+            i_dat_bit   => i_DO2,
+            i_dat_load  => "000000000000",
+            o_dat       => o_echantillon2
      );
      
      inst_compteur : compteur_nbits

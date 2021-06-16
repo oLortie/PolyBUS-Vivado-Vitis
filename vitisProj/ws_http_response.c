@@ -202,7 +202,8 @@ int do_http_get(int sd, char *req, int rlen)
     	float respirationVoltage = s4i_GetRespirationVoltage();
 
     	char* respirationVoltage_buf;
-    	sprintf(respirationVoltage_buf, "{respiration : %f}", respirationVoltage);
+    	sprintf(respirationVoltage_buf, "{ \"respiration\" : %f}", respirationVoltage);
+    	// { "respiration" : 3.12321321 }
 
     	unsigned int respirationVoltage_len = strlen(respirationVoltage_buf);
     	unsigned int len = generate_http_header(buf, "js", respirationVoltage_len);
@@ -222,7 +223,7 @@ int do_http_get(int sd, char *req, int rlen)
         float perspirationVoltage = s4i_GetPerspirationVoltage();
 
         char* perspirationVoltage_buf;
-        sprintf(perspirationVoltage_buf, "{perspiration : %f}", perspirationVoltage);
+        sprintf(perspirationVoltage_buf, "{\"perspiration\" : %f}", perspirationVoltage);
 
         unsigned int perspirationVoltage_len = strlen(perspirationVoltage_buf);
         unsigned int len = generate_http_header(buf, "js", perspirationVoltage_len);
@@ -242,7 +243,7 @@ int do_http_get(int sd, char *req, int rlen)
         float poulsVoltage = s4i_GetPoulsVoltage();
 
         char* poulsVoltage_buf;
-        sprintf(poulsVoltage_buf, "{pouls : %f}", poulsVoltage);
+        sprintf(poulsVoltage_buf, "{\"pouls\" : %f}", poulsVoltage);
 
         unsigned int poulsVoltage_len = strlen(poulsVoltage_buf);
         unsigned int len = generate_http_header(buf, "js", poulsVoltage_len);
@@ -262,7 +263,7 @@ int do_http_get(int sd, char *req, int rlen)
         float pressionVoltage = s4i_GetPressionVoltage();
 
         char* pressionVoltage_buf;
-        sprintf(pressionVoltage_buf, "{pression : %f}", pressionVoltage);
+        sprintf(pressionVoltage_buf, "{\"pression\" : %f}", pressionVoltage);
 
         unsigned int pressionVoltage_len = strlen(pressionVoltage_buf);
         unsigned int len = generate_http_header(buf, "js", pressionVoltage_len);
@@ -276,6 +277,27 @@ int do_http_get(int sd, char *req, int rlen)
             return -1;
         }
 
+    }
+    else if (s4i_is_cmd_rawData(req)) {
+    	float respirationVoltage = s4i_GetRespirationVoltage();
+    	float perspirationVoltage = s4i_GetPerspirationVoltage();
+    	float poulsVoltage = s4i_GetPoulsVoltage();
+    	float pressionVoltage = s4i_GetPressionVoltage();
+
+    	char* rawData_buf;
+    	sprintf(rawData_buf, "{\"respiration\" : %f, \"perspiration\" : %f, \"pouls\" : %f, \"pression\" : %f}", respirationVoltage, perspirationVoltage, poulsVoltage, pressionVoltage);
+
+    	unsigned int rawData_len = strlen(rawData_buf);
+		unsigned int len = generate_http_header(buf, "js", rawData_len);
+
+		strcat(buf, rawData_buf);
+		len += rawData_len;
+
+		if (lwip_write(sd, buf, len) != len) {
+			xil_printf("Error writing GET response to socket\r\n");
+			xil_printf("http header = %s\r\n", buf);
+			return -1;
+		}
     }
     else {
         // Si la requête n'est pas un point d'accès ("route") connu, on tente de

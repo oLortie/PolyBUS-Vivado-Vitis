@@ -110,7 +110,7 @@ begin
                 o_en_compt <= '1';
                 o_reset_compt <= '0';
                 o_en_reg <= '0';
-                o_rst_reg <= '1';
+                o_rst_reg <= '0';
                 o_load_reg <= '1';
             when SendingZeros =>
                 o_DAC_nCS <= '0';

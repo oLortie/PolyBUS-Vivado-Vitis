@@ -41,21 +41,25 @@ architecture Behavioral of Ctrl_DAC_tb is
     Port (
         reset                       : in    std_logic;  
         clk_DAC                     : in    std_logic; 						-- Horloge à fournir à l'ADC
-        i_data                      : in    std_logic_vector (11 downto 0); -- échantillon à envoyer        
+        i_data1                     : in    std_logic_vector (11 downto 0); -- échantillon à envoyer   
+        i_data2                     : in    std_logic_vector (11 downto 0);     
         i_DAC_Strobe                : in    std_logic;                      -- Synchronisation: strobe déclencheur de la séquence de réception
         
         o_DAC_nCS                   : out   std_logic;                      -- Signal Chip select vers le DAC  
-        o_bit_value                 : out   std_logic                       -- valeur du bit à envoyer
+        o_bit_value1                : out   std_logic;                       -- valeur du bit à envoyer
+        o_bit_value2                : out   std_logic 
         );
     end component;
     
     signal reset_sim        : std_logic;
     signal clk_DAC_sim      : std_logic := '0';
-    signal i_data_sim       : std_logic_vector (11 downto 0);
+    signal i_data1_sim       : std_logic_vector (11 downto 0);
+    signal i_data2_sim       : std_logic_vector (11 downto 0);
     signal i_DAC_Strobe_sim : std_logic;
     
     signal o_DAC_nCS_sim    : std_logic;
-    signal o_bit_value_sim  : std_logic;
+    signal o_bit_value1_sim : std_logic;
+    signal o_bit_value2_sim : std_logic;
     
     constant CLK_PERIOD : time := 200 ns;
     constant DAC_STROBE_PERIOD : time := 10 ms;
@@ -66,10 +70,12 @@ begin
         Port Map (
             reset => reset_sim,
             clk_DAC => clk_DAC_sim,
-            i_data => i_data_sim,     
+            i_data1 => i_data1_sim,
+            i_data2 => i_data2_sim,             
             i_DAC_Strobe =>i_DAC_Strobe_sim,
             o_DAC_nCS => o_DAC_nCS_sim,
-            o_bit_value => o_bit_value_sim
+            o_bit_value1 => o_bit_value1_sim,
+            o_bit_value2 => o_bit_value2_sim
             );
             
     reset_sim <= '0';
@@ -91,15 +97,20 @@ begin
     tb : process
     begin
         wait for DAC_Strobe_PERIOD;
-            i_data_sim <= X"F01";
+            i_data1_sim <= X"F01";
+            i_data1_sim <= X"F02";
         wait for DAC_Strobe_PERIOD;
-            i_data_sim <= X"F02";
+            i_data1_sim <= X"F02";
+            i_data1_sim <= X"F03";
         wait for DAC_Strobe_PERIOD;
-            i_data_sim <= X"F03";
+            i_data1_sim <= X"F03";
+            i_data1_sim <= X"F04";
         wait for DAC_Strobe_PERIOD;
-            i_data_sim <= X"F04";
+            i_data1_sim <= X"F04";
+            i_data1_sim <= X"F05";
         wait for DAC_Strobe_PERIOD;
-            i_data_sim <= X"F05";
+            i_data1_sim <= X"F05";
+            i_data1_sim <= X"F09";
     end process;
 
 

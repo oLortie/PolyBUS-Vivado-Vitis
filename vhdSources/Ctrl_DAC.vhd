@@ -35,11 +35,13 @@ entity Ctrl_DAC is
     Port (
         reset                       : in    std_logic;  
         clk_DAC                     : in    std_logic; 						-- Horloge à fournir à l'ADC
-        i_data                      : in    std_logic_vector (11 downto 0); -- échantillon à envoyer        
+        i_data1                     : in    std_logic_vector (11 downto 0); -- échantillon à envoyer
+        i_data2                     : in    std_logic_vector (11 downto 0); -- échantillon à envoyer         
         i_DAC_Strobe                : in    std_logic;                      -- Synchronisation: strobe déclencheur de la séquence de réception
         
         o_DAC_nCS                   : out   std_logic;                      -- Signal Chip select vers le DAC  
-        o_bit_value                 : out   std_logic                       -- valeur du bit à envoyer
+        o_bit_value1                : out   std_logic;                       -- valeur du bit à envoyer
+        o_bit_value2                : out   std_logic                       -- valeur du bit à envoyer
         );
 end Ctrl_DAC;
 
@@ -87,7 +89,8 @@ architecture Behavioral of Ctrl_DAC is
     signal d_en_reg   : std_logic;
     signal d_rst_reg  : std_logic;
     signal d_load_reg : std_logic;
-    signal d_dat_out  : std_logic_vector (11 downto 0);
+    signal d_dat_out1 : std_logic_vector (11 downto 0);
+    signal d_dat_out2 : std_logic_vector (11 downto 0) := "000000000000";
     signal d_val_cpt  : std_logic_vector (4 downto 0);
 
 begin
@@ -106,15 +109,26 @@ begin
         o_load_reg => d_load_reg
     );    
     
-    inst_reg_dec12 : reg_dec12
+    inst_reg_dec12_1 : reg_dec12
     Port Map (
         i_clk => clk_DAC,
-        i_reset => reset,
+        i_reset => d_rst_reg,
         i_load => d_load_reg,
         i_en => d_en_reg,
         i_dat_bit => '0',
-        i_dat_load => i_data,
-        o_dat => d_dat_out
+        i_dat_load => i_data1,
+        o_dat => d_dat_out1
+     );
+     
+     inst_reg_dec12_2 : reg_dec12
+     Port Map (
+        i_clk => clk_DAC,
+        i_reset => d_rst_reg,
+        i_load => d_load_reg,
+        i_en => d_en_reg,
+        i_dat_bit => '0',
+        i_dat_load => i_data2,
+        o_dat => d_dat_out2
      );
      
      inst_compteur : compteur_nbits
@@ -126,6 +140,7 @@ begin
         o_val_cpt => d_val_cpt
     );
     
-    o_bit_value <= d_dat_out(11);
+    o_bit_value1 <= d_dat_out1(11);
+    o_bit_value2 <= d_dat_out2(11);
 
 end Behavioral;

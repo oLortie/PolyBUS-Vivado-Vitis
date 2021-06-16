@@ -56,6 +56,11 @@ int s4i_is_cmd_pression(char *buf)
 	return (!strncmp(buf + 5, "cmd/pression", 12));
 }
 
+int s4i_is_cmd_rawData(char* buf)
+{
+	return (!strncmp(buf + 5, "cmd/rawData", 11));
+}
+
 unsigned int s4i_get_sws_state()
 {
     // Retourne l'Å½tat des 4 interrupteurs dans un entier (un bit par
@@ -65,7 +70,7 @@ unsigned int s4i_get_sws_state()
 
 u16 s4i_getSampleRespirationRaw()
 {
-	u16 rawData =  MYADCIP_mReadReg(MY_AD1_IP_BASEADDRESS, 0x0) & 0xFFF;
+	u16 rawData =  MYADCIP_mReadReg(ADCIP_BASEADRESS, ) & 0xFFF;
 	return rawData;
 }
 
@@ -84,7 +89,7 @@ float s4i_GetRespirationVoltage()
 
 u16 s4i_getSamplePerspirationRaw()
 {
-	u16 rawData =  MYADCIP_mReadReg(MY_AD1_IP_BASEADDRESS, 0x0) & 0xFFF;
+	u16 rawData =  (MYADCIP_mReadReg(ADCIP_BASEADRESS, 0x20) & 0xFFF000) >> 12;
 	return rawData;
 }
 
@@ -103,7 +108,7 @@ float s4i_GetPerspirationVoltage()
 
 u16 s4i_getSamplePoulsRaw()
 {
-	u16 rawData =  MYADCIP_mReadReg(MY_AD1_IP_BASEADDRESS, 0x0) & 0xFFF;
+	u16 rawData =  MYADCIP_mReadReg(ADCIP_BASEADRESS, 0x0) & 0xFFF;
 	return rawData;
 }
 
@@ -122,7 +127,7 @@ float s4i_GetPoulsVoltage()
 
 u16 s4i_getSamplePressionRaw()
 {
-	u16 rawData =  MYADCIP_mReadReg(MY_AD1_IP_BASEADDRESS, 0x0) & 0xFFF;
+	u16 rawData =  (MYADCIP_mReadReg(ADCIP_BASEADRESS, 0x0) & 0xFFF000) >> 12;
 	return rawData;
 }
 

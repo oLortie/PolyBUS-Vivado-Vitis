@@ -1232,11 +1232,13 @@ architecture Behavioral of TopModule is
     Port (
         reset                       : in    std_logic;  
         clk_DAC                     : in    std_logic; 						-- Horloge � fournir � l'ADC
-        i_data                      : in    std_logic_vector (11 downto 0); -- �chantillon � envoyer        
+        i_data1                     : in    std_logic_vector (11 downto 0); -- �chantillon � envoyer 
+        i_data2                     : in    std_logic_vector (11 downto 0); -- �chantillon � envoyer       
         i_DAC_Strobe                : in    std_logic;                      -- Synchronisation: strobe d�clencheur de la s�quence de r�ception
         
         o_DAC_nCS                   : out   std_logic;                      -- Signal Chip select vers le DAC  
-        o_bit_value                 : out   std_logic                       -- valeur du bit � envoyer
+        o_bit_value1                : out   std_logic;                      -- valeur du bit � envoyer
+        o_bit_value2                : out   std_logic                       -- valeur du bit � envoyer
         );
     end component;
     
@@ -1244,12 +1246,14 @@ architecture Behavioral of TopModule is
     port ( 
         reset                       : in    std_logic;  
         clk_ADC                     : in    std_logic; 						-- Horloge � fournir � l'ADC
-        i_DO                        : in    std_logic;                      -- Bit de donn�e en provenance de l'ADC         
+        i_DO1                       : in    std_logic;                      -- Bit de donn�e en provenance de l'ADC   
+        i_DO2                       : in    std_logic;                      -- Bit de donn�e en provenance de l'ADC      
         o_ADC_nCS                   : out   std_logic;                      -- Signal Chip select vers l'ADC 
         
         i_ADC_Strobe                : in    std_logic;                      -- Synchronisation: strobe d�clencheur de la s�quence de r�ception    
         o_echantillon_pret_strobe   : out   std_logic;                      -- strobe indicateur d'une r�ception compl�te d'un �chantillon  
-        o_echantillon               : out   std_logic_vector (11 downto 0)  -- valeur de l'�chantillon re�u
+        o_echantillon1              : out   std_logic_vector (11 downto 0); -- valeur de l'�chantillon re�u
+        o_echantillon2              : out   std_logic_vector (11 downto 0)  -- valeur de l'�chantillon re�u
     );
     end component;
    
@@ -1268,7 +1272,9 @@ architecture Behavioral of TopModule is
     signal clk_5MHz                     : std_logic;
     signal d_S_5MHz                     : std_logic;
     signal d_strobe_100Hz               : std_logic := '0';  -- cadence echantillonnage AD1
+    signal d_strobe_100Hz2              : std_logic := '0';
     signal d_strobe_100Hz_ADC           : std_logic := '0';
+    signal d_strobe_100Hz_ADC2          : std_logic := '0';
     
     signal reset                        : std_logic; 
     
@@ -1292,27 +1298,30 @@ architecture Behavioral of TopModule is
 begin
     reset    <= i_btn(0);    
     
-    inst_Ctrl_DAC : Ctrl_DAC
+    inst_Ctrl_DAC1 : Ctrl_DAC
     Port Map (
         reset => reset,  
         clk_DAC => clk_5MHz,
-        i_data => d_DAC_data1,      
+        i_data1 => d_DAC_data1,
+        i_data2 => d_DAC_data2,      
         i_DAC_Strobe => d_strobe_100Hz,
         o_DAC_nCS => o_DAC_NCS,
-        o_bit_value => o_DAC_D0
+        o_bit_value1 => o_DAC_D0,
+        o_bit_value2 => o_DAC_D1
         );
     
-    inst_Ctrl_AD1 : Ctrl_AD1
+    inst_Ctrl_ADC1 : Ctrl_AD1
     port Map ( 
         reset => reset,
         clk_ADC => clk_5MHz,
-        i_DO => i_ADC_D0,       
+        i_DO1 => i_ADC_D0,
+        i_DO2 => i_ADC_D1,       
         o_ADC_nCS => o_ADC_NCS,
         i_ADC_Strobe => d_strobe_100Hz_ADC,
         o_echantillon_pret_strobe => o_echantillon_pret_strobe,
-        o_echantillon => d_echantillon1
+        o_echantillon1 => d_echantillon1,
+        o_echantillon2 => d_echantillon2
     );
-    
     
      mux_select_Entree_AD1 : process (i_btn(3), i_ADC_D0, i_ADC_D1)
      begin

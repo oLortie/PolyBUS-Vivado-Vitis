@@ -70,7 +70,8 @@ unsigned int s4i_get_sws_state()
 
 u16 s4i_getSampleRespirationRaw()
 {
-	u16 rawData =  MYADCIP_mReadReg(ADCIP_BASEADRESS, ) & 0xFFF;
+	u16 rawData = MyADCIPRegister[1] & 0xFFF;
+
 	return rawData;
 }
 
@@ -89,7 +90,9 @@ float s4i_GetRespirationVoltage()
 
 u16 s4i_getSamplePerspirationRaw()
 {
-	u16 rawData =  (MYADCIP_mReadReg(ADCIP_BASEADRESS, 0x20) & 0xFFF000) >> 12;
+	u16 rawData = (MyADCIPRegister[1] & 0xFFF000) >> 12;
+
+	//u16 rawData =  (MYADCIP_mReadReg(REGISTER2_ADDRESS, 0x0) & 0xFFF000) >> 12;
 	return rawData;
 }
 
@@ -108,7 +111,9 @@ float s4i_GetPerspirationVoltage()
 
 u16 s4i_getSamplePoulsRaw()
 {
-	u16 rawData =  MYADCIP_mReadReg(ADCIP_BASEADRESS, 0x0) & 0xFFF;
+	u16 rawData = MyADCIPRegister[0] & 0xFFF;
+
+	//u16 rawData =  MYADCIP_mReadReg(ADCIP_BASEADRESS, 0x0) & 0xFFF;
 	return rawData;
 }
 
@@ -127,7 +132,9 @@ float s4i_GetPoulsVoltage()
 
 u16 s4i_getSamplePressionRaw()
 {
-	u16 rawData =  (MYADCIP_mReadReg(ADCIP_BASEADRESS, 0x0) & 0xFFF000) >> 12;
+	u16 rawData = (MyADCIPRegister[0] & 0xFFF000) >> 12;
+
+	//u16 rawData =  (MYADCIP_mReadReg(ADCIP_BASEADRESS, 0x0) & 0xFFF000) >> 12;
 	return rawData;
 }
 

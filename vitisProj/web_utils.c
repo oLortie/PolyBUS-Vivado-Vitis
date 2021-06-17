@@ -136,3 +136,14 @@ int generate_http_header(char *buf, char *fext, int fsize)
 
 	return strlen(buf);
 }
+
+/**
+ * Get the current time in seconds (float) since the start of the program from the clock
+ */
+//float getCurrentTime(void)
+//{
+//	XTime currentClockTime;
+//	XTime_GetTime(&currentClockTime);
+//
+//	return (float)(currentClockTime / (COUNTS_PER_SECOND));
+//}

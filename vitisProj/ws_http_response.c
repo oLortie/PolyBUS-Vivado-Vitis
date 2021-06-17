@@ -33,6 +33,10 @@
 
 #include "webserver.h"
 #include "xil_printf.h"
+#include "xtime_l.h"
+
+//TODO: Move time calculations to functions in web_utils. Unsuccessfully attempted...
+//TODO: Test (or remove?) GET requests for individual data?
 
 
 // Ajout pour S4i GIF402
@@ -56,7 +60,7 @@ char *notfound_footer =
 	</html>";
 
 /* dynamically generate 404 response:
- * this inserts the original request string in betwween the notfound_header &
+ * this inserts the original request string in between the notfound_header &
  * footer strings
  */
 int do_404(int sd, char *req, int rlen)
@@ -195,15 +199,18 @@ int do_http_get(int sd, char *req, int rlen)
             xil_printf("http header = %s\r\n", buf);
             return -1;
         }
-
     }
     else if (s4i_is_cmd_respiration(req)) {
 
     	float respirationVoltage = s4i_GetRespirationVoltage();
 
+    	XTime currentClockTime;
+    	XTime_GetTime(&currentClockTime);
+    	//The current clock time in s since the start of the program
+    	float currentMS = ((float)currentClockTime / (COUNTS_PER_SECOND));
+
     	char* respirationVoltage_buf;
-    	sprintf(respirationVoltage_buf, "{ \"respiration\" : %f}", respirationVoltage);
-    	// { "respiration" : 3.12321321 }
+    	sprintf(respirationVoltage_buf, "{ \"respiration\" : %f, \"time\" : %f }", respirationVoltage, currentMS);
 
     	unsigned int respirationVoltage_len = strlen(respirationVoltage_buf);
     	unsigned int len = generate_http_header(buf, "js", respirationVoltage_len);
@@ -216,14 +223,18 @@ int do_http_get(int sd, char *req, int rlen)
 			xil_printf("http header = %s\r\n", buf);
 			return -1;
 		}
-
     }
     else if (s4i_is_cmd_perspiration(req)) {
 
         float perspirationVoltage = s4i_GetPerspirationVoltage();
 
+    	XTime currentClockTime;
+    	XTime_GetTime(&currentClockTime);
+    	//The current clock time in s since the start of the program
+    	float currentMS = ((float)currentClockTime / (COUNTS_PER_SECOND));
+
         char* perspirationVoltage_buf;
-        sprintf(perspirationVoltage_buf, "{\"perspiration\" : %f}", perspirationVoltage);
+        sprintf(perspirationVoltage_buf, "{\"perspiration\" : %f, \"time\" : %f}", perspirationVoltage, currentMS);
 
         unsigned int perspirationVoltage_len = strlen(perspirationVoltage_buf);
         unsigned int len = generate_http_header(buf, "js", perspirationVoltage_len);
@@ -242,8 +253,13 @@ int do_http_get(int sd, char *req, int rlen)
 
         float poulsVoltage = s4i_GetPoulsVoltage();
 
+    	XTime currentClockTime;
+    	XTime_GetTime(&currentClockTime);
+    	//The current clock time in s since the start of the program
+    	float currentMS = ((float)currentClockTime / (COUNTS_PER_SECOND));
+
         char* poulsVoltage_buf;
-        sprintf(poulsVoltage_buf, "{\"pouls\" : %f}", poulsVoltage);
+        sprintf(poulsVoltage_buf, "{\"pouls\" : %f, \"time\" : %f}", poulsVoltage, currentMS);
 
         unsigned int poulsVoltage_len = strlen(poulsVoltage_buf);
         unsigned int len = generate_http_header(buf, "js", poulsVoltage_len);
@@ -262,8 +278,13 @@ int do_http_get(int sd, char *req, int rlen)
 
         float pressionVoltage = s4i_GetPressionVoltage();
 
+    	XTime currentClockTime;
+    	XTime_GetTime(&currentClockTime);
+    	//The current clock time in s since the start of the program
+    	float currentMS = ((float)currentClockTime / (COUNTS_PER_SECOND));
+
         char* pressionVoltage_buf;
-        sprintf(pressionVoltage_buf, "{\"pression\" : %f}", pressionVoltage);
+        sprintf(pressionVoltage_buf, "{\"pression\" : %f, \"time\" : %f}", pressionVoltage, currentMS);
 
         unsigned int pressionVoltage_len = strlen(pressionVoltage_buf);
         unsigned int len = generate_http_header(buf, "js", pressionVoltage_len);
@@ -284,8 +305,13 @@ int do_http_get(int sd, char *req, int rlen)
     	float poulsVoltage = s4i_GetPoulsVoltage();
     	float pressionVoltage = s4i_GetPressionVoltage();
 
-    	char* rawData_buf;
-    	sprintf(rawData_buf, "{\"respiration\" : %f, \"perspiration\" : %f, \"pouls\" : %f, \"pression\" : %f}", respirationVoltage, perspirationVoltage, poulsVoltage, pressionVoltage);
+    	XTime currentClockTime;
+    	XTime_GetTime(&currentClockTime);
+    	//The current clock time in s since the start of the program
+    	float currentMS = ((float)currentClockTime / (COUNTS_PER_SECOND));
+
+		char* rawData_buf;
+    	sprintf(rawData_buf, "{\"respiration\" : %f, \"perspiration\" : %f, \"pouls\" : %f, \"pression\" : %f, \"time\" : %f}", respirationVoltage, perspirationVoltage, poulsVoltage, pressionVoltage, currentMS);
 
     	unsigned int rawData_len = strlen(rawData_buf);
 		unsigned int len = generate_http_header(buf, "js", rawData_len);
@@ -300,7 +326,7 @@ int do_http_get(int sd, char *req, int rlen)
 		}
     }
     else {
-        // Si la requête n'est pas un point d'accès ("route") connu, on tente de
+        // Si la requete n'est pas un point d'acces ("route") connu, on tente de
         // charger un fichier depuis la carte microSD.
         // Sinon, erreur 404.
 

@@ -1202,14 +1202,6 @@ architecture Behavioral of TopModule is
             FIXED_IO_ps_clk : inout STD_LOGIC;
             FIXED_IO_ps_porb : inout STD_LOGIC;
             FIXED_IO_ps_srstb : inout STD_LOGIC;
-            Pmod_8LD_pin10_io : inout STD_LOGIC;
-            Pmod_8LD_pin1_io : inout STD_LOGIC;
-            Pmod_8LD_pin2_io : inout STD_LOGIC;
-            Pmod_8LD_pin3_io : inout STD_LOGIC;
-            Pmod_8LD_pin4_io : inout STD_LOGIC;
-            Pmod_8LD_pin7_io : inout STD_LOGIC;
-            Pmod_8LD_pin8_io : inout STD_LOGIC;
-            Pmod_8LD_pin9_io : inout STD_LOGIC;
             Pmod_OLED_pin10_io : inout STD_LOGIC;
             Pmod_OLED_pin1_io : inout STD_LOGIC;
             Pmod_OLED_pin2_io : inout STD_LOGIC;
@@ -1255,6 +1247,11 @@ architecture Behavioral of TopModule is
         o_echantillon1              : out   std_logic_vector (11 downto 0); -- valeur de l'�chantillon re�u
         o_echantillon2              : out   std_logic_vector (11 downto 0)  -- valeur de l'�chantillon re�u
     );
+    end component;
+    
+    component FctBin2Thermo is
+    Port ( i_echantillon : in STD_LOGIC_VECTOR (11 downto 0);
+           o_thermo : out STD_LOGIC_VECTOR (7 downto 0));
     end component;
    
     component Synchro_Horloges is
@@ -1323,6 +1320,12 @@ begin
         o_echantillon2 => d_echantillon2
     );
     
+    bin2Thermo : FctBin2Thermo
+    Port Map (
+        i_echantillon => d_echantillon1,
+        o_thermo => PMOD_8LD
+    );
+    
      mux_select_Entree_AD1 : process (i_btn(3), i_ADC_D0, i_ADC_D1)
      begin
           if (i_btn(3) ='0') then 
@@ -1369,14 +1372,6 @@ begin
             FIXED_IO_ps_clk => FIXED_IO_ps_clk,
             FIXED_IO_ps_porb => FIXED_IO_ps_porb,
             FIXED_IO_ps_srstb => FIXED_IO_ps_srstb,
-            Pmod_8LD_pin1_io => Pmod_8LD(0),
-            Pmod_8LD_pin2_io => Pmod_8LD(1),
-            Pmod_8LD_pin3_io => Pmod_8LD(2),
-            Pmod_8LD_pin4_io => Pmod_8LD(3),
-            Pmod_8LD_pin7_io => Pmod_8LD(4),
-            Pmod_8LD_pin8_io => Pmod_8LD(5),
-            Pmod_8LD_pin9_io => Pmod_8LD(6),
-            Pmod_8LD_pin10_io => Pmod_8LD(7),
             Pmod_OLED_pin1_io => Pmod_OLED(0),
             Pmod_OLED_pin2_io => Pmod_OLED(1),
             Pmod_OLED_pin3_io => Pmod_OLED(2),

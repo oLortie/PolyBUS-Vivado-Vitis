@@ -54,6 +54,7 @@ proc checkRequiredFiles { origin_dir} {
    "$origin_dir/../vhdSources/MEF_DAC.vhd" \
    "$origin_dir/../vhdSources/Ctrl_DAC.vhd" \
    "$origin_dir/../vhdSources/FctBin2Thermo.vhd" \
+   "$origin_dir/../vhdSources/PolyBUS_package.vhd" \
    "$origin_dir/../constraints/PolyBUSConstraints.xdc" \
   ]
   foreach ifile $files {
@@ -206,7 +207,8 @@ set files [list \
  [file normalize "${origin_dir}/../vhdSources/reg_dec12.vhd"]\
  [file normalize "${origin_dir}/../vhdSources/MEF_DAC.vhd"]\
  [file normalize "${origin_dir}/../vhdSources/Ctrl_DAC.vhd"]\
- [file normalize "${origin_dir}/../vhdSources/FctBin2Thermo.vhd"]
+ [file normalize "${origin_dir}/../vhdSources/FctBin2Thermo.vhd"]\
+ [file normalize "${origin_dir}/../vhdSources/PolyBUS_package.vhd"]
 ]
 
 add_files -norecurse -fileset $obj $files
@@ -257,6 +259,11 @@ set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
 
 set file "$origin_dir/../vhdSources/FctBin2Thermo.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/../vhdSources/PolyBUS_package.vhd"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj

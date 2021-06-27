@@ -165,42 +165,7 @@ int do_http_get(int sd, char *req, int rlen)
     // réponse ainsi que la méthode s4i_is_cmd_sws(req), qui retourne toujours
     // zéro pour l'instant.
 	xil_printf(req);
-    if (s4i_is_cmd_sws(req)) {
-        xil_printf("!!! HTTP GET: cmd/sws\r\n");
-        
-        // Obtient l'état des interrupteurs.
-        unsigned int switches = s4i_get_sws_state();
-        xil_printf("!!! HTTP GET: switch state: %x\r\n", switches);
-
-        // La variable sw_buf contient pour l'instant une structure JSON vide.
-        // Elle devrait contenir une structure comme :
-        //   {switches: [1,0,0,1]}
-        char* sw_buf;
-        sprintf(sw_buf, "{switches: [%d, %d, %d, %d]}",
-						switches & 1,
-						(switches >> 1) & 1,
-						(switches >> 2) & 1,
-						(switches >> 3) & 1);
-
-        // TODO: Remplir sw_buf avec l'état des interrupteurs. 
-        // Un indice : Utilisez sprintf et strcat.
-
-
-        // Génération de l'entête, qui a besoin de connaître la taille du buffer
-        // généré (sw_buf ici).
-        unsigned int sw_len = strlen(sw_buf);
-        unsigned int len = generate_http_header(buf, "js", sw_len);
-        strcat(buf, sw_buf); // Concaténation de l'entête et de la réponse.
-        len += sw_len;
-
-        // Écriture sur le socket.
-        if (lwip_write(sd, buf, len) != len) {
-            xil_printf("Error writing GET response to socket\r\n");
-            xil_printf("http header = %s\r\n", buf);
-            return -1;
-        }
-    }
-    else if (s4i_is_cmd_respiration(req)) {
+    if (s4i_is_cmd_respiration(req)) {
 
     	float respirationVoltage = s4i_GetRespirationVoltage();
 

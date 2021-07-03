@@ -138,6 +138,27 @@ architecture Behavioral of TopModule is
            o_thermo : out STD_LOGIC_VECTOR (7 downto 0));
     end component;
    
+    
+    component Calcul_pouls is
+    Port ( i_clk : in STD_LOGIC;
+           i_reset : in STD_LOGIC;
+           i_en : in STD_LOGIC;
+           i_ech : in STD_LOGIC_VECTOR (11 downto 0);
+           o_param : out STD_LOGIC_VECTOR (11 downto 0));
+    end component;
+    
+    
+    
+    component Calcul_persp is 
+    port( 
+    i_clk : in STD_LOGIC;
+    i_reset : in STD_LOGIC;
+    i_en : in STD_LOGIC;
+    i_ech : in STD_LOGIC_VECTOR (11 downto 0);
+    o_param : out STD_LOGIC_VECTOR (11 downto 0));
+    
+    end component;
+    
     component Synchro_Horloges is
     generic (const_CLK_syst_MHz: integer := freq_sys_MHz);
     Port ( 
@@ -167,6 +188,9 @@ architecture Behavioral of TopModule is
     signal d_echantillon2               : std_logic_vector (11 downto 0); 
     signal d_echantillon3               : std_logic_vector (11 downto 0); 
     signal d_echantillon4               : std_logic_vector (11 downto 0);  
+    signal d_param_bpm                  : std_logic_vector(11 downto 0);
+    signal d_param_respiration          : std_logic_vector(11 downto 0);
+    signal d_param_perspiration         : std_logic_vector(11 downto 0);
     
     signal d_compteurRespiration025 : integer range 0 to 500 := 0;
     signal d_compteurRespiration05 : integer range 0 to 500 := 0;
@@ -206,6 +230,33 @@ begin
         o_echantillon_pret_strobe => o_echantillon_pret_strobe,
         o_echantillon1 => d_echantillon1,
         o_echantillon2 => d_echantillon2
+    );
+    
+    inst_calcul_Pouls : Calcul_pouls
+    port map (
+        i_clk => clk_5MHz,
+        i_reset => reset,
+        i_en => o_echantillon_pret_strobe,
+        i_ech => d_echantillon1,
+        o_param => d_param_bpm
+    );
+    
+    inst_calcul_respiration : Calcul_pouls
+    port map(
+    i_clk => clk_5MHz,
+    i_reset => reset,
+    i_en => d_strobe_100Hz, -- strobe disponible pour les signaux qui passent pas dans la boucle ?
+    i_ech => d_echantillon3,
+    o_param => d_param_respiration
+    );
+    
+    inst_calcul_perspiration : Calcul_persp
+    port map (
+    i_clk => clk_5MHz,
+    i_reset => reset,
+    i_en => d_strobe_100Hz, -- strobe disponible pour les signaux qui passent pas dans la boucle ?
+    i_ech => d_echantillon4,
+    o_param => d_param_perspiration
     );
     
     bin2Thermo : FctBin2Thermo

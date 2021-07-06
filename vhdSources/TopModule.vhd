@@ -99,6 +99,9 @@ architecture Behavioral of TopModule is
             i_data_echantillon2 : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_data_echantillon3 : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_data_echantillon4 : in STD_LOGIC_VECTOR ( 11 downto 0 );
+            i_data_bpm : in STD_LOGIC_VECTOR ( 11 downto 0 );
+            i_data_respiration : in STD_LOGIC_VECTOR ( 11 downto 0 );
+            i_data_perspiration : in STD_LOGIC_VECTOR ( 11 downto 0 );
             o_data_out : out STD_LOGIC_VECTOR ( 31 downto 0 );
             o_leds_tri_o : out STD_LOGIC_VECTOR ( 3 downto 0 )
             );
@@ -323,6 +326,9 @@ begin
             i_data_echantillon2 => d_echantillon2,
             i_data_echantillon3 => d_echantillon3,
             i_data_echantillon4 => d_echantillon4,
+            i_data_bpm => d_param_bpm,
+            i_data_respiration => d_param_respiration,
+            i_data_perspiration => d_param_perspiration,   
             o_data_out => open,
             o_leds_tri_o => o_leds
         );

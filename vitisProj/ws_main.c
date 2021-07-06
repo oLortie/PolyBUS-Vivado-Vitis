@@ -32,8 +32,10 @@
 #include "xil_printf.h"
 #include "lwip/init.h"
 #include "lwip/inet.h"
+#include "o_led.h"
 #if (LWIP_DHCP == 1)
 #include "lwip/dhcp.h"
+#include "PmodOLED.h"
 #endif
 
 // Ajout S4i GIF402
@@ -97,6 +99,17 @@ static void assign_default_ip(ip_addr_t *ip, ip_addr_t *mask, ip_addr_t *gw)
 		xil_printf("Invalid default gateway address: %d\r\n", err);
 }
 
+void o_led_thread(){
+	PmodOLED oledDevice;
+	o_led_initialize(&oledDevice);
+
+	while(1){
+		o_led_refresh_data(&oledDevice);
+	}
+
+}
+
+
 void network_thread(void *p)
 {
 #if (LWIP_DHCP == 1)
@@ -153,6 +166,11 @@ int main_thread()
 #endif
 #endif
 
+	//init de l'écran OLED
+
+	sys_thread_new("o_led_thread", o_led_thread, NULL,
+				THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
+
 	xil_printf("\r\n\r\n");
 	xil_printf("-----lwIP Socket Mode Demo Application ------\r\n");
 
@@ -170,6 +188,7 @@ int main_thread()
 #if (LWIP_DHCP == 1)
 	while (1) {
 		vTaskDelay(DHCP_FINE_TIMER_MSECS / portTICK_RATE_MS);
+
 
 		if (server_netif.ip_addr.addr) {
 			xil_printf("DHCP request success\r\n");
@@ -205,11 +224,19 @@ int main_thread()
 	return 0;
 }
 
+
+
+
+
 int main()
 {
+
 	sys_thread_new("main_thread", (void(*)(void*))main_thread, 0,
 			MAIN_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
 	vTaskStartScheduler();
+
+
 	while(1);
+
 	return 0;
 }

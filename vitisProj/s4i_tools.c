@@ -130,3 +130,23 @@ float s4i_GetPressionVoltage()
 
 }
 
+
+u16 s4i_getSampleBPM()
+{
+	u16 rawData = MyADCIPRegister[2] & 0xFFF ;
+
+	return rawData;
+}
+
+
+float s4i_GetBPM()
+{
+	u16 rawSample = s4i_getSampleBPM();
+	float test = (60.0/((float)rawSample*0.01));
+	return test;
+
+}
+
+
+
+

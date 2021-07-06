@@ -21,6 +21,10 @@ entity myADCip_v1_0_S00_AXI is
         i_data_echantillon3 : in std_logic_vector(11 downto 0);
         i_data_echantillon4 : in std_logic_vector(11 downto 0);
         o_data_out : out std_logic_vector(31 downto 0);
+		i_data_bpm          : in std_logic_vector(11 downto 0);
+		i_data_respiration  : in std_logic_vector(11 downto 0);
+		i_data_perspiration : in std_logic_vector(11 downto 0);
+		
 		-- User ports ends
 		-- Do not modify the ports beyond this line
 
@@ -365,9 +369,12 @@ begin
 	        reg_data_out(23 downto 12) <= i_data_echantillon4;
 	        reg_data_out(31 downto 24) <= (others => '0');
 	      when b"10" =>
-	        reg_data_out <= slv_reg2;
+	        reg_data_out(11 downto 0) <= i_data_bpm;
+	        reg_data_out(23 downto 12)<= i_data_respiration;
+	        reg_data_out(31 downto 24) <= (others => '0');
 	      when b"11" =>
-	        reg_data_out <= slv_reg3;
+	        reg_data_out(11 downto 0) <= i_data_perspiration;
+	        reg_data_out(31 downto 12) <= (others => '0');
 	      when others =>
 	        reg_data_out  <= (others => '0');
 	    end case;

@@ -26,6 +26,8 @@ u16 s4i_getSamplePoulsRaw();
 float s4i_GetPoulsVoltage();
 u16 s4i_getSamplePressionRaw();
 float s4i_GetPressionVoltage();
+u16 s4i_getSampleBPM();
+float s4i_GetBPM();
 
 
 #endif /* SRC_S4I_TOOLS_H_ */

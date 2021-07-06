@@ -20,6 +20,11 @@ entity myADCip_v1_0 is
         i_data_echantillon2 : in std_logic_vector(11 downto 0);
         i_data_echantillon3 : in std_logic_vector(11 downto 0);
         i_data_echantillon4 : in std_logic_vector(11 downto 0);
+        
+        i_data_bpm          : in std_logic_vector(11 downto 0);
+		i_data_respiration  : in std_logic_vector(11 downto 0);
+		i_data_perspiration : in std_logic_vector(11 downto 0);
+        
         o_data_out : out std_logic_vector(31 downto 0);
 		-- User ports ends
 		-- Do not modify the ports beyond this line
@@ -63,6 +68,11 @@ architecture arch_imp of myADCip_v1_0 is
 		i_data_echantillon2 : in std_logic_vector (11 downto 0);
 		i_data_echantillon3 : in std_logic_vector (11 downto 0);
 		i_data_echantillon4 : in std_logic_vector (11 downto 0);
+		
+		i_data_bpm          : in std_logic_vector(11 downto 0);
+		i_data_respiration  : in std_logic_vector(11 downto 0);
+		i_data_perspiration : in std_logic_vector(11 downto 0);
+		
 		o_data_out : out std_logic_vector (31 downto 0);
 		
 		S_AXI_ACLK	: in std_logic;
@@ -102,6 +112,11 @@ myADCip_v1_0_S00_AXI_inst : myADCip_v1_0_S00_AXI
 	    i_data_echantillon2 => i_data_echantillon2,
 	    i_data_echantillon3 => i_data_echantillon3,
 	    i_data_echantillon4 => i_data_echantillon4,
+	    
+	    i_data_bpm          => i_data_bpm,
+		i_data_respiration  => i_data_respiration,
+		i_data_perspiration => i_data_perspiration,
+	    
         o_data_out => o_data_out,
 	
 		S_AXI_ACLK	=> s00_axi_aclk,

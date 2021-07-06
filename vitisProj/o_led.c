@@ -3,7 +3,7 @@
  *
  * Atelier #3 - Projet S4 Gï¿½nie informatique - H21
  *
- *  Author: Larissa Njejimana
+ *  Author: François marcoux
  */
 
 
@@ -14,19 +14,9 @@
 #include "o_led.h"
 #include "PmodOLED.h"
 
-/**
-#include "xil_printf.h"
-#include "xparameters.h"
-#include "sleep.h"
-
-#include "myADCip.h"*/
-
-//PmodOLED oledDevice;
-
 
 void o_led_initialize(PmodOLED *oledDevice)
 {
-
 
 	// Initialiser le Pmod Oled
 	OLED_Begin(oledDevice, XPAR_PMODOLED_0_AXI_LITE_GPIO_BASEADDR, XPAR_PMODOLED_0_AXI_LITE_SPI_BASEADDR, 0, 0);
@@ -34,10 +24,19 @@ void o_led_initialize(PmodOLED *oledDevice)
 	OLED_SetCharUpdate(oledDevice, 0);
 	// Prï¿½parer l'ï¿½cran pour afficher l'ï¿½tat des boutons et des switch
 	OLED_ClearBuffer(oledDevice);
-	OLED_SetCursor(oledDevice, 0, 3);
-	OLED_PutString(oledDevice, "Voltage = ");
+	OLED_SetCursor(oledDevice, 0, 0);
+	OLED_PutString(oledDevice, "Pouls = ");
+
+	OLED_SetCursor(oledDevice, 0, 1);
+	OLED_PutString(oledDevice, "Press = ");
+
 	OLED_SetCursor(oledDevice, 0, 2);
-		OLED_PutString(oledDevice, "BPM = ");
+	OLED_PutString(oledDevice, "Respi = ");
+
+	OLED_SetCursor(oledDevice, 0, 3);
+	OLED_PutString(oledDevice, "Perspi = ");
+
+
 	OLED_Update(oledDevice);
 
 	print("Initialisation finie\n\r");
@@ -47,25 +46,34 @@ void o_led_refresh_data(PmodOLED *oledDevice){
 
 
 		char voltageChar[5];
-		char BPMchar[5];
+		char PressChar[5];
+		char Respichar[5];
+		char Perspichar[5];
 
 		// lire la tension provenant du PmodAD1
-		float currentVoltage = s4i_GetRespirationVoltage();
-		float currentBPM = s4i_GetBPM();
-
-		// mettre les fonctions pour aller chercher les data
-
+		float currentPouls = s4i_GetBPM();
+		float currentPress = s4i_GetPressionVoltage();
+		float currentRespi = s4i_GetFrequenceRespiration();
+		float currentPerspi = s4i_GetAnalysePerspiration();
 
 
 		// Affichage du voltage sur le Pmod OLED
-		sprintf(voltageChar,"%2.2f",currentVoltage);
-		sprintf(BPMchar,"%2.2f",currentBPM);
-		OLED_SetCursor(oledDevice, 10, 3);
+		sprintf(voltageChar,"%2.2f",currentPouls);
+		sprintf(PressChar,"%2.2f",currentPress);
+		sprintf(Respichar,"%2.2f",currentRespi);
+		sprintf(Perspichar,"%2.2f",currentPerspi);
+
+		OLED_SetCursor(oledDevice, 10, 0);
 		OLED_PutString(oledDevice, voltageChar);
 
-		OLED_SetCursor(oledDevice, 10, 2);
-		OLED_PutString(oledDevice, BPMchar);
-		OLED_Update(oledDevice);
+		OLED_SetCursor(oledDevice, 10, 1);
+		OLED_PutString(oledDevice, PressChar);
+
+		OLED_SetCursor(oledDevice, 9, 2);
+		OLED_PutString(oledDevice, Respichar);
+
+		OLED_SetCursor(oledDevice, 10, 3);
+		OLED_PutString(oledDevice, Perspichar);
 
 		OLED_SetCursor(oledDevice, 15, 3);
 		OLED_PutString(oledDevice, "V");

@@ -133,20 +133,55 @@ float s4i_GetPressionVoltage()
 
 u16 s4i_getSampleBPM()
 {
-	u16 rawData = MyADCIPRegister[2] & 0xFFF ;
+	u16 rawData = MyADCIPRegister[2] ;
 
-	return rawData;
+	return rawData & 0xFFF;
 }
 
 
 float s4i_GetBPM()
 {
 	u16 rawSample = s4i_getSampleBPM();
-	float test = (60.0/((float)rawSample*0.01));
+	float test = 60.0/((float)rawSample)*0.01;
 	return test;
 
 }
 
+u16 s4i_getSampleFrequenceRespiration()
+{
+	u16 rawData =(MyADCIPRegister[2] & 0xFFF) >> 12 ;
+
+	return rawData;
+}
+
+
+float s4i_GetFrequenceRespiration()
+{
+	u16 rawSample = s4i_getSampleFrequenceRespiration();
+	float test = 1/((float)rawSample)*0.01; // respiration par seconde
+	return test;
+
+}
+
+u16 s4i_getSampleAnalysePerspiration()
+{
+	u16 rawData =MyADCIPRegister[3] & 0xFFF ;
+
+	return rawData;
+}
+
+
+float s4i_GetAnalysePerspiration()
+{
+	float conversionFactor = ReferenceVoltage / ((1 << PRESSION_NUM_BITS) - 1);
+
+	u16 rawSample = s4i_getSampleAnalysePerspiration();
+
+	float moyennePerspiration = ((float)rawSample) * conversionFactor;
+
+	return moyennePerspiration;
+
+}
 
 
 

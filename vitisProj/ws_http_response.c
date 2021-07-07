@@ -129,6 +129,16 @@ int do_http_post(int sd, char *req, int rlen)
 		buf[len++] = '0'; /* single byte payload - '0' - to ack */
 		buf[len++] = 0;
 
+	} else if (s4i_is_cmd_respirationSelect(req)) {
+		char selectChar = req[28];
+
+		if (selectChar == '0') {
+			s4i_setRespirationSelect(respi025);
+		} else {
+			s4i_setRespirationSelect(respi05);
+		}
+
+
 	} else {
 		xil_printf("http POST: unsupported command\r\n");
 		return -1;

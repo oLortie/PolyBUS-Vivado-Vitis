@@ -20,7 +20,8 @@ entity myADCip_v1_0_S00_AXI is
         i_data_echantillon2 : in std_logic_vector(11 downto 0);
         i_data_echantillon3 : in std_logic_vector(11 downto 0);
         i_data_echantillon4 : in std_logic_vector(11 downto 0);
-        o_data_out : out std_logic_vector(31 downto 0);
+        o_respiration_select : out std_logic;
+        o_perspiration_select : out std_logic;
 		i_data_bpm          : in std_logic_vector(11 downto 0);
 		i_data_respiration  : in std_logic_vector(11 downto 0);
 		i_data_perspiration : in std_logic_vector(11 downto 0);
@@ -400,7 +401,8 @@ begin
 
 
 	-- Add user logic here
-	o_data_out <= slv_reg2;
+	o_respiration_select <= slv_reg0(24);
+	o_perspiration_select <= slv_reg0(25);
 
 	-- User logic ends
 

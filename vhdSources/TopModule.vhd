@@ -102,8 +102,9 @@ architecture Behavioral of TopModule is
             i_data_bpm : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_data_respiration : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_data_perspiration : in STD_LOGIC_VECTOR ( 11 downto 0 );
-            o_data_out : out STD_LOGIC_VECTOR ( 31 downto 0 );
-            o_leds_tri_o : out STD_LOGIC_VECTOR ( 3 downto 0 )
+            o_leds_tri_o : out STD_LOGIC_VECTOR ( 3 downto 0 );
+            o_respiration_select : out STD_LOGIC;
+            o_perspiration_select : out STD_LOGIC
             );
     end component;
 
@@ -194,6 +195,9 @@ architecture Behavioral of TopModule is
     signal d_param_bpm                  : std_logic_vector(11 downto 0);
     signal d_param_respiration          : std_logic_vector(11 downto 0);
     signal d_param_perspiration         : std_logic_vector(11 downto 0);
+    signal d_respiration_select         : std_logic;
+    signal d_perspiration_select        : std_logic;
+       
     
     signal d_compteurRespiration025 : integer range 0 to 500 := 0;
     signal d_compteurRespiration05 : integer range 0 to 500 := 0;
@@ -328,9 +332,10 @@ begin
             i_data_echantillon4 => d_echantillon4,
             i_data_bpm => d_param_bpm,
             i_data_respiration => d_param_respiration,
-            i_data_perspiration => d_param_perspiration,   
-            o_data_out => open,
-            o_leds_tri_o => o_leds
+            i_data_perspiration => d_param_perspiration,  
+            o_leds_tri_o => o_leds,
+            o_respiration_select => d_respiration_select,
+            o_perspiration_select => d_perspiration_select
         );
         
     main_process : process (d_strobe_100Hz)
@@ -353,8 +358,16 @@ begin
                 when others =>
                     d_DAC_data2 <= "000000000000";
             end case;
+            
+            case d_respiration_select is
+                when '0' =>
+                    d_echantillon3 <= mem_respi025Hz(d_compteurRespiration025);
+                when '1' =>
+                    d_echantillon3 <= mem_respi05Hz(d_compteurRespiration05);
+                when others =>
+                    d_DAC_data2 <= "000000000000";
+            end case;
        
-            d_echantillon3 <= mem_respi025Hz(d_compteurRespiration025);
             d_echantillon4 <= mem_persp1(d_compteurPerspiration1);
             
             if d_compteurPouls70 = mem_pouls70'length-1 then
@@ -387,11 +400,11 @@ begin
                 d_compteurRespiration025 <= d_compteurRespiration025 + 1;
             end if;
             
---            if d_compteurRespiration05 = mem_respi05Hz'length-1 then
---                d_compteurRespiration05 <= 0;
---            else
---                d_compteurRespiration05 <= d_compteurRespiration05 + 1;
---            end if;
+            if d_compteurRespiration05 = mem_respi05Hz'length-1 then
+                d_compteurRespiration05 <= 0;
+            else
+                d_compteurRespiration05 <= d_compteurRespiration05 + 1;
+            end if;
             
             if d_compteurPerspiration1 = mem_persp1'length-1 then
                 d_compteurPerspiration1 <= 0;

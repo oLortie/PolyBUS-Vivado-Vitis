@@ -1,7 +1,7 @@
 /*
  * s4i_tools.h
  *
- *  Created on: 21 févr. 2020
+ *  Created on: 21 fï¿½vr. 2020
  *      Author: francoisferland
  */
 
@@ -12,12 +12,18 @@
 
 #define S4I_NUM_SWITCHES	4
 
+typedef enum {
+	respi025 = 0,
+	respi05 = 1
+} RespirationSelect;
+
 void			s4i_init_hw();
 int             s4i_is_cmd_respiration(char *buf);
 int             s4i_is_cmd_perspiration(char* buf);
 int             s4i_is_cmd_pouls(char *buf);
 int             s4i_is_cmd_pression(char *buf);
 int             s4i_is_cmd_rawData(char* buf);
+int 			s4i_is_cmd_respirationSelect(char* buf);
 u16 s4i_getSampleRespirationRaw();
 float s4i_GetRespirationVoltage();
 u16 s4i_getSamplePerspirationRaw();
@@ -32,5 +38,8 @@ u16 s4i_getSampleFrequenceRespiration();
 float s4i_GetFrequenceRespiration();
 u16 s4i_getSampleAnalysePerspiration();
 float s4i_GetAnalysePerspiration();
+
+void s4i_setRespirationSelect(RespirationSelect select);
+
 
 #endif /* SRC_S4I_TOOLS_H_ */

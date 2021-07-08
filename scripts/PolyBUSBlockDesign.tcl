@@ -209,7 +209,8 @@ proc create_root_design { parentCell } {
   set i_data_echantillon4 [ create_bd_port -dir I -from 11 -to 0 i_data_echantillon4 ]
   set i_data_perspiration [ create_bd_port -dir I -from 11 -to 0 i_data_perspiration ]
   set i_data_respiration [ create_bd_port -dir I -from 11 -to 0 i_data_respiration ]
-  set o_data_out [ create_bd_port -dir O -from 31 -to 0 o_data_out ]
+  set o_perspiration_select [ create_bd_port -dir O o_perspiration_select ]
+  set o_respiration_select [ create_bd_port -dir O o_respiration_select ]
 
   # Create instance: PmodOLED_0, and set properties
   set PmodOLED_0 [ create_bd_cell -type ip -vlnv digilentinc.com:IP:PmodOLED:1.0 PmodOLED_0 ]
@@ -733,7 +734,8 @@ proc create_root_design { parentCell } {
   connect_bd_net -net i_data_echantillon4_0_1 [get_bd_ports i_data_echantillon4] [get_bd_pins myADCip_0/i_data_echantillon4]
   connect_bd_net -net i_data_perspiration_0_1 [get_bd_ports i_data_perspiration] [get_bd_pins myADCip_0/i_data_perspiration]
   connect_bd_net -net i_data_respiration_0_1 [get_bd_ports i_data_respiration] [get_bd_pins myADCip_0/i_data_respiration]
-  connect_bd_net -net myADCip_0_o_data_out [get_bd_ports o_data_out] [get_bd_pins myADCip_0/o_data_out]
+  connect_bd_net -net myADCip_0_o_perspiration_select [get_bd_ports o_perspiration_select] [get_bd_pins myADCip_0/o_perspiration_select]
+  connect_bd_net -net myADCip_0_o_respiration_select [get_bd_ports o_respiration_select] [get_bd_pins myADCip_0/o_respiration_select]
   connect_bd_net -net processing_system7_0_FCLK_CLK0 [get_bd_pins PmodOLED_0/s_axi_aclk] [get_bd_pins axi_gpio_1/s_axi_aclk] [get_bd_pins myADCip_0/s00_axi_aclk] [get_bd_pins processing_system7_0/FCLK_CLK0] [get_bd_pins processing_system7_0/M_AXI_GP0_ACLK] [get_bd_pins ps7_0_axi_periph/ACLK] [get_bd_pins ps7_0_axi_periph/M00_ACLK] [get_bd_pins ps7_0_axi_periph/M01_ACLK] [get_bd_pins ps7_0_axi_periph/M02_ACLK] [get_bd_pins ps7_0_axi_periph/M03_ACLK] [get_bd_pins ps7_0_axi_periph/M04_ACLK] [get_bd_pins ps7_0_axi_periph/M05_ACLK] [get_bd_pins ps7_0_axi_periph/S00_ACLK] [get_bd_pins rst_ps7_0_50M/slowest_sync_clk]
   connect_bd_net -net processing_system7_0_FCLK_RESET0_N [get_bd_pins processing_system7_0/FCLK_RESET0_N] [get_bd_pins rst_ps7_0_50M/ext_reset_in]
   connect_bd_net -net rst_ps7_0_50M_peripheral_aresetn [get_bd_pins PmodOLED_0/s_axi_aresetn] [get_bd_pins axi_gpio_1/s_axi_aresetn] [get_bd_pins myADCip_0/s00_axi_aresetn] [get_bd_pins ps7_0_axi_periph/ARESETN] [get_bd_pins ps7_0_axi_periph/M00_ARESETN] [get_bd_pins ps7_0_axi_periph/M01_ARESETN] [get_bd_pins ps7_0_axi_periph/M02_ARESETN] [get_bd_pins ps7_0_axi_periph/M03_ARESETN] [get_bd_pins ps7_0_axi_periph/M04_ARESETN] [get_bd_pins ps7_0_axi_periph/M05_ARESETN] [get_bd_pins ps7_0_axi_periph/S00_ARESETN] [get_bd_pins rst_ps7_0_50M/peripheral_aresetn]

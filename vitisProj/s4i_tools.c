@@ -47,6 +47,11 @@ int s4i_is_cmd_rawData(char* buf)
 	return (!strncmp(buf + 5, "cmd/rawData", 11));
 }
 
+int s4i_is_cmd_respirationSelect(char* buf)
+{
+	return (!strncmp(buf + 6, "cmd/respirationSelect", 21));
+}
+
 u16 s4i_getSampleRespirationRaw()
 {
 	u16 rawData = MyADCIPRegister[1] & 0xFFF;
@@ -133,33 +138,48 @@ float s4i_GetPressionVoltage()
 
 u16 s4i_getSampleBPM()
 {
-	u16 rawData = MyADCIPRegister[2] ;
-
-	return rawData & 0xFFF;
+	u16 rawData = (MyADCIPRegister[2] & 0xFFF)  ;
+	return rawData ;
 }
 
 
 float s4i_GetBPM()
 {
 	u16 rawSample = s4i_getSampleBPM();
-	float test = 60.0/((float)rawSample)*0.01;
-	return test;
+	double raw = ((double)rawSample);
+	return 60.0/(((float)raw)*0.01);
+
+}
+
+void s4i_setRespirationSelect(RespirationSelect select)
+{
+	switch (select)
+	{
+		case respi025:
+			MyADCIPRegister[0] = MyADCIPRegister[0] & 0xFEFFFFFF;
+			break;
+		case respi05:
+			MyADCIPRegister[0] = MyADCIPRegister[0] | 0x01000000;
+			break;
+		default:
+			break;
+	}
 
 }
 
 u16 s4i_getSampleFrequenceRespiration()
 {
-	u16 rawData =(MyADCIPRegister[2] & 0xFFF) >> 12 ;
-
+	u16 rawData = (MyADCIPRegister[2]  & 0xFFF000)>>12 ;
 	return rawData;
 }
+
 
 
 float s4i_GetFrequenceRespiration()
 {
 	u16 rawSample = s4i_getSampleFrequenceRespiration();
-	float test = 1/((float)rawSample)*0.01; // respiration par seconde
-	return test;
+	double raw = 1.0/(((double)rawSample)*0.01);
+	return (float)raw;
 
 }
 
@@ -173,7 +193,7 @@ u16 s4i_getSampleAnalysePerspiration()
 
 float s4i_GetAnalysePerspiration()
 {
-	float conversionFactor = ReferenceVoltage / ((1 << PRESSION_NUM_BITS) - 1);
+	float conversionFactor = ReferenceVoltage / ((1 << PERSPIRATION_NUM_BITS) - 1);
 
 	u16 rawSample = s4i_getSampleAnalysePerspiration();
 

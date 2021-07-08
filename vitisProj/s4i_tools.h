@@ -24,6 +24,7 @@ int             s4i_is_cmd_pouls(char *buf);
 int             s4i_is_cmd_pression(char *buf);
 int             s4i_is_cmd_rawData(char* buf);
 int 			s4i_is_cmd_respirationSelect(char* buf);
+int				s4i_is_cmd_parameters(char*buf);
 u16 s4i_getSampleRespirationRaw();
 float s4i_GetRespirationVoltage();
 u16 s4i_getSamplePerspirationRaw();

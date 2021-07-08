@@ -300,6 +300,29 @@ int do_http_get(int sd, char *req, int rlen)
 			return -1;
 		}
     }
+    else if (s4i_is_cmd_parameters(req)) {
+    	float bpm = s4i_GetBPM();
+    	float respiration = 0.0F;
+    	float systolic = 0.0F;
+    	float diastolic = 0.0F;
+    	float perspiration = s4i_GetAnalysePerspiration();
+    	int lie = 0;
+
+    	char* parameters_buf;
+		sprintf(parameters_buf, "{\"bpm\" : %f, \"respiration\" : %f, \"systolic\" : %f, \"diastolic\" : %f, \"perspiration\" : %f, \"lie\" : %d}", bpm, respiration, systolic, diastolic, perspiration, lie);
+
+		unsigned int parameters_len = strlen(parameters_buf);
+		unsigned int len = generate_http_header(buf, "js", parameters_len);
+
+		strcat(buf, parameters_buf);
+		len += parameters_len;
+
+		if (lwip_write(sd, buf, len) != len) {
+			xil_printf("Error writing GET response to socket\r\n");
+			xil_printf("http header = %s\r\n", buf);
+			return -1;
+		}
+    }
     else {
         // Si la requete n'est pas un point d'acces ("route") connu, on tente de
         // charger un fichier depuis la carte microSD.

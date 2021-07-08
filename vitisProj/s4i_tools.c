@@ -52,6 +52,11 @@ int s4i_is_cmd_respirationSelect(char* buf)
 	return (!strncmp(buf + 6, "cmd/respirationSelect", 21));
 }
 
+int	s4i_is_cmd_parameters(char*buf)
+{
+	return (!strncmp(buf + 5, "cmd/parameters", 14));
+}
+
 u16 s4i_getSampleRespirationRaw()
 {
 	u16 rawData = MyADCIPRegister[1] & 0xFFF;

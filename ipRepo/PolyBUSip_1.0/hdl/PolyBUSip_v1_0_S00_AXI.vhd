@@ -23,6 +23,7 @@ entity PolyBUSip_v1_0_S00_AXI is
         i_data_bpm            : in std_logic_vector(11 downto 0);
         i_data_respiration    : in std_logic_vector(11 downto 0);
         i_data_perspiration   : in std_logic_vector(11 downto 0);
+        i_data_pression       : in std_logic_vector(11 downto 0);
         
         o_respiration_select  : out std_logic;
         o_perspiration_select : out std_logic;
@@ -394,7 +395,8 @@ begin
 	           reg_data_out(31 downto 24) <= (others => '0');
 	      when b"010" =>
 	           reg_data_out(11 downto 0) <= i_data_perspiration;
-	           reg_data_out(31 downto 12) <= (others => '0');
+	           reg_data_out(23 downto 12) <= i_data_pression;
+	           reg_data_out(31 downto 24) <= (others => '0');
 	      when b"011" =>
 	           reg_data_out(11 downto 0) <= i_data_bpm;
 	           reg_data_out(23 downto 12) <= i_data_respiration;

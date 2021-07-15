@@ -52,7 +52,7 @@ void o_led_refresh_data(PmodOLED *oledDevice){
 
 		// lire la tension provenant du PmodAD1
 		float currentPouls = s4i_GetBPM();
-		float currentPress = s4i_GetPressionVoltage();
+		float currentPress = s4i_GetParametrePression();
 		float currentRespi = s4i_GetFrequenceRespiration();
 		float currentPerspi = s4i_GetAnalysePerspiration();
 

@@ -11,17 +11,20 @@ import scipy
 
 
 
-def genPespiration(variation,step,frequence,temps):
+def genPespiration(variation,step,frequence,temps, amplitude):
     array = []
-    current_pesp = random.uniform(VOLTAGE_MIN, VOLTAGE_MAX)
+    voltage_amplitude = VOLTAGE_MAX * amplitude
+    voltage_min = voltage_amplitude * 0.9
+    voltage_max = voltage_amplitude * 1.1
+    current_pesp = random.uniform(voltage_min, voltage_max)
     for i in range(0,int(frequence*temps),step):
         delta = random.uniform( -(variation/2.0),variation/2.0)
         for y in range(0,step) :
             current_pesp = current_pesp+ float(delta/step)
-            if current_pesp > VOLTAGE_MAX:
-                current_pesp = VOLTAGE_MAX
-            elif current_pesp < VOLTAGE_MIN:
-                current_pesp = VOLTAGE_MIN
+            if current_pesp > voltage_max:
+                current_pesp = voltage_max
+            elif current_pesp < voltage_min:
+                current_pesp = voltage_min
             array.append(current_pesp)
     return array
 
@@ -68,6 +71,7 @@ parser.add_argument("-D",  type=int, default = 80 ,help="La distolique du patien
 parser.add_argument("-S",  type=int, default = 120,help="la systolique du patient (premier peak dans le signal de la pression artérielle)  \n")
 parser.add_argument("-p",  type=float, default = 1,help="le taux de variation  +/- de la pespiration\n")
 parser.add_argument("-s",  type=int, default = 1,help="le nombre d'echantillon identique avant une variation dans le signal de la pespiration\n")
+parser.add_argument("-pa", type=float, default=0.5, help="L'amplitude de la respiration (valeur entre 0 et 1)");
 args = parser.parse_args()
 
 signaltype =vars(args)["T"]
@@ -79,6 +83,7 @@ systolic = vars(args)["S"]
 respiration = vars(args)["r"]
 pespiration = vars(args)["p"]
 step = vars(args)["s"]
+perspiration_amp = vars(args)["pa"]
 print(signaltype,t,f,bpm,diastolic,systolic,respiration,pespiration)
 ech_array = []
 
@@ -107,7 +112,7 @@ elif "re" in signaltype:
     t_sin = np.arange(t*f)
     ech_array = 1.65 * np.sin(respiration * (2 * np.pi * t_sin) / f) + 1.65 # le plus 1 est pour ne pas avoir de valeur negative
 elif "pe" in signaltype:
-    ech_array = genPespiration(pespiration,step,f,t)
+    ech_array = genPespiration(pespiration,step,f,t, perspiration_amp)
 else :
     ValueError("The fuck is that signal type ??  give me a valid one , you gave me  {}".format(signaltype))
 

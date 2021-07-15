@@ -41,7 +41,7 @@ Port (
     i_dat       : in std_logic_vector(11 downto 0);
     i_en        : in std_logic; -- enable de la MEF
     o_reset_cpt : out  std_logic;  -- reset du compteur
-    o_param     : out  std_logic_vector (11 downto 0);  -- load du data dans la sortie
+    o_param     : out  std_logic_vector (11 downto 0) := X"000";  -- load du data dans la sortie
     o_en_cpt    : out std_logic;-- enable du compteuir
     
     i_cpt_conf          : in std_logic_vector(1 downto 0);

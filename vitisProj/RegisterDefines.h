@@ -5,7 +5,7 @@
  *      Author: olivier lortie
  */
 
-volatile u32* MyADCIPRegister = (volatile u32*) XPAR_MYADCIP_0_S00_AXI_BASEADDR;
+volatile u32* MyADCIPRegister = (volatile u32*) XPAR_POLYBUSIP_0_S00_AXI_BASEADDR;
 
 //#define MY_AD1_IP_BASEADDRESS XPAR_MYADCIP_0_S00_AXI_BASEADDR
 //#define ADCIP_BASEADRESS XPAR_MYADCIP_0_S00_AXI_BASEADDR

@@ -6,6 +6,7 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 library UNISIM;
@@ -95,16 +96,16 @@ architecture Behavioral of TopModule is
             Pmod_OLED_pin7_io : inout STD_LOGIC;
             Pmod_OLED_pin8_io : inout STD_LOGIC;
             Pmod_OLED_pin9_io : inout STD_LOGIC;
-            i_data_echantillon1 : in STD_LOGIC_VECTOR ( 11 downto 0 );
-            i_data_echantillon2 : in STD_LOGIC_VECTOR ( 11 downto 0 );
-            i_data_echantillon3 : in STD_LOGIC_VECTOR ( 11 downto 0 );
-            i_data_echantillon4 : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_data_bpm : in STD_LOGIC_VECTOR ( 11 downto 0 );
-            i_data_respiration : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_data_perspiration : in STD_LOGIC_VECTOR ( 11 downto 0 );
+            i_data_respiration : in STD_LOGIC_VECTOR ( 11 downto 0 );
+            i_echantillon1 : in STD_LOGIC_VECTOR ( 11 downto 0 );
+            i_echantillon2 : in STD_LOGIC_VECTOR ( 11 downto 0 );
+            i_echantillon3 : in STD_LOGIC_VECTOR ( 11 downto 0 );
+            i_echantillon4 : in STD_LOGIC_VECTOR ( 11 downto 0 );
             o_leds_tri_o : out STD_LOGIC_VECTOR ( 3 downto 0 );
-            o_respiration_select : out STD_LOGIC;
-            o_perspiration_select : out STD_LOGIC
+            o_perspiration_select : out STD_LOGIC;
+            o_respiration_select : out STD_LOGIC
             );
     end component;
 
@@ -197,16 +198,14 @@ architecture Behavioral of TopModule is
     signal d_param_perspiration         : std_logic_vector(11 downto 0);
     signal d_respiration_select         : std_logic;
     signal d_perspiration_select        : std_logic;
+    
        
     
     signal d_compteurRespiration025 : integer range 0 to 500 := 0;
     signal d_compteurRespiration05 : integer range 0 to 500 := 0;
-    signal d_compteurPression12080 : integer range 0 to 500 := 0;
-    signal d_compteurPression13080 : integer range 0 to 500 := 0;
+    signal d_compteur100 : integer range 0 to 500 := 0;
     signal d_compteurPouls70 : integer range 0 to 500 := 0;
     signal d_compteurPouls85 : integer range 0 to 500 := 0;
-    signal d_compteurPerspiration1 : integer range 0 to 500 := 0;
-    signal d_compteurPerspiration2 : integer range 0 to 500 := 0;
     
     signal d_compteurDelaiStrobe : integer range 0 to 501 := 0;
     signal d_compteDelai : std_logic := '0';
@@ -265,6 +264,8 @@ begin
     i_ech => d_echantillon4,
     o_param => d_param_perspiration
     );
+    
+    
     
     bin2Thermo : FctBin2Thermo
     Port Map (
@@ -326,12 +327,12 @@ begin
             Pmod_OLED_pin8_io => Pmod_OLED(5),
             Pmod_OLED_pin9_io => Pmod_OLED(6),
             Pmod_OLED_pin10_io => Pmod_OLED(7),
-            i_data_echantillon1 => d_echantillon1,
-            i_data_echantillon2 => d_echantillon2,
-            i_data_echantillon3 => d_echantillon3,
-            i_data_echantillon4 => d_echantillon4,
-            i_data_bpm => d_param_bpm,
-            i_data_respiration => d_param_respiration,
+            i_echantillon1 => d_echantillon1,
+            i_echantillon2 => d_echantillon2,
+            i_echantillon3 => d_echantillon3,
+            i_echantillon4 => d_echantillon4,
+            i_data_bpm => std_logic_vector(d_param_bpm),
+            i_data_respiration => std_logic_vector(d_param_respiration),
             i_data_perspiration => d_param_perspiration,  
             o_leds_tri_o => o_leds,
             o_respiration_select => d_respiration_select,
@@ -352,23 +353,33 @@ begin
             
             case i_sw(1) is
                 when '0' =>
-                    d_DAC_data2 <= mem_pre12080(d_compteurPression12080);
+                    d_DAC_data2 <= mem_pre12080(d_compteur100);
                 when '1' =>
-                    d_DAC_data2 <= mem_pre13080(d_compteurPression13080);
+                    d_DAC_data2 <= mem_pre13080(d_compteur100);
                 when others =>
                     d_DAC_data2 <= "000000000000";
             end case;
             
-            case d_respiration_select is
-                when '0' =>
-                    d_echantillon3 <= mem_respi025Hz(d_compteurRespiration025);
-                when '1' =>
-                    d_echantillon3 <= mem_respi05Hz(d_compteurRespiration05);
-                when others =>
-                    d_DAC_data2 <= "000000000000";
-            end case;
+--            case d_respiration_select is
+--                when '0' =>
+--                    d_echantillon3 <= mem_respi025Hz(d_compteurRespiration025);
+--                when '1' =>
+--                    d_echantillon3 <= mem_respi05Hz(d_compteurRespiration05);
+--                when others =>
+--                    d_echantillon3 <= "000000000000";
+--            end case;
+            
+--            case d_perspiration_select is
+--                when '0' =>
+--                    d_echantillon4 <= mem_persp1(d_compteur100);
+--                when '1' =>
+--                    d_echantillon4 <= mem_persp2(d_compteur100);
+--                when others =>
+--                    d_echantillon4 <= "000000000000";
+--            end case;
+            d_echantillon3 <= mem_respi025Hz(d_compteurRespiration025);
+            d_echantillon4 <= mem_persp1(d_compteur100);
        
-            d_echantillon4 <= mem_persp1(d_compteurPerspiration1);
             
             if d_compteurPouls70 = mem_pouls70'length-1 then
                 d_compteurPouls70 <= 0;
@@ -382,16 +393,10 @@ begin
                 d_compteurPouls85 <= d_compteurPouls85 + 1;
             end if;
             
-            if d_compteurPression12080 = mem_pre12080'length-1 then
-                d_compteurPression12080 <= 0;
+            if d_compteur100 = 99 then
+                d_compteur100 <= 0;
             else
-                d_compteurPression12080 <= d_compteurPression12080 + 1;
-            end if;
-            
-            if d_compteurPression13080 = mem_pre13080'length-1 then
-                d_compteurPression13080 <= 0;
-            else
-                d_compteurPression13080 <= d_compteurPression13080 + 1;
+                d_compteur100 <= d_compteur100 + 1;
             end if;
             
             if d_compteurRespiration025 = mem_respi025Hz'length-1 then
@@ -405,18 +410,6 @@ begin
             else
                 d_compteurRespiration05 <= d_compteurRespiration05 + 1;
             end if;
-            
-            if d_compteurPerspiration1 = mem_persp1'length-1 then
-                d_compteurPerspiration1 <= 0;
-            else
-                d_compteurPerspiration1 <= d_compteurPerspiration1 + 1;
-            end if;
-            
---            if d_compteurPerspiration2 = mem_persp2'length-1 then
---                d_compteurPerspiration2 <= 0;
---            else
---                d_compteurPerspiration2 <= d_compteurPerspiration2 + 1;
---            end if;
         end if;
     end process;
     

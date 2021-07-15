@@ -60,13 +60,14 @@ Signalpo.txt pour un signal de pouls
 	***Le maximum convenu est, de 140 pour la systolique  et de 90 pour la diastolique.**
 	***Si vous entrez des valeurs supérieures, ca va faire chier les échantillons VHDL car certains vont dépasser 3.3 V et ne seront plus sur 12 bit***
 	valeur par défaut : 120 et 80
-7. Les paramètres -p et -s sont liés au signal de perspiration ** type float et int respectivement**
+7. Les paramètres -p, -s  et -pa sont liés au signal de perspiration ** type float, int et float respectivement**
 	-p indique le taux de variation de la fonction 
 	-s indique le nombre d'échantillons (step) que le signal va prendre pour varier d'un point a l'autre
-	exemple -p =1  -s =3
+	-pa indique l'amplitude de la perspiration. (valeur entre 0 et 1 qui représente le pourcentage de 3.3V)
+	exemple -p =1  -s =3 -pa=0.5
 	Le signal de perspiration va utiliser 3 échantillons pour passer de x a x +/- p/2 (valeur aléatoire entre +p/2 et -p/2) 
-	Le signal restera toujours entre 3.3 et 0
-	valeur par défaut : 1 et 1 
+	Le signal restera toujours entre 0.9*pa*3.3 et 1.1*pa*3.3
+	valeur par défaut : 1, 1 et 0.5 
 
 8. Exemple de paramètre 
 
@@ -76,6 +77,6 @@ Pression : python SignalGenerator.py "pr" -t 4 -S 110 -D 70
 	Génère un signal avec 110 en systolique et 70 en diastolique a une fréquence de 70 bpm (valeur par défaut)
 Respiration : python SignalGenerator.py "re" -t 6 -r 0.75 
 	Génère un sinus a 0.75 Hz (1.3333333 respiration par seconde) pendant 
-Perspiration : python SignalGenerator.py "pe" -p 0.5 -s 5
-	Génère un signal qui débute aléatoirement entre 3.3 et 0. 
+Perspiration : python SignalGenerator.py "pe" -p 0.5 -s 5 -pa 0.5
+	Génère un signal qui débute aléatoirement entre 1.485 et 1,815 
 	Le signal va varier de +/- 0.5 V à tous les 5 échantillons

@@ -7,7 +7,7 @@
 
 #include "s4i_tools.h"
 #include "xparameters.h"
-#include "myADCip.h"
+#include "PolyBUSip.h"
 #include "RegisterDefines.h"
 
 #include <xgpio.h>
@@ -143,8 +143,9 @@ float s4i_GetPressionVoltage()
 
 u16 s4i_getSampleBPM()
 {
-	u16 rawData = (MyADCIPRegister[2] & 0xFFF)  ;
-	return rawData ;
+	u32 rawData = POLYBUSIP_mReadReg(XPAR_POLYBUSIP_0_S00_AXI_BASEADDR, POLYBUSIP_S00_AXI_SLV_REG3_OFFSET);
+
+	return rawData & 0xFFF;
 }
 
 
@@ -174,8 +175,8 @@ void s4i_setRespirationSelect(RespirationSelect select)
 
 u16 s4i_getSampleFrequenceRespiration()
 {
-	u16 rawData = (MyADCIPRegister[2]  & 0xFFF000)>>12 ;
-	return rawData;
+	u32 rawData = POLYBUSIP_mReadReg(XPAR_POLYBUSIP_0_S00_AXI_BASEADDR, POLYBUSIP_S00_AXI_SLV_REG3_OFFSET);
+	return (rawData & 0xFFF000) >> 12;
 }
 
 
@@ -190,9 +191,9 @@ float s4i_GetFrequenceRespiration()
 
 u16 s4i_getSampleAnalysePerspiration()
 {
-	u16 rawData =MyADCIPRegister[3] & 0xFFF ;
+	u32 rawData = POLYBUSIP_mReadReg(XPAR_POLYBUSIP_0_S00_AXI_BASEADDR, POLYBUSIP_S00_AXI_SLV_REG2_OFFSET);
 
-	return rawData;
+	return rawData & 0xFFF;
 }
 
 

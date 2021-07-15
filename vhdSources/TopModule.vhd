@@ -242,7 +242,7 @@ begin
     port map (
         i_clk => clk_5MHz,
         i_reset => reset,
-        i_en => o_echantillon_pret_strobe,
+        i_en => d_strobe_100Hz,
         i_ech => d_echantillon1,
         o_param => d_param_bpm
     );
@@ -360,25 +360,25 @@ begin
                     d_DAC_data2 <= "000000000000";
             end case;
             
---            case d_respiration_select is
---                when '0' =>
---                    d_echantillon3 <= mem_respi025Hz(d_compteurRespiration025);
---                when '1' =>
---                    d_echantillon3 <= mem_respi05Hz(d_compteurRespiration05);
---                when others =>
---                    d_echantillon3 <= "000000000000";
---            end case;
+            --case d_respiration_select is
+            case i_sw(2) is
+                when '0' =>
+                    d_echantillon3 <= mem_respi025Hz(d_compteurRespiration025);
+                when '1' =>
+                    d_echantillon3 <= mem_respi05Hz(d_compteurRespiration05);
+                when others =>
+                    d_echantillon3 <= "000000000000";
+            end case;
             
---            case d_perspiration_select is
---                when '0' =>
---                    d_echantillon4 <= mem_persp1(d_compteur100);
---                when '1' =>
---                    d_echantillon4 <= mem_persp2(d_compteur100);
---                when others =>
---                    d_echantillon4 <= "000000000000";
---            end case;
-            d_echantillon3 <= mem_respi025Hz(d_compteurRespiration025);
-            d_echantillon4 <= mem_persp1(d_compteur100);
+            --case d_perspiration_select is
+            case i_sw(3) is
+                when '0' =>
+                    d_echantillon4 <= mem_persp1(d_compteur100);
+                when '1' =>
+                    d_echantillon4 <= mem_persp2(d_compteur100);
+                when others =>
+                    d_echantillon4 <= "000000000000";
+            end case;
        
             
             if d_compteurPouls70 = mem_pouls70'length-1 then

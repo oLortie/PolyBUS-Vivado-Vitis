@@ -7,6 +7,13 @@ PolyBUS
 2. Aller dans la console TCL et s'assurer d'être dans le bon folder ( .../PolyBUS/scripts) 
 3. Exécuter la commande suivante : source ./PolyBUS.tcl
 
+
+****INFORMATION POUR GENERER LE FICHIER myProgram.vhd POUR PICOBLAZE A PARTIR DU CODE ASSEMBLEUR KCPSM6*****
+1. Modifier myProgram.psm
+2. Compiler avec kcpsm6.exe qui donnera myProgram.vhd
+3. Ajouter myProgram.vhd au projet Vivado s'il ne l'est pas déjà
+
+
 **INFORMATION POUR GÉNÉRER LE PROJET VITIS À PARTIR DU TCL**
 1. S'assurer que le xsa a été généré à partir de Vivado
 2. Changer les paramètres du script tcl pour générer le projet au bon endroit
@@ -16,6 +23,7 @@ PolyBUS
 	2.4. Exécuter la commande suivante :
 		source D:/Git/PolyBUS/scripts/vitisProj.tcl (en changeant le path pour celui de votre ordinateur)
 3. Ouvrir vitis dans le workspace PolyBUS/work/VitisWorkspace et s'assurer que le projet a bien été généré
+
 
 **INFORMATION POUR SETUP DU SCRIPT DE GENERATION DE SIGNAUX**
 1. Ouvrir une console de commande

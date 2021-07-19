@@ -174,7 +174,17 @@ architecture Behavioral of TopModule is
         o_stb_100Hz : out  std_logic; -- strobe 100Hz synchro sur clk_5MHz 
         o_S_1Hz     : out  std_logic  -- Signal temoin 1 Hz
     );
-    end component;  
+    end component;
+    
+    component Pblaze_uCtrler is
+    port (
+        clk                     : in std_logic;
+        i_ADC_echantillon       : in std_logic_vector (11 downto 0); 
+        i_ADC_echantillon_pret  : in std_logic;
+        o_compteur              : out std_logic_vector(3 downto 0);
+        o_echantillon_out       : out std_logic_vector(7 downto 0)
+    );
+    end component;
     
     signal clk_5MHz                     : std_logic;
     signal d_S_5MHz                     : std_logic;
@@ -228,14 +238,14 @@ begin
     inst_Ctrl_ADC1 : Ctrl_AD1
     port Map ( 
         reset => reset,
-        clk_ADC => clk_5MHz,
-        i_DO1 => i_ADC_D0,
-        i_DO2 => i_ADC_D1,       
-        o_ADC_nCS => o_ADC_NCS,
-        i_ADC_Strobe => d_strobe_100Hz_ADC,
-        o_echantillon_pret_strobe => o_echantillon_pret_strobe,
-        o_echantillon1 => d_echantillon1,
-        o_echantillon2 => d_echantillon2
+        clk_ADC => clk_5MHz,                                    -- pour horloge externe de l'ADC
+        i_DO1 => i_ADC_D0,                                      -- bit de données provenant de l'ADC
+        i_DO2 => i_ADC_D1,                                      -- bit de données provenant de l'ADC
+        o_ADC_nCS => o_ADC_NCS,                                 -- chip select pour le convertisseur (ADC)
+        i_ADC_Strobe => d_strobe_100Hz_ADC,                     -- synchronisation: déclencheur de la séquence d'échantillonnage
+        o_echantillon_pret_strobe => o_echantillon_pret_strobe, -- strobe indicateur d'une réception complète d'un échantillon
+        o_echantillon1 => d_echantillon1,                       -- valeur de l'échantillon reçu (12 bits)
+        o_echantillon2 => d_echantillon2                        -- valeur de l'échantillon reçu (12 bits)
     );
     
     inst_calcul_Pouls : Calcul_pouls
@@ -292,6 +302,15 @@ begin
            o_S_100Hz    => open,
            o_stb_100Hz  => d_strobe_100Hz,
            o_S_1Hz      => o_ledtemoin_b
+    );
+    
+    Picoblaze : Pblaze_uCtrler
+    port map(
+          clk                       =>  clk_5MHz,          
+          i_ADC_echantillon         => d_echantillon1,
+          i_ADC_echantillon_pret    => o_echantillon_pret_strobe, 
+          o_compteur                =>  open, --o_leds,    
+          o_echantillon_out         =>  open --Pmod_8LD    
     );
     
     o_DAC_CLK <= clk_5MHz;

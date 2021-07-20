@@ -38,7 +38,6 @@
 //TODO: Move time calculations to functions in web_utils. Unsuccessfully attempted...
 //TODO: Test (or remove?) GET requests for individual data?
 
-
 // Ajout pour S4i GIF402
 #include "s4i_tools.h"
 
@@ -109,7 +108,7 @@ int do_http_post(int sd, char *req, int rlen)
 	int len, n;
 	char buf[BUFSIZE];
 
-	xil_printf("!!! HTTP GOT POST\r\n");
+	xil_printf("HTTP server received POST\r\n");
 
 	if (is_cmd_print(req)) {
 		/* HTTP data starts after "\r\n\r\n" sequence */
@@ -158,23 +157,24 @@ int do_http_get(int sd, char *req, int rlen)
 {
 	int BUFSIZE = 1400;
 	char filename[MAX_FILENAME];
-	char buf[BUFSIZE];              // Buffer de sortie (en-tête + contenu)
+	char buf[BUFSIZE];              // Buffer de sortie (en-tete + contenu)
 	int fsize, hlen, n;
 	char *fext;
 	FIL fil;
 	FRESULT Res;
 
-    // NOTE: La méthode retourne 0 si tout se passe bien, -1 si une erreur est
-    // survenue. La réponse à transmettre au client doit être entrée dans la
+    // NOTE: La methode retourne 0 si tout se passe bien, -1 si une erreur est
+    // survenue. La reponse a transmettre au client doit etre entree dans la
     // variable buf, qui est un tableau de taille fixe. La taille du contenu
-    // doit être indiquée dans l'en-tête (voir les méthodes 
-    // TODO: Ici, il faudrait détecter si une requête correspond
-    // à un élément connu, par exemple un de vos capteurs, et y répondre
-    // adéquatement.
-    // La structure a été mise en place, mais vous devez compléter le code de
-    // réponse ainsi que la méthode s4i_is_cmd_sws(req), qui retourne toujours
-    // zéro pour l'instant.
-	xil_printf(req);
+    // doit etre indiquee dans l'en-tete (voir les methodes
+    // TODO: Ici, il faudrait detecter si une requete correspond
+    // a un element connu, par exemple un de vos capteurs, et y repondre
+    // adequatement.
+    // La structure a ete mise en place, mais vous devez completer le code de
+    // reponse ainsi que la methode s4i_is_cmd_sws(req), qui retourne toujours
+    // zero pour l'instant.
+	xil_printf("req : %s\n", req);
+	//xil_printf(req);
     if (s4i_is_cmd_respiration(req)) {
 
     	float respirationVoltage = s4i_GetRespirationVoltage();
@@ -184,7 +184,7 @@ int do_http_get(int sd, char *req, int rlen)
     	//The current clock time in s since the start of the program
     	float currentMS = ((float)currentClockTime / (COUNTS_PER_SECOND));
 
-    	char* respirationVoltage_buf;
+    	char respirationVoltage_buf[192];
     	sprintf(respirationVoltage_buf, "{ \"respiration\" : %f, \"time\" : %f }", respirationVoltage, currentMS);
 
     	unsigned int respirationVoltage_len = strlen(respirationVoltage_buf);
@@ -208,7 +208,7 @@ int do_http_get(int sd, char *req, int rlen)
     	//The current clock time in s since the start of the program
     	float currentMS = ((float)currentClockTime / (COUNTS_PER_SECOND));
 
-        char* perspirationVoltage_buf;
+        char perspirationVoltage_buf[192];
         sprintf(perspirationVoltage_buf, "{\"perspiration\" : %f, \"time\" : %f}", perspirationVoltage, currentMS);
 
         unsigned int perspirationVoltage_len = strlen(perspirationVoltage_buf);
@@ -233,7 +233,7 @@ int do_http_get(int sd, char *req, int rlen)
     	//The current clock time in s since the start of the program
     	float currentMS = ((float)currentClockTime / (COUNTS_PER_SECOND));
 
-        char* poulsVoltage_buf;
+        char poulsVoltage_buf[192];
         sprintf(poulsVoltage_buf, "{\"pouls\" : %f, \"time\" : %f}", poulsVoltage, currentMS);
 
         unsigned int poulsVoltage_len = strlen(poulsVoltage_buf);
@@ -258,7 +258,7 @@ int do_http_get(int sd, char *req, int rlen)
     	//The current clock time in s since the start of the program
     	float currentMS = ((float)currentClockTime / (COUNTS_PER_SECOND));
 
-        char* pressionVoltage_buf;
+        char pressionVoltage_buf[192];
         sprintf(pressionVoltage_buf, "{\"pression\" : %f, \"time\" : %f}", pressionVoltage, currentMS);
 
         unsigned int pressionVoltage_len = strlen(pressionVoltage_buf);
@@ -275,6 +275,7 @@ int do_http_get(int sd, char *req, int rlen)
 
     }
     else if (s4i_is_cmd_rawData(req)) {
+
     	float respirationVoltage = s4i_GetRespirationVoltage();
     	float perspirationVoltage = s4i_GetPerspirationVoltage();
     	float poulsVoltage = s4i_GetPoulsVoltage();
@@ -285,8 +286,9 @@ int do_http_get(int sd, char *req, int rlen)
     	//The current clock time in s since the start of the program
     	float currentMS = ((float)currentClockTime / (COUNTS_PER_SECOND));
 
-		char* rawData_buf;
+		char rawData_buf[192]; // Normally approx 120 chars but modify if we add a lot more data
     	sprintf(rawData_buf, "{\"respiration\" : %f, \"perspiration\" : %f, \"pouls\" : %f, \"pression\" : %f, \"time\" : %f}", respirationVoltage, perspirationVoltage, poulsVoltage, pressionVoltage, currentMS);
+    	//xil_printf("strlen(rawData_buf) = %d", strlen(rawData_buf));
 
     	unsigned int rawData_len = strlen(rawData_buf);
 		unsigned int len = generate_http_header(buf, "js", rawData_len);
@@ -308,8 +310,9 @@ int do_http_get(int sd, char *req, int rlen)
     	float perspiration = s4i_GetAnalysePerspiration();
     	int lie = 0;
 
-    	char* parameters_buf;
+    	char parameters_buf[192]; // Normally approx 135 chars but modify if we add a lot more data
 		sprintf(parameters_buf, "{\"bpm\" : %f, \"respiration\" : %f, \"systolic\" : %f, \"diastolic\" : %f, \"perspiration\" : %f, \"lie\" : %d}", bpm, respiration, systolic, diastolic, perspiration, lie);
+		//xil_printf("strlen(parameters_buf) = %d", strlen(parameters_buf));
 
 		unsigned int parameters_len = strlen(parameters_buf);
 		unsigned int len = generate_http_header(buf, "js", parameters_len);

@@ -13,11 +13,9 @@ use UNISIM.VComponents.all;
 entity Pblaze_uCtrler is
   port (
     clk                     : in std_logic;
-    i_ADC_echantillon       : in std_logic_vector (11 downto 0); 
-    i_ADC_echantillon_pret  : in std_logic;
-    o_compteur              : out std_logic_vector(3 downto 0);
-    o_echantillon_out       : out std_logic_vector(7 downto 0)
-   
+    i_param_BPM             : in std_logic_vector (11 downto 0);
+    i_param_respiration     : in std_logic_vector (11 downto 0);
+    o_result                : out std_logic_vector(7 downto 0)
   );
 end Pblaze_uCtrler;
 
@@ -186,32 +184,27 @@ begin
       -- FIFO would know to present the next oldest information.
       --
     
-      input_ports: process(clk)
+--========================================================
+    -- INPUT PORTS
+    --========================================================
+    input_ports: process(clk)
       begin
         if clk'event and clk = '1' then
-          q_ADC_echantillon_pret <= i_ADC_echantillon_pret;
-          case port_id(1 downto 0) is  -- we have to inputs so 1 bit in port id is enough
-    
-            -- Read input_port_a at port address 00 hex
-            when "00" =>    in_port <= i_ADC_echantillon(7 downto 0); 
-    
-            -- Read input_port_b at port address 01 hex
-            when "01" =>    in_port <= "0000" & i_ADC_echantillon(11 downto 8);              
-            
-            -- Read input_port_b at port address 02 hex
-            when "10" =>    in_port <= "0000000" & (i_ADC_echantillon_pret or q_ADC_echantillon_pret);         
-            
-    
-            -- To ensure minimum logic implementation when defining a multiplexer always
-            -- use don't care for any of the unused cases (although there are none in this 
-            -- example).    
-            when others =>    in_port <= "XXXXXXXX";  
-    
+
+          case port_id(2 downto 0) is
+            when "000" =>    in_port <= i_param_bpm(7 downto 0);
+            when "001" =>    in_port <= i_param_respiration(7 downto 0);
+            when "010" =>    in_port <= "0000" & i_param_respiration(11 downto 8);
+            when "011" =>    in_port <= "00000000"; --i_param_perspiration(7 downto 0);
+            when "100" =>    in_port <= "00000000";
+            when "101" =>    in_port <= "00000000";
+
+            when others =>    in_port <= "XXXXXXXX";
+
           end case;
-          
-    
+
         end if;
-    
+
       end process input_ports;
                        
     -----------------------------------------------------------------------------------------
@@ -258,27 +251,18 @@ begin
     --
      
     output_ports: process(clk)
-    begin  
-      if clk'event and clk = '1' then
-  
-        -- 'write_strobe' is used to qualify all writes to general output ports.
-        if write_strobe = '1' then
-  
-          if port_id(2) = '1' then  --port 04
-            q_echantillon_out <= out_port;
-          end if;
-  
-          if port_id(3) = '1' then  -- port 08
-            q_compteur <= out_port(3 downto 0);
-          end if;
-    
-        end if;
-  
-      end if; 
-  
+        begin
+          if clk'event and clk = '1' then
+            -- 'write_strobe' is used to qualify all writes to general output ports.
+            if write_strobe = '1' then
+              if port_id = "00000110" then -- port 06
+                o_result <= out_port(7 downto 0);
+              end if;
+            end if;
+          end if; 
+
     end process output_ports;
 
-o_compteur     <= q_compteur;
-o_echantillon_out <= q_echantillon_out;
+o_result <= q_echantillon_out;
 
 end Behavioral;

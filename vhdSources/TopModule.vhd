@@ -178,12 +178,11 @@ architecture Behavioral of TopModule is
     
     component Pblaze_uCtrler is
     port (
-        clk                     : in std_logic;
-        i_ADC_echantillon       : in std_logic_vector (11 downto 0); 
-        i_ADC_echantillon_pret  : in std_logic;
-        o_compteur              : out std_logic_vector(3 downto 0);
-        o_echantillon_out       : out std_logic_vector(7 downto 0)
-    );
+    clk                     : in std_logic;
+    i_param_BPM             : in std_logic_vector (11 downto 0);
+    i_param_respiration     : in std_logic_vector (11 downto 0);
+    o_result                : out std_logic_vector(7 downto 0)
+  );
     end component;
     
     signal clk_5MHz                     : std_logic;
@@ -208,8 +207,6 @@ architecture Behavioral of TopModule is
     signal d_param_perspiration         : std_logic_vector(11 downto 0);
     signal d_respiration_select         : std_logic;
     signal d_perspiration_select        : std_logic;
-    
-       
     
     signal d_compteurRespiration025 : integer range 0 to 500 := 0;
     signal d_compteurRespiration05 : integer range 0 to 500 := 0;
@@ -252,7 +249,7 @@ begin
     port map (
         i_clk => clk_5MHz,
         i_reset => reset,
-        i_en => d_strobe_100Hz,
+        i_en => o_echantillon_pret_strobe,
         i_ech => d_echantillon1,
         o_param => d_param_bpm
     );
@@ -280,7 +277,7 @@ begin
     bin2Thermo : FctBin2Thermo
     Port Map (
         i_echantillon => d_echantillon1,
-        o_thermo => PMOD_8LD
+        o_thermo => open --PMOD_8LD
     );
     
      mux_select_Entree_AD1 : process (i_btn(3), i_ADC_D0, i_ADC_D1)
@@ -304,13 +301,13 @@ begin
            o_S_1Hz      => o_ledtemoin_b
     );
     
+    
     Picoblaze : Pblaze_uCtrler
     port map(
-          clk                       =>  clk_5MHz,          
-          i_ADC_echantillon         => d_echantillon1,
-          i_ADC_echantillon_pret    => o_echantillon_pret_strobe, 
-          o_compteur                =>  open, --o_leds,    
-          o_echantillon_out         =>  open --Pmod_8LD    
+          clk           =>  sys_clock,          
+          i_param_BPM   => d_param_bpm,
+          i_param_respiration   => d_param_respiration,
+          o_result      =>  Pmod_8LD
     );
     
     o_DAC_CLK <= clk_5MHz;

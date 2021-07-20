@@ -58,6 +58,7 @@ port (
     o_DAC_D0        : out std_logic;
     o_DAC_D1        : out std_logic;
     o_DAC_CLK       : out std_logic
+    
 );
 end TopModule;
 
@@ -103,7 +104,6 @@ architecture Behavioral of TopModule is
             i_echantillon2 : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_echantillon3 : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_echantillon4 : in STD_LOGIC_VECTOR ( 11 downto 0 );
-            o_leds_tri_o : out STD_LOGIC_VECTOR ( 3 downto 0 );
             o_perspiration_select : out STD_LOGIC;
             o_respiration_select : out STD_LOGIC
             );
@@ -176,6 +176,37 @@ architecture Behavioral of TopModule is
     );
     end component;  
     
+    component kcpsm6 is
+    generic(               hwbuild : std_logic_vector(7 downto 0) := X"00";
+                  interrupt_vector : std_logic_vector(11 downto 0) := X"3FF";
+           scratch_pad_memory_size : integer := 64);
+    port (                 address : out std_logic_vector(11 downto 0);
+                       instruction : in std_logic_vector(17 downto 0);
+                       bram_enable : out std_logic;
+                           in_port : in std_logic_vector(7 downto 0);
+                          out_port : out std_logic_vector(7 downto 0);
+                           port_id : out std_logic_vector(7 downto 0);
+                      write_strobe : out std_logic;
+                    k_write_strobe : out std_logic;
+                       read_strobe : out std_logic;
+                         interrupt : in std_logic;
+                     interrupt_ack : out std_logic;
+                             sleep : in std_logic;
+                             reset : in std_logic;
+                               clk : in std_logic);
+    end component;
+    
+    component CalculMensonge is
+    generic(             C_FAMILY : string := "S6"; 
+                C_RAM_SIZE_KWORDS : integer := 1;
+             C_JTAG_LOADER_ENABLE : integer := 0);
+    Port (      address : in std_logic_vector(11 downto 0);
+            instruction : out std_logic_vector(17 downto 0);
+                 enable : in std_logic;
+                    rdl : out std_logic;                    
+                    clk : in std_logic);
+    end component;
+    
     signal clk_5MHz                     : std_logic;
     signal d_S_5MHz                     : std_logic;
     signal d_strobe_100Hz               : std_logic := '0';  -- cadence echantillonnage AD1
@@ -198,6 +229,7 @@ architecture Behavioral of TopModule is
     signal d_param_perspiration         : std_logic_vector(11 downto 0);
     signal d_respiration_select         : std_logic;
     signal d_perspiration_select        : std_logic;
+    signal d_param_mensonge             : std_logic_vector(7 downto 0);
     
        
     
@@ -209,6 +241,24 @@ architecture Behavioral of TopModule is
     
     signal d_compteurDelaiStrobe : integer range 0 to 501 := 0;
     signal d_compteDelai : std_logic := '0';
+    
+    --
+    -- Signals for connection of KCPSM6 and Program Memory.
+    --
+    
+    signal         address : std_logic_vector(11 downto 0);
+    signal     instruction : std_logic_vector(17 downto 0);
+    signal     bram_enable : std_logic;
+    signal         in_port : std_logic_vector(7 downto 0);
+    signal        out_port : std_logic_vector(7 downto 0);
+    signal         port_id : std_logic_vector(7 downto 0);
+    signal    write_strobe : std_logic;
+    signal  k_write_strobe : std_logic;
+    signal     read_strobe : std_logic;
+    signal       interrupt : std_logic;
+    signal   interrupt_ack : std_logic;
+    signal    kcpsm6_sleep : std_logic;
+    signal    kcpsm6_reset : std_logic;
 
 begin
     reset    <= i_btn(0);    
@@ -242,7 +292,7 @@ begin
     port map (
         i_clk => clk_5MHz,
         i_reset => reset,
-        i_en => d_strobe_100Hz,
+        i_en => o_echantillon_pret_strobe,
         i_ech => d_echantillon1,
         o_param => d_param_bpm
     );
@@ -270,7 +320,7 @@ begin
     bin2Thermo : FctBin2Thermo
     Port Map (
         i_echantillon => d_echantillon1,
-        o_thermo => PMOD_8LD
+        o_thermo => open--PMOD_8LD
     );
     
      mux_select_Entree_AD1 : process (i_btn(3), i_ADC_D0, i_ADC_D1)
@@ -334,10 +384,86 @@ begin
             i_data_bpm => std_logic_vector(d_param_bpm),
             i_data_respiration => std_logic_vector(d_param_respiration),
             i_data_perspiration => d_param_perspiration,  
-            o_leds_tri_o => o_leds,
             o_respiration_select => d_respiration_select,
             o_perspiration_select => d_perspiration_select
         );
+        
+    processor: kcpsm6
+    generic map (                 
+        hwbuild => X"00", 
+        interrupt_vector => X"3FF",
+        scratch_pad_memory_size => 64) -- other options are 128, 256
+    port map(      
+                   address => address,
+               instruction => instruction,
+               bram_enable => bram_enable,
+                   port_id => port_id,
+              write_strobe => write_strobe,
+            k_write_strobe => k_write_strobe,
+                  out_port => out_port,
+               read_strobe => read_strobe,
+                   in_port => in_port,
+                 interrupt => interrupt,
+             interrupt_ack => interrupt_ack,
+                     sleep => kcpsm6_sleep,
+                     reset => kcpsm6_reset,
+                       clk => sys_clock
+           );
+           
+    kcpsm6_sleep <= '0';
+    interrupt <= interrupt_ack;
+    
+    program_rom: CalculMensonge                     --Name to match your PSM file
+    generic map(             
+            C_FAMILY => "7S",                       --Family 'S6', 'V6' or '7S'
+            C_RAM_SIZE_KWORDS => 2,                 --Program size '1', '2' or '4'
+            C_JTAG_LOADER_ENABLE => 0               --Include JTAG Loader when set to '1' 
+               )      
+    port map(      
+               address => address,      
+           instruction => instruction,
+                enable => bram_enable,
+                   rdl => kcpsm6_reset,
+                   clk => sys_clock
+              );
+              
+    --========================================================
+    -- INPUT PORTS
+    --========================================================
+    input_ports: process(sys_clock)
+      begin
+        if sys_clock'event and sys_clock = '1' then
+    
+          case port_id(2 downto 0) is
+            when "000" =>    in_port <= d_param_bpm(7 downto 0);
+            when "001" =>    in_port <= d_param_respiration(7 downto 0);
+            when "010" =>    in_port <= "0000" & d_param_respiration(11 downto 8);
+            when "011" =>    in_port <= d_param_perspiration(7 downto 0);
+            when "100" =>    in_port <= "00000000";
+            when "101" =>    in_port <= "00000000";
+       
+            when others =>    in_port <= "XXXXXXXX";  
+    
+          end case;
+    
+        end if;
+    
+      end process input_ports;
+      
+    output_ports: process(sys_clock)
+    begin  
+      if sys_clock'event and sys_clock = '1' then
+        -- 'write_strobe' is used to qualify all writes to general output ports.
+        if write_strobe = '1' then
+          if port_id = "00000110" then -- port 06
+            d_param_mensonge <= out_port(7 downto 0);
+          end if;
+        end if;
+      end if; 
+  
+    end process output_ports;
+             
+    PMOD_8LD <= d_param_mensonge;        
         
     main_process : process (d_strobe_100Hz)
     begin

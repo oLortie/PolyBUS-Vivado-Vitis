@@ -1,0 +1,155 @@
+  ; CalculMensonge.psm
+  ;
+  ; This is the start of 'myProgram' for KCPSM6
+  ;
+  CONSTANT Pouls_port, 00
+  CONSTANT Respiration_port_low, 01
+  CONSTANT Respiration_port_high, 02
+  CONSTANT Perspiration_port, 03
+  CONSTANT Systolic_port, 04
+  CONSTANT Diastolic_port, 05
+  CONSTANT Result_port, 06
+  ;
+  ; ========================================================================
+  ; Calcul pour la respiration
+  ; ========================================================================
+  INPUT s1, Respiration_port_high
+  INPUT s2, Respiration_port_low
+  ;
+  ; Soustraction (450 - paramRespi)
+  LOAD s4, C2
+  SUB s4, s2                       ; partie low du résultat
+  LOAD s3, 01
+  SUBCY s3, s1                         ; partie high du résultat
+  ;
+  ; Faire * 128 (shift left 7 fois)
+  SL0 s4
+  SLA s3
+  SL0 s4
+  SLA s3
+  SL0 s4
+  SLA s3
+  SL0 s4
+  SLA s3
+  SL0 s4
+  SLA s3
+  SL0 s4
+  SLA s3
+  SL0 s4
+  SLA s3
+  ;
+  ; Faire le résultat / 512
+  LOAD s5, s3
+  LOAD s6, s4
+  SR0 s5
+  SRA s6
+  SR0 s5
+  SRA s6
+  SR0 s5
+  SRA s6
+  SR0 s5
+  SRA s6
+  SR0 s5
+  SRA s6
+  SR0 s5
+  SRA s6
+  SR0 s5
+  SRA s6
+  SR0 s5
+  SRA s6
+  SR0 s5
+  SRA s6
+  ;
+  ; additionner le contenu de s5 et s6
+  LOAD s7, s5
+  LOAD s8, s6
+  ;
+  ; Faire le résultat / 1024
+  SR0 s5
+  SRA s6
+  ;
+  ; Additionner
+  ADD s8, s6
+  ADDCY s7, s5
+  ;
+  ; Faire le résultat / 2048
+  SR0 s5
+  SRA s6
+  ;
+  ; Additionner
+  ADD s8, s6
+  ADDCY s7, s5
+  ;
+  ; Faire le résultat de la division /2
+  LOAD s5, s7
+  LOAD s6, s8
+  SR0 s5
+  SRA s6
+  ;
+  ; Additionner le resultat
+  LOAD s7, s5
+  LOAD s8, s6
+  ;
+  ; Faire le résultat de la division / 4
+  SR0 s5
+  SRA s6
+  ;
+  ; Additionner le resultat
+  ADD s7, s5
+  ADD s8, s6
+  ;
+  ; Mettre le resultat en sortie
+  LOAD s0, s8
+  ;
+  ; ========================================================================
+  ; Calcul pour le Pouls
+  ; ========================================================================
+  INPUT s1, Pouls_port
+  ;
+  LOAD s4, 5A
+  SUB s4, s1
+  LOAD s3, 00
+  ;
+  ; Faire * 128 (shift left 7 fois) et diviser par 32 (shift right 5 fois)
+  SL0 s4
+  SLA s3
+  SL0 s4
+  SLA s3
+  ;
+  ; enregistrer ce résultat
+  LOAD s6, s4
+  LOAD s5, s3
+  ;
+  ; Faire le résultat / 128
+  SR0 s3
+  SRA s4
+  SR0 s3
+  SRA s4
+  ;
+  ; Additiionner le résultat
+  ADD s6, s4
+  ADD s5, s3
+  ;
+  ; Diviser le résultat par 2
+  LOAD s4, s6
+  LOAD s3, s5
+  SR0 s3
+  SRA s4
+  ;
+  ; Enregistrer le résultat
+  LOAD s5, s3
+  LOAD s6, s4
+  ;
+  ; Diviser le résultat par 4
+  SR0 s3
+  SRA s4
+  ;
+  ; Additionner le résultat
+  ADD s5, s3
+  ADD s6, s4
+  ;
+  ; Additionner le résultat au total
+  ADD s0, s6
+  SR0 s0 ; diviser par 2 pour faire une moyenne
+  OUTPUT s0, Result_port
+  

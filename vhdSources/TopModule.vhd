@@ -163,6 +163,16 @@ architecture Behavioral of TopModule is
     
     end component;
     
+    component Calcul_pression is
+    Port ( 
+           i_strobe : in std_logic;
+           i_signal : in STD_LOGIC_VECTOR (11 downto 0);
+           i_clk : in STD_LOGIC;
+           o_pression_sanguine : out STD_LOGIC_VECTOR (11 downto 0);
+           o_enable : out STD_LOGIC;
+           i_reset : in STD_LOGIC);
+    end component;
+    
     component Synchro_Horloges is
     generic (const_CLK_syst_MHz: integer := freq_sys_MHz);
     Port ( 
@@ -227,6 +237,7 @@ architecture Behavioral of TopModule is
     signal d_param_pression             : std_logic_vector(11 downto 0);
     signal d_respiration_select         : std_logic;
     signal d_perspiration_select        : std_logic;
+    signal d_pression_ready             : std_logic;
     signal s_count_mensonge             : std_logic_vector(7 downto 0 );
     
     
@@ -260,13 +271,13 @@ begin
     port Map ( 
         reset => reset,
         clk_ADC => clk_5MHz,                                    -- pour horloge externe de l'ADC
-        i_DO1 => i_ADC_D0,                                      -- bit de données provenant de l'ADC
-        i_DO2 => i_ADC_D1,                                      -- bit de données provenant de l'ADC
+        i_DO1 => i_ADC_D0,                                      -- bit de donnï¿½es provenant de l'ADC
+        i_DO2 => i_ADC_D1,                                      -- bit de donnï¿½es provenant de l'ADC
         o_ADC_nCS => o_ADC_NCS,                                 -- chip select pour le convertisseur (ADC)
-        i_ADC_Strobe => d_strobe_100Hz_ADC,                     -- synchronisation: déclencheur de la séquence d'échantillonnage
-        o_echantillon_pret_strobe => o_echantillon_pret_strobe, -- strobe indicateur d'une réception complète d'un échantillon
-        o_echantillon1 => d_echantillon1,                       -- valeur de l'échantillon reçu (12 bits)
-        o_echantillon2 => d_echantillon2                        -- valeur de l'échantillon reçu (12 bits)
+        i_ADC_Strobe => d_strobe_100Hz_ADC,                     -- synchronisation: dï¿½clencheur de la sï¿½quence d'ï¿½chantillonnage
+        o_echantillon_pret_strobe => o_echantillon_pret_strobe, -- strobe indicateur d'une rï¿½ception complï¿½te d'un ï¿½chantillon
+        o_echantillon1 => d_echantillon1,                       -- valeur de l'ï¿½chantillon reï¿½u (12 bits)
+        o_echantillon2 => d_echantillon2                        -- valeur de l'ï¿½chantillon reï¿½u (12 bits)
     );
     
     inst_calcul_Pouls : Calcul_pouls
@@ -296,6 +307,16 @@ begin
     o_param => d_param_perspiration
     );
     
+    inst_calcul_pression : Calcul_pression 
+    Port map( 
+           i_strobe => o_echantillon_pret_strobe,
+           i_signal => d_echantillon2,
+           i_clk => clk_5MHz,
+           o_pression_sanguine => d_param_pression,
+           o_enable => d_pression_ready,
+           i_reset => reset
+    );
+    
     inst_compteur_mensonge : CompteurMensonge
     port map(
     i_pourcentage_confiance  => d_echantillon3(11 downto 4),
@@ -313,6 +334,7 @@ begin
         i_aff_mem  => '0',                     -- demande memorisation affichage continu, si 0: continu
         JPmod      => s_temp
     );
+    
     
     bin2Thermo : FctBin2Thermo
     Port Map (

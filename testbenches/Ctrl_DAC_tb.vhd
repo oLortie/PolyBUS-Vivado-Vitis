@@ -40,13 +40,13 @@ architecture Behavioral of Ctrl_DAC_tb is
     component Ctrl_DAC
     Port (
         reset                       : in    std_logic;  
-        clk_DAC                     : in    std_logic; 						-- Horloge à fournir à l'ADC
-        i_data1                     : in    std_logic_vector (11 downto 0); -- échantillon à envoyer   
+        clk_DAC                     : in    std_logic; 						-- Horloge ï¿½ fournir ï¿½ l'ADC
+        i_data1                     : in    std_logic_vector (11 downto 0); -- ï¿½chantillon ï¿½ envoyer   
         i_data2                     : in    std_logic_vector (11 downto 0);     
-        i_DAC_Strobe                : in    std_logic;                      -- Synchronisation: strobe déclencheur de la séquence de réception
+        i_DAC_Strobe                : in    std_logic;                      -- Synchronisation: strobe dï¿½clencheur de la sï¿½quence de rï¿½ception
         
         o_DAC_nCS                   : out   std_logic;                      -- Signal Chip select vers le DAC  
-        o_bit_value1                : out   std_logic;                       -- valeur du bit à envoyer
+        o_bit_value1                : out   std_logic;                       -- valeur du bit ï¿½ envoyer
         o_bit_value2                : out   std_logic 
         );
     end component;
@@ -94,6 +94,16 @@ architecture Behavioral of Ctrl_DAC_tb is
            o_count_mensonge         : out STD_LOGIC_VECTOR(7 downto 0));
     end component;
     
+    component Calcul_pression is
+    Port ( 
+           i_strobe : in std_logic;
+           i_signal : in STD_LOGIC_VECTOR (11 downto 0);
+           i_clk : in STD_LOGIC;
+           o_pression_sanguine : out STD_LOGIC_VECTOR (11 downto 0);
+           o_enable : out STD_LOGIC;
+           i_reset : in STD_LOGIC);
+    end component;
+    
     component affhexPmodSSD_v3 is
     generic (const_CLK_Hz: integer := 5_000_000);               -- horloge en Hz, typique 100 MHz 
     Port (   clk        : in   STD_LOGIC;                     -- horloge systeme, typique 100 MHz (preciser par le constante)
@@ -126,6 +136,8 @@ architecture Behavioral of Ctrl_DAC_tb is
     signal compt_gen_R                      : unsigned(7 downto 0) := x"00";
     signal s_param                          : std_logic_vector(11 downto 0);
     signal s_param_persp                    : std_logic_vector(11 downto 0);
+    signal s_outputPression                 : std_logic_vector(11 downto 0);
+    signal s_outputEnable                   : std_logic;
     
     signal s_count_mensonge                 : std_logic_vector(7 downto 0);
     signal PMODSSD                          : std_logic_Vector(7 downto 0);
@@ -136,7 +148,7 @@ architecture Behavioral of Ctrl_DAC_tb is
       
     type table_forme is array (integer range 0 to 19) of std_logic_vector(11 downto 0);
     constant mem_forme_onde_R : table_forme := (
- -- forme d'une onde carrée
+ -- forme d'une onde carrï¿½e
  -- chaque cycle a 48 echantillons
     "000000000001",
     "000000000001",
@@ -227,6 +239,16 @@ begin
            i_ech    => o_ech1_ADC,
            o_param  => s_param_persp
            );
+    
+    inst_calcul_pression : Calcul_pression 
+    Port map( 
+           i_strobe => o_echantilllon_pret_ADC,
+           i_signal => o_ech1_ADC,
+           i_clk => clk_DAC_sim,
+           o_pression_sanguine => s_outputPression,
+           o_enable => s_outputEnable,
+           i_reset => reset_sim
+    );
     
             
     clk_process : process

@@ -54,40 +54,26 @@
 proc checkRequiredFiles { origin_dir} {
   set status true
   set files [list \
-   "C:/Users/Zach/source/Github/PolyBUS/work/PolyBUS/PolyBUS.srcs/sources_1/bd/PolyBUSBlockDesign/PolyBUSBlockDesign.bd" \
-   "C:/Users/Zach/source/Github/PolyBUS/work/PolyBUS/PolyBUS.srcs/sources_1/imports/vhdSources/Pblaze_uCtrler.vhd" \
-   "C:/Users/Zach/source/Github/PolyBUS/work/PolyBUS/PolyBUS.srcs/sources_1/imports/hdl/PolyBUSBlockDesign_wrapper.vhd" \
-   "C:/Users/Zach/source/Github/PolyBUS/work/PolyBUS/PolyBUS.srcs/sources_1/imports/vhdSources/kcpsm6.vhd" \
-   "C:/Users/Zach/source/Github/PolyBUS/work/PolyBUS/PolyBUS.srcs/sources_1/imports/vhdSources/myProgram.vhd" \
-   "C:/Users/Zach/source/Github/PolyBUS/work/PolyBUS/PolyBUS.srcs/sources_1/imports/Downloads/kcpsm6.vhd" \
-   "C:/Users/Zach/source/Github/PolyBUS/work/PolyBUS/PolyBUS.srcs/sources_1/imports/Downloads/myProgram.vhd" \
+   "$origin_dir/../vhdSources/Synchro_Horloges.vhd" \
+   "$origin_dir/../vhdSources/TopModule.vhd" \
+   "$origin_dir/../vhdSources/AD7476_mef.vhd" \
+   "$origin_dir/../vhdSources/Ctrl_AD1.vhd" \
+   "$origin_dir/../vhdSources/compteur_nbits.vhd" \
+   "$origin_dir/../vhdSources/reg_dec12.vhd" \
+   "$origin_dir/../vhdSources/MEF_DAC.vhd" \
+   "$origin_dir/../vhdSources/Ctrl_DAC.vhd" \
+   "$origin_dir/../vhdSources/FctBin2Thermo.vhd" \
+   "$origin_dir/../vhdSources/PolyBUS_package.vhd" \
+   "$origin_dir/../vhdSources/Calcul_pouls.vhd" \
+   "$origin_dir/../vhdSources/Calcul_persp.vhd" \
+   "$origin_dir/../vhdSources/MEF_pouls.vhd" \
+   "$origin_dir/../vhdSources/Pblaze_uCtrler.vhd" \
+   "$origin_dir/../vhdSources/myProgram.vhd" \
+   "$origin_dir/../constraints/PolyBUSConstraints.xdc" \
   ]
   foreach ifile $files {
     if { ![file isfile $ifile] } {
       puts " Could not find local file $ifile "
-      set status false
-    }
-  }
-
-  set files [list \
-   "C:/Users/Zach/source/Github/PolyBUS/vhdSources/AD7476_mef.vhd" \
-   "C:/Users/Zach/source/Github/PolyBUS/vhdSources/Calcul_persp.vhd" \
-   "C:/Users/Zach/source/Github/PolyBUS/vhdSources/Calcul_pouls.vhd" \
-   "C:/Users/Zach/source/Github/PolyBUS/vhdSources/Ctrl_AD1.vhd" \
-   "C:/Users/Zach/source/Github/PolyBUS/vhdSources/Ctrl_DAC.vhd" \
-   "C:/Users/Zach/source/Github/PolyBUS/vhdSources/FctBin2Thermo.vhd" \
-   "C:/Users/Zach/source/Github/PolyBUS/vhdSources/MEF_DAC.vhd" \
-   "C:/Users/Zach/source/Github/PolyBUS/vhdSources/PolyBUS_package.vhd" \
-   "C:/Users/Zach/source/Github/PolyBUS/vhdSources/Synchro_Horloges.vhd" \
-   "C:/Users/Zach/source/Github/PolyBUS/vhdSources/compteur_nbits.vhd" \
-   "C:/Users/Zach/source/Github/PolyBUS/vhdSources/reg_dec12.vhd" \
-   "C:/Users/Zach/source/Github/PolyBUS/vhdSources/MEF_pouls.vhd" \
-   "C:/Users/Zach/source/Github/PolyBUS/vhdSources/TopModule.vhd" \
-   "C:/Users/Zach/source/Github/PolyBUS/constraints/PolyBUSConstraints.xdc" \
-  ]
-  foreach ifile $files {
-    if { ![file isfile $ifile] } {
-      puts " Could not find remote file $ifile "
       set status false
     }
   }
@@ -112,6 +98,11 @@ set origin_dir "."
 if { [info exists ::origin_dir_loc] } {
   set origin_dir $::origin_dir_loc
 }
+
+# ==> Créer le répertoire work dans lequel on va générer le projet Vivado
+# ==> Si le dossier work existe déjà le supprimer 
+file delete -force $origin_dir/../work
+file mkdir $origin_dir/../work/
 
 # Set the project name
 set _xil_proj_name_ "PolyBUS"
@@ -184,7 +175,7 @@ if { $validate_required } {
 }
 
 # Create project
-create_project ${_xil_proj_name_} ./${_xil_proj_name_} -part xc7z010clg400-1
+create_project ${_xil_proj_name_} $origin_dir/../work/${_xil_proj_name_} -part xc7z010clg400-1
 
 # Set the directory path for the new project
 set proj_dir [get_property directory [current_project]]
@@ -220,6 +211,7 @@ if { $obj != {} } {
 
 # Set 'sources_1' fileset object
 set obj [get_filesets sources_1]
+# Import local files from the original project										  
 set files [list \
  [file normalize "${origin_dir}/../vhdSources/AD7476_mef.vhd"] \
  [file normalize "${origin_dir}/../vhdSources/Calcul_persp.vhd"] \
@@ -234,23 +226,43 @@ set files [list \
  [file normalize "${origin_dir}/../vhdSources/reg_dec12.vhd"] \
  [file normalize "${origin_dir}/../vhdSources/MEF_pouls.vhd"] \
  [file normalize "${origin_dir}/../vhdSources/TopModule.vhd"] \
+ [file normalize "${origin_dir}/../vhdSources/Pblaze_uCtrler.vhd"]\
+ [file normalize "${origin_dir}/../vhdSources/kcpsm6.vhd"]\
+ [file normalize "${origin_dir}/../vhdSources/myProgram.vhd"]\
 ]
 add_files -norecurse -fileset $obj $files
 
-# Import local files from the original project
-set files [list \
- [file normalize "${origin_dir}/../work/PolyBUS/PolyBUS.srcs/sources_1/bd/PolyBUSBlockDesign/PolyBUSBlockDesign.bd" ]\
- [file normalize "${origin_dir}/../work/PolyBUS/PolyBUS.srcs/sources_1/imports/vhdSources/Pblaze_uCtrler.vhd"]\
- [file normalize "${origin_dir}/../work/PolyBUS/PolyBUS.srcs/sources_1/imports/hdl/PolyBUSBlockDesign_wrapper.vhd"]\
- [file normalize "${origin_dir}/../work/PolyBUS/PolyBUS.srcs/sources_1/imports/vhdSources/kcpsm6.vhd"]\
- [file normalize "${origin_dir}/../work/PolyBUS/PolyBUS.srcs/sources_1/imports/vhdSources/myProgram.vhd"]\
- [file normalize "${origin_dir}/../work/PolyBUS/PolyBUS.srcs/sources_1/imports/Downloads/kcpsm6.vhd"]\
- [file normalize "${origin_dir}/../work/PolyBUS/PolyBUS.srcs/sources_1/imports/Downloads/myProgram.vhd"]\
-]
-set imported_files [import_files -fileset sources_1 $files]
+
 
 # Set 'sources_1' fileset file properties for remote files
-set file "$origin_dir/../vhdSources/AD7476_mef.vhd"
+# None
+
+set file "$origin_dir/../vhdSources/Pblaze_uCtrler.vhd"	
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/../vhdSources/kcpsm6.vhd"	
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/../vhdSources/myProgram.vhd"	
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/../vhdSources/AD7476_mef.vhd"	
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/../vhdSources/AD7476_mef.vhd"	
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/../vhdSources/AD7476_mef.vhd"												 
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
@@ -312,36 +324,6 @@ set_property -name "file_type" -value "VHDL 2008" -objects $file_obj
 
 set file "$origin_dir/../vhdSources/TopModule.vhd"
 set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "VHDL" -objects $file_obj
-
-
-# Set 'sources_1' fileset file properties for local files
-set file "PolyBUSBlockDesign/PolyBUSBlockDesign.bd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "registered_with_manager" -value "1" -objects $file_obj
-
-set file "vhdSources/Pblaze_uCtrler.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "VHDL" -objects $file_obj
-
-set file "hdl/PolyBUSBlockDesign_wrapper.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "VHDL" -objects $file_obj
-
-set file "vhdSources/kcpsm6.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "VHDL" -objects $file_obj
-
-set file "vhdSources/myProgram.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "VHDL" -objects $file_obj
-
-set file "Downloads/kcpsm6.vhd"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "VHDL" -objects $file_obj
-
-set file "Downloads/myProgram.vhd"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
 
@@ -687,3 +669,18 @@ move_dashboard_gadget -name {drc_1} -row 2 -col 0
 move_dashboard_gadget -name {timing_1} -row 0 -col 1
 move_dashboard_gadget -name {utilization_2} -row 1 -col 1
 move_dashboard_gadget -name {methodology_1} -row 2 -col 1
+
+# ###################### #
+# Créer le  block design
+# ###################### #
+source $origin_dir/../scripts/PolyBUSBlockDesign.tcl
+
+# Générer le HDL wrapper du block design
+set design_name [get_bd_designs]
+make_wrapper -files [get_files $design_name.bd] -top -import
+
+# Regénérer le layout du block design
+regenerate_bd_layout
+
+# Sauvegarder le block design
+save_bd_design

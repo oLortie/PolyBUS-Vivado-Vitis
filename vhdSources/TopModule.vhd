@@ -104,6 +104,10 @@ architecture Behavioral of TopModule is
             i_echantillon2 : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_echantillon3 : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_echantillon4 : in STD_LOGIC_VECTOR ( 11 downto 0 );
+            i_data_pression : in STD_LOGIC_VECTOR ( 11 downto 0 );
+            i_data_certitude : in STD_LOGIC_VECTOR ( 7 downto 0 );
+            i_data_compteur : in STD_LOGIC_VECTOR ( 7 downto 0 );
+            i_data_mensonge : in STD_LOGIC;
             o_perspiration_select : out STD_LOGIC;
             o_respiration_select : out STD_LOGIC
             );
@@ -320,7 +324,7 @@ begin
     bin2Thermo : FctBin2Thermo
     Port Map (
         i_echantillon => d_echantillon1,
-        o_thermo => open--PMOD_8LD
+        o_thermo => PMOD_8LD
     );
     
      mux_select_Entree_AD1 : process (i_btn(3), i_ADC_D0, i_ADC_D1)
@@ -383,7 +387,11 @@ begin
             i_echantillon4 => d_echantillon4,
             i_data_bpm => std_logic_vector(d_param_bpm),
             i_data_respiration => std_logic_vector(d_param_respiration),
-            i_data_perspiration => d_param_perspiration,  
+            i_data_perspiration => d_param_perspiration,
+            i_data_pression => "000000000000",
+            i_data_certitude => d_param_mensonge,
+            i_data_compteur => "00000011",
+            i_data_mensonge => '0',
             o_respiration_select => d_respiration_select,
             o_perspiration_select => d_perspiration_select
         );
@@ -461,9 +469,7 @@ begin
         end if;
       end if; 
   
-    end process output_ports;
-             
-    PMOD_8LD <= d_param_mensonge;        
+    end process output_ports;      
         
     main_process : process (d_strobe_100Hz)
     begin
@@ -486,8 +492,8 @@ begin
                     d_DAC_data2 <= "000000000000";
             end case;
             
-            --case d_respiration_select is
-            case i_sw(2) is
+            case d_respiration_select is
+            --case i_sw(2) is
                 when '0' =>
                     d_echantillon3 <= mem_respi025Hz(d_compteurRespiration025);
                 when '1' =>
@@ -496,8 +502,8 @@ begin
                     d_echantillon3 <= "000000000000";
             end case;
             
-            --case d_perspiration_select is
-            case i_sw(3) is
+            case d_perspiration_select is
+            --case i_sw(3) is
                 when '0' =>
                     d_echantillon4 <= mem_persp1(d_compteur100);
                 when '1' =>

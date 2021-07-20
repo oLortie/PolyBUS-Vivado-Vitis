@@ -10,11 +10,10 @@
 #include "PolyBUSip.h"
 #include "RegisterDefines.h"
 
-#include <xgpio.h>
+#include <xil_io.h>
 
 const float ReferenceVoltage = 3.3;
 
-XGpio s4i_xgpio_input_;
 
 void s4i_init_hw()
 {
@@ -50,6 +49,11 @@ int s4i_is_cmd_rawData(char* buf)
 int s4i_is_cmd_respirationSelect(char* buf)
 {
 	return (!strncmp(buf + 6, "cmd/respirationSelect", 21));
+}
+
+int s4i_is_cmd_perspirationSelect(char* buf)
+{
+	return (!strncmp(buf + 6, "cmd/perspirationSelect", 22));
 }
 
 int	s4i_is_cmd_parameters(char*buf)
@@ -162,15 +166,28 @@ void s4i_setRespirationSelect(RespirationSelect select)
 	switch (select)
 	{
 		case respi025:
-			MyADCIPRegister[0] = MyADCIPRegister[0] & 0xFEFFFFFF;
+			MyADCIPRegister[5] &= 0xFFFFFFFE;
 			break;
 		case respi05:
-			MyADCIPRegister[0] = MyADCIPRegister[0] | 0x01000000;
+			MyADCIPRegister[5] |= 0x00000001;
 			break;
 		default:
 			break;
 	}
+}
 
+void s4i_setPerspirationSelect(PerspirationSelect select) {
+	switch (select)
+	{
+		case level1:
+			MyADCIPRegister[5] &= 0xFFFFFFFD;
+			break;
+		case level2:
+			MyADCIPRegister[5] |= 0x00000002;
+			break;
+		default:
+			break;
+	}
 }
 
 u16 s4i_getSampleFrequenceRespiration()
@@ -211,9 +228,9 @@ float s4i_GetAnalysePerspiration()
 
 u16 s4i_getSamplePression()
 {
-	u32 rawData = POLYBUSIP_mReadReg(XPAR_POLYBUSIP_0_S00_AXI_BASEADDR, POLYBUSIP_S00_AXI_SLV_REG3_OFFSET);
+	u32 rawData = POLYBUSIP_mReadReg(XPAR_POLYBUSIP_0_S00_AXI_BASEADDR, POLYBUSIP_S00_AXI_SLV_REG2_OFFSET);
 
-	return rawData & 0xFFF000;
+	return (rawData & 0xFFF000) >> 12;
 }
 
 
@@ -223,6 +240,12 @@ float s4i_GetParametrePression()
 	double raw = ((double)rawSample);
 	return (((float)raw));
 
+}
+
+u16 s4i_getCertitude() {
+	u32 rawData = POLYBUSIP_mReadReg(XPAR_POLYBUSIP_0_S00_AXI_BASEADDR, POLYBUSIP_S00_AXI_SLV_REG0_OFFSET);
+
+	return (rawData & 0xFF000000) >> 24;
 }
 
 

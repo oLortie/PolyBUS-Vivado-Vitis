@@ -39,6 +39,9 @@ u16 s4i_getSampleFrequenceRespiration();
 float s4i_GetFrequenceRespiration();
 u16 s4i_getSampleAnalysePerspiration();
 float s4i_GetAnalysePerspiration();
+u16 s4i_getSamplePression();
+float s4i_GetParametrePression();
+
 
 void s4i_setRespirationSelect(RespirationSelect select);
 

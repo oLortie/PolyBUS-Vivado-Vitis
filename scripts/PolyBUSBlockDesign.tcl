@@ -204,6 +204,7 @@ proc create_root_design { parentCell } {
   # Create ports
   set i_data_bpm [ create_bd_port -dir I -from 11 -to 0 i_data_bpm ]
   set i_data_perspiration [ create_bd_port -dir I -from 11 -to 0 i_data_perspiration ]
+  set i_data_pression [ create_bd_port -dir I -from 11 -to 0 i_data_pression ]
   set i_data_respiration [ create_bd_port -dir I -from 11 -to 0 i_data_respiration ]
   set i_echantillon1 [ create_bd_port -dir I -from 11 -to 0 i_echantillon1 ]
   set i_echantillon2 [ create_bd_port -dir I -from 11 -to 0 i_echantillon2 ]
@@ -731,6 +732,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net PolyBUSip_0_o_respiration_select [get_bd_ports o_respiration_select] [get_bd_pins PolyBUSip_0/o_respiration_select]
   connect_bd_net -net i_data_bpm_0_1 [get_bd_ports i_data_bpm] [get_bd_pins PolyBUSip_0/i_data_bpm]
   connect_bd_net -net i_data_perspiration_0_1 [get_bd_ports i_data_perspiration] [get_bd_pins PolyBUSip_0/i_data_perspiration]
+  connect_bd_net -net i_data_pression_0_1 [get_bd_ports i_data_pression] [get_bd_pins PolyBUSip_0/i_data_pression]
   connect_bd_net -net i_data_respiration_0_1 [get_bd_ports i_data_respiration] [get_bd_pins PolyBUSip_0/i_data_respiration]
   connect_bd_net -net i_echantillon1_0_1 [get_bd_ports i_echantillon1] [get_bd_pins PolyBUSip_0/i_echantillon1]
   connect_bd_net -net i_echantillon2_0_1 [get_bd_ports i_echantillon2] [get_bd_pins PolyBUSip_0/i_echantillon2]

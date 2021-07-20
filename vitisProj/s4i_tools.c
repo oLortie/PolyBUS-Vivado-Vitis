@@ -209,5 +209,21 @@ float s4i_GetAnalysePerspiration()
 
 }
 
+u16 s4i_getSamplePression()
+{
+	u32 rawData = POLYBUSIP_mReadReg(XPAR_POLYBUSIP_0_S00_AXI_BASEADDR, POLYBUSIP_S00_AXI_SLV_REG3_OFFSET);
+
+	return rawData & 0xFFF000;
+}
+
+
+float s4i_GetParametrePression()
+{
+	u16 rawSample = s4i_getSamplePression();
+	double raw = ((double)rawSample);
+	return (((float)raw));
+
+}
+
 
 

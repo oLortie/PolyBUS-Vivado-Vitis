@@ -23,6 +23,7 @@ entity PolyBUSip_v1_0 is
         i_data_bpm            : in std_logic_vector(11 downto 0);
         i_data_respiration    : in std_logic_vector(11 downto 0);
         i_data_perspiration   : in std_logic_vector(11 downto 0);
+        i_data_pression      : in std_logic_vector(11 downto 0);
         
         o_respiration_select  : out std_logic;
         o_perspiration_select : out std_logic;
@@ -71,6 +72,7 @@ architecture arch_imp of PolyBUSip_v1_0 is
         i_data_bpm            : in std_logic_vector(11 downto 0);
         i_data_respiration    : in std_logic_vector(11 downto 0);
         i_data_perspiration   : in std_logic_vector(11 downto 0);
+        i_data_pression      : in std_logic_vector(11 downto 0);
         
         o_respiration_select  : out std_logic;
         o_perspiration_select : out std_logic;
@@ -113,8 +115,9 @@ PolyBUSip_v1_0_S00_AXI_inst : PolyBUSip_v1_0_S00_AXI
         i_echantillon3 => i_echantillon3,
         i_echantillon4 => i_echantillon4,
         i_data_bpm     => i_data_bpm,
-        i_data_respiration => i_data_respiration,
+        i_data_respiration  => i_data_respiration,
         i_data_perspiration => i_data_perspiration,
+        i_data_pression    => i_data_pression,
         
         o_respiration_select => o_respiration_select,
         o_perspiration_select => o_perspiration_select,

@@ -70,6 +70,9 @@ proc checkRequiredFiles { origin_dir} {
    "$origin_dir/../vhdSources/Pblaze_uCtrler.vhd" \
    "$origin_dir/../vhdSources/myProgram.vhd" \
    "$origin_dir/../constraints/PolyBUSConstraints.xdc" \
+   "$origin_dir/../vhdSources/MEF_compteur_mensonge.vhd"]\
+   "$origin_dir/../vhdSources/CompteurMensonge.vhd"]\
+   "$origin_dir/../vhdSources/affhex_pmodssd_v3.vhd"]\
   ]
   foreach ifile $files {
     if { ![file isfile $ifile] } {
@@ -229,6 +232,9 @@ set files [list \
  [file normalize "${origin_dir}/../vhdSources/Pblaze_uCtrler.vhd"]\
  [file normalize "${origin_dir}/../vhdSources/kcpsm6.vhd"]\
  [file normalize "${origin_dir}/../vhdSources/myProgram.vhd"]\
+ [file normalize "${origin_dir}/../vhdSources/MEF_compteur_mensonge.vhd"]\
+ [file normalize "${origin_dir}/../vhdSources/CompteurMensonge.vhd"]\
+ [file normalize "${origin_dir}/../vhdSources/affhex_pmodssd_v3.vhd"]\
 ]
 add_files -norecurse -fileset $obj $files
 
@@ -236,6 +242,21 @@ add_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset file properties for remote files
 # None
+
+set file "$origin_dir/../vhdSources/MEF_compteur_mensonge.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/../vhdSources/CompteurMensonge.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/../vhdSources/affhex_pmodssd_v3.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
 
 set file "$origin_dir/../vhdSources/Pblaze_uCtrler.vhd"	
 set file [file normalize $file]

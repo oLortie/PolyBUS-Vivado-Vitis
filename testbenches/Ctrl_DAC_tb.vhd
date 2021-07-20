@@ -84,8 +84,27 @@ architecture Behavioral of Ctrl_DAC_tb is
         i_ech : in STD_LOGIC_VECTOR (11 downto 0);
         o_param : out STD_LOGIC_VECTOR (11 downto 0));
     end component;
+     
+    component CompteurMensonge is
+    generic (threshold : std_logic_vector(7 downto 0) := "01111111");
+    Port ( i_pourcentage_confiance  : in STD_LOGIC_VECTOR (7 downto 0);
+           i_clk                    : in STD_LOGIC;
+           i_reset                  : in STD_LOGIC;
+           i_en                     : in STD_LOGIC;
+           o_count_mensonge         : out STD_LOGIC_VECTOR(7 downto 0));
+    end component;
     
+    component affhexPmodSSD_v3 is
+    generic (const_CLK_Hz: integer := 5_000_000);               -- horloge en Hz, typique 100 MHz 
+    Port (   clk        : in   STD_LOGIC;                     -- horloge systeme, typique 100 MHz (preciser par le constante)
+             reset      : in   STD_LOGIC;
+             DA         : in   STD_LOGIC_VECTOR (7 downto 0); -- donnee a afficher sur 8 bits : chiffre hexa position 1 et 0     
+             i_aff_mem  : in   STD_LOGIC;                     -- demande memorisation affichage continu, si 0: continu
+             JPmod      : out  STD_LOGIC_VECTOR (7 downto 0)  -- sorties directement adaptees au connecteur PmodSSD
+           );
+    end component;
     
+  
     signal reset_sim        : std_logic;
     signal clk_DAC_sim      : std_logic := '0';
     signal i_data1_sim       : std_logic_vector (11 downto 0);
@@ -108,271 +127,37 @@ architecture Behavioral of Ctrl_DAC_tb is
     signal s_param                          : std_logic_vector(11 downto 0);
     signal s_param_persp                    : std_logic_vector(11 downto 0);
     
+    signal s_count_mensonge                 : std_logic_vector(7 downto 0);
+    signal PMODSSD                          : std_logic_Vector(7 downto 0);
+    
     constant CLK_PERIOD : time := 200 ns;
     constant DAC_STROBE_PERIOD : time := 10 ms;
     constant seconde : time := 4000 ms;
       
-    type table_forme is array (integer range 0 to 254) of std_logic_vector(11 downto 0);
+    type table_forme is array (integer range 0 to 19) of std_logic_vector(11 downto 0);
     constant mem_forme_onde_R : table_forme := (
  -- forme d'une onde carrée
  -- chaque cycle a 48 echantillons
-    x"187",
-    x"1CF",
-    x"29D",
-    x"3DD",
-    x"57C",
-    x"762",
-    x"96E",
-    x"B7B",
-    x"D66",
-    x"EFA",
-    x"FF0",
-    x"FFF",
-    x"EE8",
-    x"CBD",
-    x"9BD",
-    x"627",
-    x"245",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"097",
-    x"26F",
-    x"372",
-    x"39B",
-    x"31F",
-    x"230",
-    x"103",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"013",
-    x"081",
-    x"0C4",
-    x"0CE",
-    x"0A9",
-    x"06A",
-    x"028",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"004",
-    x"01F",
-    x"034",
-    x"040",
-    x"046",
-    x"048",
-    x"04A",
-    x"04C",
-    x"04F",
-    x"053",
-    x"059",
-    x"05F",
-    x"065",
-    x"06A",
-    x"06D",
-    x"06D",
-    x"06B",
-    x"067",
-    x"061",
-    x"05A",
-    x"051",
-    x"046",
-    x"03A",
-    x"02D",
-    x"01E",
-    x"00D",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-     x"187",
-    x"1CF",
-    x"29D",
-    x"3DD",
-    x"57C",
-    x"762",
-    x"96E",
-    x"B7B",
-    x"D66",
-    x"EFA",
-    x"FF0",
-    x"FFF",
-    x"EE8",
-    x"CBD",
-    x"9BD",
-    x"627",
-    x"245",
-   
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"097",
-    x"26F",
-    x"372",
-    x"39B",
-    x"31F",
-    x"230",
-    x"103",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"013",
-    x"081",
-    x"0C4",
-    x"0CE",
-    x"0A9",
-    x"06A",
-    x"028",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"004",
-    x"01F",
-    x"034",
-    x"040",
-    x"046",
-    x"048",
-    x"04A",
-    x"04C",
-    x"04F",
-    x"053",
-    x"059",
-    x"05F",
-    x"065",
-    x"06A",
-    x"06D",
-    x"06D",
-    x"06B",
-    x"067",
-    x"061",
-    x"05A",
-    x"051",
-    x"046",
-    x"03A",
-    x"02D",
-    x"01E",
-    x"00D",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-     x"187",
-    x"1CF",
-    x"29D",
-    x"3DD",
-    x"57C",
-    x"762",
-    x"96E",
-    x"B7B",
-    x"D66",
-    x"EFA",
-    x"FF0",
-    x"FFF",
-    x"EE8",
-    x"CBD",
-    x"9BD",
-    x"627",
-    x"245",
-    x"000",
-    
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"097",
-    x"26F",
-    x"372",
-    x"39B",
-    x"31F",
-    x"230",
-    x"103",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"013",
-    x"081",
-    x"0C4",
-    x"0CE",
-    x"0A9",
-    x"06A",
-    x"028",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"004",
-    x"01F",
-    x"034",
-    x"040",
-    x"046",
-    x"048",
-    x"04A",
-    x"04C",
-    x"04F",
-    x"053",
-    x"059",
-    x"05F",
-    x"065",
-    x"06A",
-    x"06D",
-    x"06D",
-    x"06B",
-    x"067",
-    x"061",
-    x"05A",
-    x"051",
-    x"046",
-    x"03A",
-    x"02D",
-    x"01E",
-    x"00D",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000",
-    x"000"
+    "000000000001",
+    "000000000001",
+    "000000000001",
+    "000000000001",
+    "000000000001",
+    "000000000001",
+    "000000000001",
+    "000000000001",
+    "000000000001",
+    "000000000001",
+    "111111111111",
+    "111111111111",
+    "111111111111",
+    "111111111111",
+    "111111111111",
+    "111111111111",
+    "111111111111",
+    "111111111111",
+    "111111111111",
+    "111111111111"
     );
   
     
@@ -406,6 +191,25 @@ begin
             o_echantillon2  => o_ech2_ADC
     );
     
+    inst_compteur_mensonge : CompteurMensonge
+    port map(
+         i_pourcentage_confiance  => o_ech1_ADC(7 downto 0),
+         i_clk                    => clk_DAC_sim,
+         i_reset                  => reset_sim,
+         i_en                     => o_echantilllon_pret_ADC,
+         o_count_mensonge         => s_count_mensonge 
+    );
+    
+    inst_afficheur_7_seg :  affhexPmodSSD_v3
+    port map(
+        clk        =>  clk_DAC_sim,                    -- horloge systeme, typique 100 MHz (preciser par le constante)
+        reset      =>   reset_sim,
+        DA         => s_count_mensonge, -- donnee a afficher sur 8 bits : chiffre hexa position 1 et 0     
+        i_aff_mem  => '0',                     -- demande memorisation affichage continu, si 0: continu
+        JPmod      => PMODSSD
+    );
+    
+      
     inst_calcul_pouls : Calcul_pouls    
     Port map( 
            i_clk => clk_DAC_sim,

@@ -99,6 +99,7 @@ architecture Behavioral of TopModule is
             i_data_bpm : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_data_perspiration : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_data_respiration : in STD_LOGIC_VECTOR ( 11 downto 0 );
+            i_data_pression   : in std_logic_vector (11 downto 0);
             i_echantillon1 : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_echantillon2 : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_echantillon3 : in STD_LOGIC_VECTOR ( 11 downto 0 );
@@ -164,6 +165,16 @@ architecture Behavioral of TopModule is
     
     end component;
     
+    component Calcul_pression is
+    Port ( 
+           i_strobe : in std_logic;
+           i_signal : in STD_LOGIC_VECTOR (11 downto 0);
+           i_clk : in STD_LOGIC;
+           o_pression_sanguine : out STD_LOGIC_VECTOR (11 downto 0);
+           o_enable : out STD_LOGIC;
+           i_reset : in STD_LOGIC);
+    end component;
+    
     component Synchro_Horloges is
     generic (const_CLK_syst_MHz: integer := freq_sys_MHz);
     Port ( 
@@ -196,8 +207,10 @@ architecture Behavioral of TopModule is
     signal d_param_bpm                  : std_logic_vector(11 downto 0);
     signal d_param_respiration          : std_logic_vector(11 downto 0);
     signal d_param_perspiration         : std_logic_vector(11 downto 0);
+    signal d_param_pression             : std_logic_vector(11 downto 0);
     signal d_respiration_select         : std_logic;
     signal d_perspiration_select        : std_logic;
+    signal d_pression_ready             : std_logic;
     
        
     
@@ -263,6 +276,16 @@ begin
     i_en => d_strobe_100Hz, -- strobe disponible pour les signaux qui passent pas dans la boucle ?
     i_ech => d_echantillon4,
     o_param => d_param_perspiration
+    );
+    
+    inst_calcul_pression : Calcul_pression 
+    Port map( 
+           i_strobe => o_echantillon_pret_strobe,
+           i_signal => d_echantillon2,
+           i_clk => clk_5MHz,
+           o_pression_sanguine => d_param_pression,
+           o_enable => d_pression_ready,
+           i_reset => reset
     );
     
     
@@ -334,6 +357,7 @@ begin
             i_data_bpm => std_logic_vector(d_param_bpm),
             i_data_respiration => std_logic_vector(d_param_respiration),
             i_data_perspiration => d_param_perspiration,  
+            i_data_pression   => d_param_pression,
             o_leds_tri_o => o_leds,
             o_respiration_select => d_respiration_select,
             o_perspiration_select => d_perspiration_select

@@ -341,6 +341,8 @@ begin
     o_param => d_param_respiration
     );
     
+    --d_param_respiration <= "000100101100";
+    
     inst_calcul_perspiration : Calcul_persp
     port map (
     i_clk => clk_5MHz,
@@ -352,7 +354,7 @@ begin
     
     inst_calcul_pression : Calcul_pression 
     Port map( 
-           i_strobe => d_strobe_100Hz,
+           i_strobe => o_echantillon_pret_strobe,
            i_signal => d_echantillon2,
            i_clk => clk_5MHz,
            o_pression_sanguine => d_param_pression,
@@ -362,7 +364,7 @@ begin
     
     inst_compteur_mensonge : CompteurMensonge
     port map(
-    i_pourcentage_confiance  => d_echantillon3(11 downto 4),
+    i_pourcentage_confiance  => "00000000",
     i_clk                    => clk_5MHz,
     i_reset                  => reset,
     i_en                     => d_strobe_100Hz,
@@ -384,7 +386,6 @@ begin
         i_echantillon => d_echantillon1,
         o_thermo => Pmod_8LD
     );
-    
     
      mux_select_Entree_AD1 : process (i_btn(3), i_ADC_D0, i_ADC_D1)
      begin

@@ -1,6 +1,6 @@
 --
 -------------------------------------------------------------------------------------------
--- Copyright © 2010-2014, Xilinx, Inc.
+-- Copyright ï¿½ 2010-2014, Xilinx, Inc.
 -- This file contains confidential and proprietary information of Xilinx, Inc. and is
 -- protected under U.S. and international copyright and other intellectual property laws.
 -------------------------------------------------------------------------------------------

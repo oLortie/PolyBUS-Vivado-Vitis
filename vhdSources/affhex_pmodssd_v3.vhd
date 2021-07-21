@@ -1,11 +1,11 @@
 ---------------------------------------------------------------------------------------------
 -- circuit affhex_pmodssd_v3.vhd
 ---------------------------------------------------------------------------------------------
--- Université de Sherbrooke - Département de GEGI
+-- Universitï¿½ de Sherbrooke - Dï¿½partement de GEGI
 -- Version         : 3.0
 -- Nomenclature    : 0.8 GRAMS
 -- Date            : revision 16 mai 2019 
--- Auteur(s)       : Réjean Fontaine, Daniel Dalle
+-- Auteur(s)       : Rï¿½jean Fontaine, Daniel Dalle
 -- Technologies    : FPGA Zynq (carte ZYBO Z7-10 ZYBO Z7-20)
 --
 -- Outils          : vivado 2016.1 64 bits, vivado 2018.2
@@ -13,7 +13,7 @@
 -- Description:
 -- Affichage sur module de 2 chiffes (7 segments) sur PmodSSD 
 -- reference https://reference.digilentinc.com/reference/pmod/pmodssd/start 
---           PmodSSD™ Reference Manual Doc: 502-126 Digilent, Inc.
+--           PmodSSDï¿½ Reference Manual Doc: 502-126 Digilent, Inc.
 --
 -- Revisions
 -- mise a jour D Dalle 16 mai 2019 controle de la memorisation de l'affichage
@@ -30,12 +30,12 @@
 -- revision pour une seule entre sur 8 bits affichee sur les deux chiffres Hexa
 --
 -- Creation selon affhex7segx4v3.vhd 
--- (Daniel Dalle, Réjean Fontaine Universite de Sherbrooke, Departement GEGI)
+-- (Daniel Dalle, Rï¿½jean Fontaine Universite de Sherbrooke, Departement GEGI)
 -- 26 septembre 2011, revision 12 juin 2012, 25 janvier 2013, 7 mai 2015
--- Contrôle de l'afficheur a sept segment (BASYS2 - NEXYS2)
+-- Contrï¿½le de l'afficheur a sept segment (BASYS2 - NEXYS2)
 -- horloge 100MHz et diviseur interne
 ---------------------------------------------------------------------------------------------
--- À faire :
+-- ï¿½ faire :
 --
 --
 --
@@ -98,7 +98,7 @@ begin
         end if;               
 end process;
 
--- multiplexage pour selection donnee (continue ou bloquée)
+-- multiplexage pour selection donnee (continue ou bloquï¿½e)
 sel_aff_proc: process(i_aff_mem, DA)
 begin
      if i_aff_mem = '0' then 

@@ -100,6 +100,7 @@ architecture Behavioral of TopModule is
             i_data_bpm : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_data_perspiration : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_data_respiration : in STD_LOGIC_VECTOR ( 11 downto 0 );
+            i_data_pression    : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_echantillon1 : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_echantillon2 : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_echantillon3 : in STD_LOGIC_VECTOR ( 11 downto 0 );
@@ -155,9 +156,7 @@ architecture Behavioral of TopModule is
            i_ech : in STD_LOGIC_VECTOR (11 downto 0);
            o_param : out STD_LOGIC_VECTOR (11 downto 0));
     end component;
-    
-    
-    
+     
     component Calcul_persp is 
     port( 
     i_clk : in STD_LOGIC;
@@ -166,6 +165,16 @@ architecture Behavioral of TopModule is
     i_ech : in STD_LOGIC_VECTOR (11 downto 0);
     o_param : out STD_LOGIC_VECTOR (11 downto 0));
     
+    end component;
+    
+    component Calcul_pression is
+    Port ( 
+           i_strobe : in std_logic;
+           i_signal : in STD_LOGIC_VECTOR (11 downto 0);
+           i_clk : in STD_LOGIC;
+           o_pression_sanguine : out STD_LOGIC_VECTOR (11 downto 0);
+           o_enable : out STD_LOGIC;
+           i_reset : in STD_LOGIC);
     end component;
     
     component Synchro_Horloges is
@@ -178,7 +187,7 @@ architecture Behavioral of TopModule is
         o_stb_100Hz : out  std_logic; -- strobe 100Hz synchro sur clk_5MHz 
         o_S_1Hz     : out  std_logic  -- Signal temoin 1 Hz
     );
-    end component;  
+    end component;
     
     component kcpsm6 is
     generic(               hwbuild : std_logic_vector(7 downto 0) := X"00";
@@ -231,11 +240,15 @@ architecture Behavioral of TopModule is
     signal d_param_bpm                  : std_logic_vector(11 downto 0);
     signal d_param_respiration          : std_logic_vector(11 downto 0);
     signal d_param_perspiration         : std_logic_vector(11 downto 0);
+    signal d_param_pression             : std_logic_vector(11 downto 0);
     signal d_respiration_select         : std_logic;
     signal d_perspiration_select        : std_logic;
     signal d_param_mensonge             : std_logic_vector(7 downto 0);
+    signal d_pression_ready             : std_logic;
+    signal s_count_mensonge             : std_logic_vector(7 downto 0 );
     
-       
+    
+    signal s_temp                       : std_logic_vector(7 downto 0);
     
     signal d_compteurRespiration025 : integer range 0 to 500 := 0;
     signal d_compteurRespiration05 : integer range 0 to 500 := 0;
@@ -282,14 +295,14 @@ begin
     inst_Ctrl_ADC1 : Ctrl_AD1
     port Map ( 
         reset => reset,
-        clk_ADC => clk_5MHz,
-        i_DO1 => i_ADC_D0,
-        i_DO2 => i_ADC_D1,       
-        o_ADC_nCS => o_ADC_NCS,
-        i_ADC_Strobe => d_strobe_100Hz_ADC,
-        o_echantillon_pret_strobe => o_echantillon_pret_strobe,
-        o_echantillon1 => d_echantillon1,
-        o_echantillon2 => d_echantillon2
+        clk_ADC => clk_5MHz,                                    -- pour horloge externe de l'ADC
+        i_DO1 => i_ADC_D0,                                      -- bit de donn�es provenant de l'ADC
+        i_DO2 => i_ADC_D1,                                      -- bit de donn�es provenant de l'ADC
+        o_ADC_nCS => o_ADC_NCS,                                 -- chip select pour le convertisseur (ADC)
+        i_ADC_Strobe => d_strobe_100Hz_ADC,                     -- synchronisation: d�clencheur de la s�quence d'�chantillonnage
+        o_echantillon_pret_strobe => o_echantillon_pret_strobe, -- strobe indicateur d'une r�ception compl�te d'un �chantillon
+        o_echantillon1 => d_echantillon1,                       -- valeur de l'�chantillon re�u (12 bits)
+        o_echantillon2 => d_echantillon2                        -- valeur de l'�chantillon re�u (12 bits)
     );
     
     inst_calcul_Pouls : Calcul_pouls
@@ -319,12 +332,39 @@ begin
     o_param => d_param_perspiration
     );
     
+    inst_calcul_pression : Calcul_pression 
+    Port map( 
+           i_strobe => d_strobe_100Hz,
+           i_signal => d_echantillon2,
+           i_clk => clk_5MHz,
+           o_pression_sanguine => d_param_pression,
+           o_enable => d_pression_ready,
+           i_reset => reset
+    );
+    
+    inst_compteur_mensonge : CompteurMensonge
+    port map(
+    i_pourcentage_confiance  => d_echantillon3(11 downto 4),
+    i_clk                    => clk_5MHz,
+    i_reset                  => reset,
+    i_en                     => d_strobe_100Hz,
+    o_count_mensonge         => s_count_mensonge 
+    );
+    
+    inst_afficheur_7_seg :  affhexPmodSSD_v3
+    port map(
+        clk        =>  clk_5MHz,                    -- horloge systeme, dans notre cas c'est 5 MHZ
+        reset      =>   reset,
+        DA         => s_count_mensonge,         -- donnee a afficher sur 8 bits : chiffre hexa position 1 et 0     
+        i_aff_mem  => '0',                     -- demande memorisation affichage continu, si 0: continu
+        JPmod      => s_temp
+    );
     
     
     bin2Thermo : FctBin2Thermo
     Port Map (
         i_echantillon => d_echantillon1,
-        o_thermo => PMOD_8LD
+        o_thermo => Pmod_8LD
     );
     
     
@@ -347,6 +387,15 @@ begin
            o_S_100Hz    => open,
            o_stb_100Hz  => d_strobe_100Hz,
            o_S_1Hz      => o_ledtemoin_b
+    );
+    
+    Picoblaze : Pblaze_uCtrler
+    port map(
+          clk                       =>  clk_5MHz,          
+          i_ADC_echantillon         => d_echantillon1,
+          i_ADC_echantillon_pret    => o_echantillon_pret_strobe, 
+          o_compteur                =>  open, --o_leds,    
+          o_echantillon_out         =>  open --Pmod_8LD    
     );
     
     o_DAC_CLK <= clk_5MHz;
@@ -374,7 +423,7 @@ begin
             FIXED_IO_ps_clk => FIXED_IO_ps_clk,
             FIXED_IO_ps_porb => FIXED_IO_ps_porb,
             FIXED_IO_ps_srstb => FIXED_IO_ps_srstb,
-            Pmod_OLED_pin1_io => Pmod_OLED(0),
+            Pmod_OLED_pin1_io => Pmod_OLED(0),  --a changer apres le test
             Pmod_OLED_pin2_io => Pmod_OLED(1),
             Pmod_OLED_pin3_io => Pmod_OLED(2),
             Pmod_OLED_pin4_io => Pmod_OLED(3),

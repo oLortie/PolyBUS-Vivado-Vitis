@@ -105,7 +105,6 @@ architecture Behavioral of TopModule is
             i_echantillon2 : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_echantillon3 : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_echantillon4 : in STD_LOGIC_VECTOR ( 11 downto 0 );
-            i_data_pression : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_data_certitude : in STD_LOGIC_VECTOR ( 7 downto 0 );
             i_data_compteur : in STD_LOGIC_VECTOR ( 7 downto 0 );
             i_data_mensonge : in STD_LOGIC;
@@ -175,6 +174,25 @@ architecture Behavioral of TopModule is
            o_pression_sanguine : out STD_LOGIC_VECTOR (11 downto 0);
            o_enable : out STD_LOGIC;
            i_reset : in STD_LOGIC);
+    end component;
+    
+    component CompteurMensonge is
+    generic (threshold : std_logic_vector(7 downto 0) := "01111111");
+        Port ( i_pourcentage_confiance  : in STD_LOGIC_VECTOR (7 downto 0);
+               i_clk                    : in STD_LOGIC;
+               i_reset                  : in STD_LOGIC;
+               i_en                     : in STD_LOGIC;
+               o_count_mensonge         : out STD_LOGIC_VECTOR(7 downto 0));
+    end component;
+    
+    component affhexPmodSSD_v3 is
+    generic (const_CLK_Hz: integer := 100_000_000);               -- horloge en Hz, typique 100 MHz 
+        Port (   clk        : in   STD_LOGIC;                     -- horloge systeme, typique 100 MHz (preciser par le constante)
+                 reset      : in   STD_LOGIC;
+                 DA         : in   STD_LOGIC_VECTOR (7 downto 0); -- donnee a afficher sur 8 bits : chiffre hexa position 1 et 0     
+                 i_aff_mem  : in   STD_LOGIC;                     -- demande memorisation affichage continu, si 0: continu
+                 JPmod      : out  STD_LOGIC_VECTOR (7 downto 0)  -- sorties directement adaptees au connecteur PmodSSD
+               );
     end component;
     
     component Synchro_Horloges is
@@ -389,15 +407,6 @@ begin
            o_S_1Hz      => o_ledtemoin_b
     );
     
-    Picoblaze : Pblaze_uCtrler
-    port map(
-          clk                       =>  clk_5MHz,          
-          i_ADC_echantillon         => d_echantillon1,
-          i_ADC_echantillon_pret    => o_echantillon_pret_strobe, 
-          o_compteur                =>  open, --o_leds,    
-          o_echantillon_out         =>  open --Pmod_8LD    
-    );
-    
     o_DAC_CLK <= clk_5MHz;
     
     BlockDesign : PolyBUSBlockDesign_wrapper
@@ -438,9 +447,9 @@ begin
             i_data_bpm => d_param_bpm,
             i_data_respiration => d_param_respiration,
             i_data_perspiration => d_param_perspiration,
-            i_data_pression => "000000000000",
+            i_data_pression => d_param_pression,
             i_data_certitude => d_param_mensonge,
-            i_data_compteur => "00000011",
+            i_data_compteur => s_count_mensonge,
             i_data_mensonge => '0',
             o_respiration_select => d_respiration_select,
             o_perspiration_select => d_perspiration_select

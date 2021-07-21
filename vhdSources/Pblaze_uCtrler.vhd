@@ -92,9 +92,9 @@ architecture Behavioral of Pblaze_uCtrler is
     signal    kcpsm6_sleep : std_logic;
     signal    kcpsm6_reset : std_logic;
     
-    signal q_echantillon_out        : std_logic_vector ( 7 downto 0 ) := (others => '0');
-    signal q_compteur               : std_logic_vector ( 3 downto 0 ) := (others => '0');
-    signal q_ADC_echantillon_pret   : std_logic;
+    --signal q_echantillon_out        : std_logic_vector ( 7 downto 0 ) := (others => '0');
+    --signal q_compteur               : std_logic_vector ( 3 downto 0 ) := (others => '0');
+    --signal q_ADC_echantillon_pret   : std_logic;
 
 begin
 
@@ -263,6 +263,6 @@ begin
 
     end process output_ports;
 
-o_result <= q_echantillon_out;
+--o_result <= q_echantillon_out;
 
 end Behavioral;

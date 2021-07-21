@@ -44,7 +44,7 @@ port (
     i_btn           : in std_logic_vector ( 3 downto 0 );
     o_ledtemoin_b   : out std_logic;
     
-    Pmod_8LD        : inout std_logic_vector ( 7 downto 0 );  -- port JD
+    Pmod_8LD        : inout std_logic_vector ( 7 downto 0 );  -- port JA
     Pmod_OLED       : inout std_logic_vector ( 7 downto 0 );  -- port_JE
     
     -- Pmod_AD1 - port_JC haut
@@ -304,10 +304,10 @@ begin
     
     Picoblaze : Pblaze_uCtrler
     port map(
-          clk           =>  sys_clock,          
-          i_param_BPM   => d_param_bpm,
+          clk                   =>  sys_clock,          
+          i_param_BPM           => d_param_bpm,
           i_param_respiration   => d_param_respiration,
-          o_result      =>  Pmod_8LD
+          o_result              =>  Pmod_8LD
     );
     
     o_DAC_CLK <= clk_5MHz;

@@ -20,9 +20,9 @@ PolyBUS
 
 
 ****INFORMATION POUR GENERER LE FICHIER myProgram.vhd POUR LE PICOBLAZE A PARTIR DU CODE ASSEMBLEUR KCPSM6*****
-1. Modifier myProgram.psm avec vos changements
+1. Modifier myProgram.psm avec vos changements dans le floder Picoblaze de ce repo
 2. Compiler avec kcpsm6.exe (cliquer et entrer myProgram.psm) pour generer le nouveau fichier myProgram.vhd
-3. Ajouter myProgram.vhd au projet Vivado s'il ne l'est pas déjà
+3. Déplacer myProgram.vhd dans vhdSources pour l'overwritter s'il ne l'est pas déjà
 
 
 **INFORMATION POUR SETUP DU SCRIPT DE GENERATION DE SIGNAUX**

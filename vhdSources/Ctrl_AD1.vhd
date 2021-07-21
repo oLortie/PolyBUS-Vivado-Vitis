@@ -29,17 +29,24 @@ architecture Behavioral of Ctrl_AD1 is
     signal d_Decale : std_logic;
     signal d_reset_cpt  : std_logic;
     signal d_val_compteur : std_logic_vector (4 downto 0);
+    signal d_register1_value : std_logic_vector(11 downto 0);
+    signal d_register2_value : std_logic_vector(11 downto 0);
   
     component AD7476_mef
     port ( 
-        clk_ADC                 : in    std_logic; 
-        reset                   : in    std_logic; 
-        i_ADC_Strobe            : in    std_logic;  --  cadence echantillonnage AD1
-        i_Count_value           : in std_logic_vector (4 downto 0);
-        o_ADC_nCS               : out   std_logic;  -- Signal Chip select vers l'ADC  
-        o_Decale                : out   std_logic;  -- Signal de dï¿½calage
-        o_reset_cpt             : out std_logic;
-        o_FinSequence_Strobe    : out   std_logic   -- Strobe de fin de sï¿½quence d'ï¿½chantillonnage 
+        clk_ADC                 : in std_logic;
+        reset			        : in std_logic;
+        i_ADC_Strobe            : in std_logic;     --  cadence echantillonnage AD1   
+        i_Count_value           : in std_logic_vector (4 downto 0); 
+        i_register1_value       : in std_logic_vector(11 downto 0);
+        i_register2_value       : in std_logic_vector(11 downto 0);
+        
+        o_ADC_nCS		        : out std_logic;    -- Signal Chip select vers l'ADC  
+        o_Decale			    : out std_logic;    -- Signal de décalage
+        o_reset_cpt             : out std_logic;    -- Reset Compteur
+        o_echantillon1          : out std_logic_vector(11 downto 0);
+        o_echantillon2          : out std_logic_vector(11 downto 0);
+        o_FinSequence_Strobe    : out std_logic     -- Strobe de fin de séquence d'échantillonnage
     );
     end component;  
 
@@ -73,10 +80,14 @@ begin
         reset                   => reset,
         i_ADC_Strobe            => i_ADC_Strobe,
         i_Count_value           => d_val_compteur,
+        i_register1_value       => d_register1_value,
+        i_register2_value       => d_register2_value,
         o_ADC_nCS               => o_ADC_nCS,
         o_Decale                => d_Decale,
         o_reset_cpt             => d_reset_cpt,
-        o_FinSequence_Strobe    => o_echantillon_pret_strobe
+        o_FinSequence_Strobe    => o_echantillon_pret_strobe,
+        o_echantillon1          => o_echantillon1,
+        o_echantillon2          => o_echantillon2
     );
     
     inst_reg_dec12_1 : reg_dec12
@@ -87,7 +98,7 @@ begin
             i_en        => d_Decale,
             i_dat_bit   => i_DO1,
             i_dat_load  => "000000000000",
-            o_dat       => o_echantillon1
+            o_dat       => d_register1_value
      );
      
      inst_reg_dec12_2 : reg_dec12
@@ -98,7 +109,7 @@ begin
             i_en        => d_Decale,
             i_dat_bit   => i_DO2,
             i_dat_load  => "000000000000",
-            o_dat       => o_echantillon2
+            o_dat       => d_register2_value
      );
      
      inst_compteur : compteur_nbits

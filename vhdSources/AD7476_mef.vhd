@@ -18,10 +18,14 @@ port(
     reset			        : in std_logic;
     i_ADC_Strobe            : in std_logic;     --  cadence echantillonnage AD1   
     i_Count_value           : in std_logic_vector (4 downto 0); 
+    i_register1_value       : in std_logic_vector(11 downto 0);
+    i_register2_value       : in std_logic_vector(11 downto 0);
     
     o_ADC_nCS		        : out std_logic;    -- Signal Chip select vers l'ADC  
     o_Decale			    : out std_logic;    -- Signal de décalage
     o_reset_cpt             : out std_logic;    -- Reset Compteur
+    o_echantillon1          : out std_logic_vector(11 downto 0);
+    o_echantillon2          : out std_logic_vector(11 downto 0);
     o_FinSequence_Strobe    : out std_logic     -- Strobe de fin de séquence d'échantillonnage 
 );
 end AD7476_mef;
@@ -39,6 +43,8 @@ architecture Behavioral of AD7476_mef is
 
 --	Signals
     signal etat_courant, etat_suivant : State_type;
+    signal d_echantillon1_temp : std_logic_vector(11 downto 0) := "000000000000";
+    signal d_echantillon2_temp : std_logic_vector(11 downto 0) := "000000000000";
 
 --	Registers
 
@@ -67,12 +73,6 @@ begin
         else
             etat_suivant <= Idle;
         end if;
---    when ReadingZeros =>
---        if i_Count_value = "00011" then
---            etat_suivant <= Lecture;
---        else
---            etat_suivant <= ReadingZeros;
---        end if;
     when Lecture =>
         if i_Count_value = "01110" then
             etat_suivant <= Confirmation;
@@ -95,11 +95,6 @@ begin
         o_Decale <= '0';
         o_FinSequence_Strobe <= '0';
         o_reset_cpt <= '1';
---    when ReadingZeros =>
---        o_ADC_nCS <= '0';
---        o_Decale <= '0';
---        o_FinSequence_Strobe <= '0';
---        o_reset_cpt <= '0';
     when Lecture =>
         o_ADC_nCS <= '0';
         o_Decale <= '1';
@@ -110,6 +105,8 @@ begin
         o_Decale <= '0';
         o_FinSequence_Strobe <= '1';
         o_reset_cpt <= '1';
+        d_echantillon1_temp <= i_register1_value; 
+        d_echantillon2_temp <= i_register2_value;
     when others =>
         o_ADC_nCS <= '0';
         o_Decale <= '0';
@@ -117,5 +114,8 @@ begin
         o_reset_cpt <= '0';
     end case;
 end process;
+
+   o_echantillon1 <= d_echantillon1_temp;
+   o_echantillon2 <= d_echantillon2_temp;
  
 end Behavioral;

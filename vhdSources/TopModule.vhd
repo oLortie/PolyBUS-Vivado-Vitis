@@ -327,6 +327,7 @@ begin
         o_thermo => PMOD_8LD
     );
     
+    
      mux_select_Entree_AD1 : process (i_btn(3), i_ADC_D0, i_ADC_D1)
      begin
           if (i_btn(3) ='0') then 
@@ -385,8 +386,8 @@ begin
             i_echantillon2 => d_echantillon2,
             i_echantillon3 => d_echantillon3,
             i_echantillon4 => d_echantillon4,
-            i_data_bpm => std_logic_vector(d_param_bpm),
-            i_data_respiration => std_logic_vector(d_param_respiration),
+            i_data_bpm => d_param_bpm,
+            i_data_respiration => d_param_respiration,
             i_data_perspiration => d_param_perspiration,
             i_data_pression => "000000000000",
             i_data_certitude => d_param_mensonge,
@@ -480,7 +481,7 @@ begin
                 when '1' =>
                     d_DAC_data1 <= mem_pouls85(d_compteurPouls85);
                 when others =>
-                    d_DAC_data1 <= "000000000000";
+                    d_DAC_data1 <= mem_pouls70(d_compteurPouls70);
             end case;
             
             case i_sw(1) is
@@ -489,7 +490,7 @@ begin
                 when '1' =>
                     d_DAC_data2 <= mem_pre13080(d_compteur100);
                 when others =>
-                    d_DAC_data2 <= "000000000000";
+                    d_DAC_data2 <= mem_pre12080(d_compteur100);
             end case;
             
             case d_respiration_select is
@@ -499,7 +500,7 @@ begin
                 when '1' =>
                     d_echantillon3 <= mem_respi05Hz(d_compteurRespiration05);
                 when others =>
-                    d_echantillon3 <= "000000000000";
+                    d_echantillon3 <= mem_respi025Hz(d_compteurRespiration025);
             end case;
             
             case d_perspiration_select is
@@ -509,7 +510,7 @@ begin
                 when '1' =>
                     d_echantillon4 <= mem_persp2(d_compteur100);
                 when others =>
-                    d_echantillon4 <= "000000000000";
+                    d_echantillon4 <= mem_persp2(d_compteur100);
             end case;
        
             

@@ -309,7 +309,7 @@ begin
     
     inst_calcul_pression : Calcul_pression 
     Port map( 
-           i_strobe => o_echantillon_pret_strobe,
+           i_strobe => d_strobe_100Hz,
            i_signal => d_echantillon2,
            i_clk => clk_5MHz,
            o_pression_sanguine => d_param_pression,
@@ -322,7 +322,7 @@ begin
     i_pourcentage_confiance  => d_echantillon3(11 downto 4),
     i_clk                    => clk_5MHz,
     i_reset                  => reset,
-    i_en                     => o_echantillon_pret_strobe,
+    i_en                     => d_strobe_100Hz,
     o_count_mensonge         => s_count_mensonge 
     );
     
@@ -412,7 +412,7 @@ begin
             i_data_bpm => std_logic_vector(d_param_bpm),
             i_data_respiration => std_logic_vector(d_param_respiration),
             i_data_perspiration => d_param_perspiration,
-            i_data_pression     => d_param_pression,
+            i_data_pression     => std_logic_vector(d_param_pression),
             o_leds_tri_o => o_leds,
             o_respiration_select => d_respiration_select,
             o_perspiration_select => d_perspiration_select

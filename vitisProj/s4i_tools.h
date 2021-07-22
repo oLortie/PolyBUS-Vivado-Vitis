@@ -48,6 +48,7 @@ float s4i_GetAnalysePerspiration();
 u16 s4i_getSamplePression();
 float s4i_GetParametrePression();
 u16 s4i_getCertitude();
+u16 s4i_getCounter();
 
 
 void s4i_setRespirationSelect(RespirationSelect select);

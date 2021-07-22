@@ -8,6 +8,8 @@
 #include "s4i_tools.h"
 #include "xparameters.h"
 #include "PolyBUSip.h"
+#include "Counterip.h"
+#include "SingleValueip.h"
 #include "RegisterDefines.h"
 
 #include <xil_io.h>
@@ -147,7 +149,7 @@ float s4i_GetPressionVoltage()
 
 u16 s4i_getSampleBPM()
 {
-	u32 rawData = POLYBUSIP_mReadReg(XPAR_POLYBUSIP_0_S00_AXI_BASEADDR, POLYBUSIP_S00_AXI_SLV_REG3_OFFSET);
+	u32 rawData = SINGLEVALUEIP_mReadReg(XPAR_BPMIP_0_S00_AXI_BASEADDR, SINGLEVALUEIP_S00_AXI_SLV_REG0_OFFSET);
 
 	return rawData & 0xFFF;
 }
@@ -192,8 +194,9 @@ void s4i_setPerspirationSelect(PerspirationSelect select) {
 
 u16 s4i_getSampleFrequenceRespiration()
 {
-	u32 rawData = POLYBUSIP_mReadReg(XPAR_POLYBUSIP_0_S00_AXI_BASEADDR, POLYBUSIP_S00_AXI_SLV_REG3_OFFSET);
-	return (rawData & 0xFFF000) >> 12;
+	u32 rawData = SINGLEVALUEIP_mReadReg(XPAR_RESPIRATIONIP_0_S00_AXI_BASEADDR, SINGLEVALUEIP_S00_AXI_SLV_REG0_OFFSET);
+
+	return rawData & 0xFFF;
 }
 
 
@@ -244,6 +247,13 @@ float s4i_GetParametrePression()
 
 u16 s4i_getCertitude() {
 	u32 rawData = POLYBUSIP_mReadReg(XPAR_POLYBUSIP_0_S00_AXI_BASEADDR, POLYBUSIP_S00_AXI_SLV_REG0_OFFSET);
+
+	return (rawData & 0xFF000000) >> 24;
+}
+
+u16 s4i_getCounter()
+{
+	u32 rawData = COUNTERIP_mReadReg(XPAR_COUNTERIP_0_S00_AXI_BASEADDR, COUNTERIP_S00_AXI_SLV_REG0_OFFSET);
 
 	return (rawData & 0xFF000000) >> 24;
 }

@@ -79,12 +79,12 @@ begin
     WHEN IDLE => etat_suivant <= WAIT_FOR_TRESHOLD;
     
     WHEN WAIT_FOR_TRESHOLD =>
-                if i_en='1' then
+                --if i_en='1' then
                     if i_dat(11 downto 0) > 0x"C1F" then etat_suivant <= CONFIRMATION; -- Si le msb passe a letat + (0), on entre dans la phase de confirmation
                     else etat_suivant <= WAIT_FOR_TRESHOLD;
                     end if;  
-                end if;          
-    WHEN CONFIRMATION => if i_en = '1'  then
+                --end if;          
+    WHEN CONFIRMATION => --if i_en = '1'  then
                             if (i_dat <= 0x"C1F") then 
                                  etat_suivant <= WAIT_FOR_TRESHOLD; -- si on detect une valeur en bas du treshold on drop en attente
                                  
@@ -93,7 +93,7 @@ begin
                             else
                                  etat_suivant <= CONFIRMATION;  
                             end if;
-                        end if;
+                        --end if;
 
     WHEN LOAD => etat_suivant <= RESETCPT;
     
@@ -103,17 +103,17 @@ begin
                       elsif  i_dat <= 0x"C1F" then etat_suivant <= CALCUL_FREQ_LOW;    
                       end if;
     
-    WHEN CALCUL_FREQ_HIGH => if  i_en='1' then
+    WHEN CALCUL_FREQ_HIGH => --if  i_en='1' then
                                if i_dat <= 0x"C1F" then etat_suivant <= CALCUL_FREQ_LOW; -- si on detect une valeur negative avant le cpt a trois on retourne IDLE
                                else  etat_suivant <= CALCUL_FREQ_HIGH; -- Si on est encore dans le +, on reste dans le meme state
                                end if;
-                            end if;
+                            --end if;
     WHEN CALCUL_FREQ_LOW =>
-                       if  i_en='1' then
+                       --if  i_en='1' then
                          if i_dat <= 0x"C1F" then etat_suivant <= CALCUL_FREQ_LOW; -- si on reste dans le negatif, reste dans le meme state
                          elsif i_dat > 0x"C1F" then etat_suivant <= CONFIRMATION;
                          end if;
-                       end if;
+                       --end if;
  
     WHEN OTHERS => etat_suivant <= IDLE;    
           
@@ -158,6 +158,6 @@ begin
 end process;
 
    
-o_en_cpt <= s_en_cpt and i_en;
+o_en_cpt <= s_en_cpt;-- and i_en;
 
 end Behavioral;

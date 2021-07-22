@@ -2,7 +2,7 @@
 <spirit:component xmlns:xilinx="http://www.xilinx.com" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1685-2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <spirit:vendor>xilinx.com</spirit:vendor>
   <spirit:library>user</spirit:library>
-  <spirit:name>PolyBUSip</spirit:name>
+  <spirit:name>CounterIP</spirit:name>
   <spirit:version>1.0</spirit:version>
   <spirit:busInterfaces>
     <spirit:busInterface>
@@ -173,7 +173,7 @@
         </spirit:parameter>
         <spirit:parameter>
           <spirit:name>WIZ_NUM_REG</spirit:name>
-          <spirit:value spirit:format="long" spirit:id="BUSIFPARAM_VALUE.S00_AXI.WIZ_NUM_REG" spirit:minimum="4" spirit:maximum="512" spirit:rangeType="long">6</spirit:value>
+          <spirit:value spirit:format="long" spirit:id="BUSIFPARAM_VALUE.S00_AXI.WIZ_NUM_REG" spirit:minimum="4" spirit:maximum="512" spirit:rangeType="long">4</spirit:value>
         </spirit:parameter>
         <spirit:parameter>
           <spirit:name>SUPPORTS_NARROW_BURST</spirit:name>
@@ -199,7 +199,7 @@
       <spirit:parameters>
         <spirit:parameter>
           <spirit:name>POLARITY</spirit:name>
-          <spirit:value spirit:id="BUSIFPARAM_VALUE.S00_AXI_RST.POLARITY" spirit:choiceRef="choice_list_9d8b0d81">ACTIVE_LOW</spirit:value>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.S00_AXI_RST.POLARITY" spirit:choiceRef="choice_list_74b5137e">ACTIVE_LOW</spirit:value>
         </spirit:parameter>
       </spirit:parameters>
     </spirit:busInterface>
@@ -259,14 +259,14 @@
         <spirit:displayName>VHDL Synthesis</spirit:displayName>
         <spirit:envIdentifier>vhdlSource:vivado.xilinx.com:synthesis</spirit:envIdentifier>
         <spirit:language>vhdl</spirit:language>
-        <spirit:modelName>PolyBUSip_v1_0</spirit:modelName>
+        <spirit:modelName>CounterIP_v1_0</spirit:modelName>
         <spirit:fileSetRef>
           <spirit:localName>xilinx_vhdlsynthesis_view_fileset</spirit:localName>
         </spirit:fileSetRef>
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>16fb7d49</spirit:value>
+            <spirit:value>d1274f78</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -275,14 +275,14 @@
         <spirit:displayName>VHDL Simulation</spirit:displayName>
         <spirit:envIdentifier>vhdlSource:vivado.xilinx.com:simulation</spirit:envIdentifier>
         <spirit:language>vhdl</spirit:language>
-        <spirit:modelName>PolyBUSip_v1_0</spirit:modelName>
+        <spirit:modelName>CounterIP_v1_0</spirit:modelName>
         <spirit:fileSetRef>
           <spirit:localName>xilinx_vhdlbehavioralsimulation_view_fileset</spirit:localName>
         </spirit:fileSetRef>
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>16fb7d49</spirit:value>
+            <spirit:value>d1274f78</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -296,7 +296,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>986a208e</spirit:value>
+            <spirit:value>5c55f1c8</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -331,109 +331,7 @@
     </spirit:views>
     <spirit:ports>
       <spirit:port>
-        <spirit:name>i_echantillon1</spirit:name>
-        <spirit:wire>
-          <spirit:direction>in</spirit:direction>
-          <spirit:vector>
-            <spirit:left spirit:format="long">11</spirit:left>
-            <spirit:right spirit:format="long">0</spirit:right>
-          </spirit:vector>
-          <spirit:wireTypeDefs>
-            <spirit:wireTypeDef>
-              <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
-            </spirit:wireTypeDef>
-          </spirit:wireTypeDefs>
-        </spirit:wire>
-      </spirit:port>
-      <spirit:port>
-        <spirit:name>i_echantillon2</spirit:name>
-        <spirit:wire>
-          <spirit:direction>in</spirit:direction>
-          <spirit:vector>
-            <spirit:left spirit:format="long">11</spirit:left>
-            <spirit:right spirit:format="long">0</spirit:right>
-          </spirit:vector>
-          <spirit:wireTypeDefs>
-            <spirit:wireTypeDef>
-              <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
-            </spirit:wireTypeDef>
-          </spirit:wireTypeDefs>
-        </spirit:wire>
-      </spirit:port>
-      <spirit:port>
-        <spirit:name>i_echantillon3</spirit:name>
-        <spirit:wire>
-          <spirit:direction>in</spirit:direction>
-          <spirit:vector>
-            <spirit:left spirit:format="long">11</spirit:left>
-            <spirit:right spirit:format="long">0</spirit:right>
-          </spirit:vector>
-          <spirit:wireTypeDefs>
-            <spirit:wireTypeDef>
-              <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
-            </spirit:wireTypeDef>
-          </spirit:wireTypeDefs>
-        </spirit:wire>
-      </spirit:port>
-      <spirit:port>
-        <spirit:name>i_echantillon4</spirit:name>
-        <spirit:wire>
-          <spirit:direction>in</spirit:direction>
-          <spirit:vector>
-            <spirit:left spirit:format="long">11</spirit:left>
-            <spirit:right spirit:format="long">0</spirit:right>
-          </spirit:vector>
-          <spirit:wireTypeDefs>
-            <spirit:wireTypeDef>
-              <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
-            </spirit:wireTypeDef>
-          </spirit:wireTypeDefs>
-        </spirit:wire>
-      </spirit:port>
-      <spirit:port>
-        <spirit:name>i_data_perspiration</spirit:name>
-        <spirit:wire>
-          <spirit:direction>in</spirit:direction>
-          <spirit:vector>
-            <spirit:left spirit:format="long">11</spirit:left>
-            <spirit:right spirit:format="long">0</spirit:right>
-          </spirit:vector>
-          <spirit:wireTypeDefs>
-            <spirit:wireTypeDef>
-              <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
-            </spirit:wireTypeDef>
-          </spirit:wireTypeDefs>
-        </spirit:wire>
-      </spirit:port>
-      <spirit:port>
-        <spirit:name>i_data_pression</spirit:name>
-        <spirit:wire>
-          <spirit:direction>in</spirit:direction>
-          <spirit:vector>
-            <spirit:left spirit:format="long">11</spirit:left>
-            <spirit:right spirit:format="long">0</spirit:right>
-          </spirit:vector>
-          <spirit:wireTypeDefs>
-            <spirit:wireTypeDef>
-              <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
-            </spirit:wireTypeDef>
-          </spirit:wireTypeDefs>
-        </spirit:wire>
-      </spirit:port>
-      <spirit:port>
-        <spirit:name>i_data_certitude</spirit:name>
+        <spirit:name>i_data_counter</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
@@ -443,45 +341,6 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
-            </spirit:wireTypeDef>
-          </spirit:wireTypeDefs>
-        </spirit:wire>
-      </spirit:port>
-      <spirit:port>
-        <spirit:name>i_data_mensonge</spirit:name>
-        <spirit:wire>
-          <spirit:direction>in</spirit:direction>
-          <spirit:wireTypeDefs>
-            <spirit:wireTypeDef>
-              <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
-            </spirit:wireTypeDef>
-          </spirit:wireTypeDefs>
-        </spirit:wire>
-      </spirit:port>
-      <spirit:port>
-        <spirit:name>o_respiration_select</spirit:name>
-        <spirit:wire>
-          <spirit:direction>out</spirit:direction>
-          <spirit:wireTypeDefs>
-            <spirit:wireTypeDef>
-              <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
-            </spirit:wireTypeDef>
-          </spirit:wireTypeDefs>
-        </spirit:wire>
-      </spirit:port>
-      <spirit:port>
-        <spirit:name>o_perspiration_select</spirit:name>
-        <spirit:wire>
-          <spirit:direction>out</spirit:direction>
-          <spirit:wireTypeDefs>
-            <spirit:wireTypeDef>
-              <spirit:typeName>std_logic</spirit:typeName>
               <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
               <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
             </spirit:wireTypeDef>
@@ -519,7 +378,7 @@
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_S00_AXI_ADDR_WIDTH&apos;)) - 1)">4</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_S00_AXI_ADDR_WIDTH&apos;)) - 1)">3</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -682,7 +541,7 @@
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_S00_AXI_ADDR_WIDTH&apos;)) - 1)">4</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_S00_AXI_ADDR_WIDTH&apos;)) - 1)">3</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -809,7 +668,7 @@
         <spirit:name>C_S00_AXI_ADDR_WIDTH</spirit:name>
         <spirit:displayName>C S00 AXI ADDR WIDTH</spirit:displayName>
         <spirit:description>Width of S_AXI address bus</spirit:description>
-        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_S00_AXI_ADDR_WIDTH" spirit:order="4" spirit:rangeType="long">5</spirit:value>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_S00_AXI_ADDR_WIDTH" spirit:order="4" spirit:rangeType="long">4</spirit:value>
       </spirit:modelParameter>
     </spirit:modelParameters>
   </spirit:model>
@@ -819,7 +678,7 @@
       <spirit:enumeration>32</spirit:enumeration>
     </spirit:choice>
     <spirit:choice>
-      <spirit:name>choice_list_9d8b0d81</spirit:name>
+      <spirit:name>choice_list_74b5137e</spirit:name>
       <spirit:enumeration>ACTIVE_HIGH</spirit:enumeration>
       <spirit:enumeration>ACTIVE_LOW</spirit:enumeration>
     </spirit:choice>
@@ -833,54 +692,54 @@
     <spirit:fileSet>
       <spirit:name>xilinx_vhdlsynthesis_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>hdl/PolyBUSip_v1_0_S00_AXI.vhd</spirit:name>
+        <spirit:name>hdl/CounterIP_v1_0_S00_AXI.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/PolyBUSip_v1_0.vhd</spirit:name>
+        <spirit:name>hdl/CounterIP_v1_0.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_7184ae32</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_9f11fea8</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
       <spirit:name>xilinx_vhdlbehavioralsimulation_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>hdl/PolyBUSip_v1_0_S00_AXI.vhd</spirit:name>
+        <spirit:name>hdl/CounterIP_v1_0_S00_AXI.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/PolyBUSip_v1_0.vhd</spirit:name>
+        <spirit:name>hdl/CounterIP_v1_0.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
       <spirit:name>xilinx_softwaredriver_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>drivers/PolyBUSip_v1_0/data/PolyBUSip.mdd</spirit:name>
+        <spirit:name>drivers/CounterIP_v1_0/data/CounterIP.mdd</spirit:name>
         <spirit:userFileType>mdd</spirit:userFileType>
         <spirit:userFileType>driver_mdd</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>drivers/PolyBUSip_v1_0/data/PolyBUSip.tcl</spirit:name>
+        <spirit:name>drivers/CounterIP_v1_0/data/CounterIP.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
         <spirit:userFileType>driver_tcl</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>drivers/PolyBUSip_v1_0/src/Makefile</spirit:name>
+        <spirit:name>drivers/CounterIP_v1_0/src/Makefile</spirit:name>
         <spirit:userFileType>driver_src</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>drivers/PolyBUSip_v1_0/src/PolyBUSip.h</spirit:name>
+        <spirit:name>drivers/CounterIP_v1_0/src/CounterIP.h</spirit:name>
         <spirit:fileType>cSource</spirit:fileType>
         <spirit:userFileType>driver_src</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>drivers/PolyBUSip_v1_0/src/PolyBUSip.c</spirit:name>
+        <spirit:name>drivers/CounterIP_v1_0/src/CounterIP.c</spirit:name>
         <spirit:fileType>cSource</spirit:fileType>
         <spirit:userFileType>driver_src</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>drivers/PolyBUSip_v1_0/src/PolyBUSip_selftest.c</spirit:name>
+        <spirit:name>drivers/CounterIP_v1_0/src/CounterIP_selftest.c</spirit:name>
         <spirit:fileType>cSource</spirit:fileType>
         <spirit:userFileType>driver_src</spirit:userFileType>
       </spirit:file>
@@ -888,7 +747,7 @@
     <spirit:fileSet>
       <spirit:name>xilinx_xpgui_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>xgui/PolyBUSip_v1_0.tcl</spirit:name>
+        <spirit:name>xgui/CounterIP_v1_0.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
         <spirit:userFileType>CHECKSUM_0e5443b4</spirit:userFileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
@@ -902,7 +761,7 @@
       </spirit:file>
     </spirit:fileSet>
   </spirit:fileSets>
-  <spirit:description>IP permettant de transfÃ©rer les donnÃ©es de PolyBUS dans des registres</spirit:description>
+  <spirit:description>IP for the lie counter</spirit:description>
   <spirit:parameters>
     <spirit:parameter>
       <spirit:name>C_S00_AXI_DATA_WIDTH</spirit:name>
@@ -921,7 +780,7 @@
       <spirit:name>C_S00_AXI_ADDR_WIDTH</spirit:name>
       <spirit:displayName>C S00 AXI ADDR WIDTH</spirit:displayName>
       <spirit:description>Width of S_AXI address bus</spirit:description>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.C_S00_AXI_ADDR_WIDTH" spirit:order="4" spirit:rangeType="long">5</spirit:value>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.C_S00_AXI_ADDR_WIDTH" spirit:order="4" spirit:rangeType="long">4</spirit:value>
       <spirit:vendorExtensions>
         <xilinx:parameterInfo>
           <xilinx:enablement>
@@ -956,7 +815,7 @@
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>Component_Name</spirit:name>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.Component_Name" spirit:order="1">PolyBUSip_v1_0</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.Component_Name" spirit:order="1">CounterIP_v1_0</spirit:value>
     </spirit:parameter>
   </spirit:parameters>
   <spirit:vendorExtensions>
@@ -967,135 +826,39 @@
       <xilinx:taxonomies>
         <xilinx:taxonomy>AXI_Peripheral</xilinx:taxonomy>
       </xilinx:taxonomies>
-      <xilinx:displayName>PolyBUSip_v1.0</xilinx:displayName>
-      <xilinx:coreRevision>8</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2021-07-22T16:03:00Z</xilinx:coreCreationDateTime>
+      <xilinx:displayName>CounterIP_v1.0</xilinx:displayName>
+      <xilinx:coreRevision>2</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2021-07-22T14:58:26Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1ad680fd_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@3d644d3e_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4a70d135_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6e54f220_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1daf9c4a_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@499c67e3_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@155e5a9a_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@476ef9be_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@f8e3e38_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4da4122a_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@27c0b46b_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@3f4522c6_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@788039b5_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1112d559_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@287d1889_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@14f7a6d6_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@616cebd9_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@3673b8cf_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@77139998_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5bdbc96f_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@2f75f7b1_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@763b58e7_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4ae553fc_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@ee26016_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@2d584c3b_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@78f28c4d_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@3b3fec6f_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7010496d_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4ea88f71_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5aec4cc1_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4b51b0e2_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@12ea5a4b_ARCHIVE_LOCATION">c:/GitRepo/PolyBUS-Vivado-Vitis/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@22a5ed1e_ARCHIVE_LOCATION">c:/GitRepo/PolyBUS-Vivado-Vitis/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@22690736_ARCHIVE_LOCATION">c:/GitRepo/PolyBUS-Vivado-Vitis/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@49ddb771_ARCHIVE_LOCATION">c:/GitRepo/PolyBUS-Vivado-Vitis/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@50c0c222_ARCHIVE_LOCATION">c:/GitRepo/PolyBUS-Vivado-Vitis/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@64e84217_ARCHIVE_LOCATION">c:/GitRepo/PolyBUS-Vivado-Vitis/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1b9535a_ARCHIVE_LOCATION">c:/GitRepo/PolyBUS-Vivado-Vitis/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@3b2ff6ae_ARCHIVE_LOCATION">c:/GitRepo/PolyBUS-Vivado-Vitis/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@b25c947_ARCHIVE_LOCATION">c:/GitRepo/PolyBUS-Vivado-Vitis/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@734e9c83_ARCHIVE_LOCATION">c:/GitRepo/PolyBUS-Vivado-Vitis/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@752580cb_ARCHIVE_LOCATION">c:/GitRepo/PolyBUS-Vivado-Vitis/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6e00b9f6_ARCHIVE_LOCATION">c:/GitRepo/PolyBUS-Vivado-Vitis/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4e556ff3_ARCHIVE_LOCATION">c:/GitRepo/PolyBUS-Vivado-Vitis/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@2d918443_ARCHIVE_LOCATION">c:/GitRepo/PolyBUS-Vivado-Vitis/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@148781cc_ARCHIVE_LOCATION">c:/GitRepo/PolyBUS-Vivado-Vitis/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@58abc231_ARCHIVE_LOCATION">c:/GitRepo/PolyBUS-Vivado-Vitis/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@2644afa9_ARCHIVE_LOCATION">c:/GitRepo/PolyBUS-Vivado-Vitis/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7abe87d_ARCHIVE_LOCATION">c:/GitRepo/PolyBUS-Vivado-Vitis/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@3dfb598e_ARCHIVE_LOCATION">c:/GitRepo/PolyBUS-Vivado-Vitis/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@f8b62f6_ARCHIVE_LOCATION">c:/GitRepo/PolyBUS-Vivado-Vitis/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@3d92002a_ARCHIVE_LOCATION">c:/GitRepo/PolyBUS-Vivado-Vitis/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@2b3dfe5e_ARCHIVE_LOCATION">c:/GitRepo/PolyBUS-Vivado-Vitis/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6f96c1a3_ARCHIVE_LOCATION">c:/GitRepo/PolyBUS-Vivado-Vitis/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@2faaaf9e_ARCHIVE_LOCATION">c:/GitRepo/PolyBUS-Vivado-Vitis/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7685145f_ARCHIVE_LOCATION">c:/GitRepo/PolyBUS-Vivado-Vitis/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5a74799e_ARCHIVE_LOCATION">c:/GitRepo/PolyBUS-Vivado-Vitis/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6ae0ec5a_ARCHIVE_LOCATION">c:/GitRepo/PolyBUS-Vivado-Vitis/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@480099d4_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4e1d6db9_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6576bd41_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5be7fcb3_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@8da4eb8_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@3142827c_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@71931377_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@20baf59a_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1c3cdd5d_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@19488448_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7200270c_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1f9aca99_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5ac72cca_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@2b94f5aa_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@cb82c48_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5a22ce0f_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@72f0871_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@18a28224_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1797c8c6_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5b32fd4c_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@54f36df4_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@33efe36d_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@30ca1842_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5ca23eb6_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@3c9248ff_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@67ab424d_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7fef881d_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@a4e0177_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@684e3856_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6e4a2b84_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@237b05b_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@58cc2cc6_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4b796c22_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4e903c56_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@695f49b3_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4b5c73f5_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6b57b2e1_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@55922296_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1ccfaa6c_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1faa1fa9_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@752004b_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5c4b4c44_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6989a51a_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@25c71d0b_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@593edfef_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@51470c77_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@52d8bd4c_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@c62fbda_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@377054c1_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5fff2914_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@776a9999_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@70069183_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4878106e_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@50920869_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4707ac41_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5930bf7a_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7783604e_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/PolyBUSip_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@268bca52_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/CounterIP_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2094a083_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/CounterIP_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@675fca57_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/CounterIP_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@113e7981_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/CounterIP_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2d8c1dc0_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/CounterIP_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@390ddb40_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/CounterIP_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6d53c283_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/CounterIP_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@c8b3023_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/CounterIP_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@12abf1d6_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/CounterIP_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@49af40ba_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/CounterIP_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5ea571ac_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/CounterIP_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@16de3f6f_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/CounterIP_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@35aa6e2d_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/CounterIP_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@24b5f184_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/CounterIP_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4cbc5a50_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/CounterIP_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4a0591c4_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/CounterIP_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1591084e_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/CounterIP_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6e65df3b_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/CounterIP_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1e69e986_ARCHIVE_LOCATION">d:/Git/PolyBUS/ipRepo/CounterIP_1.0</xilinx:tag>
       </xilinx:tags>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.2</xilinx:xilinxVersion>
-      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="616027be"/>
+      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="7a6aebf4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="ed1368d5"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="221e8cae"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="3cf331cf"/>
-      <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="2e811c89"/>
-      <xilinx:checksum xilinx:scope="parameters" xilinx:value="1abea8a8"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="33ceac1e"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="5f755598"/>
+      <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="6992ea72"/>
+      <xilinx:checksum xilinx:scope="parameters" xilinx:value="bfbda321"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>
 </spirit:component>

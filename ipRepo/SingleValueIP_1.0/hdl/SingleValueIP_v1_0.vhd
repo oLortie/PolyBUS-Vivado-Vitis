@@ -2,7 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity PolyBUSip_v1_0 is
+entity SingleValueIP_v1_0 is
 	generic (
 		-- Users to add parameters here
 
@@ -12,21 +12,11 @@ entity PolyBUSip_v1_0 is
 
 		-- Parameters of Axi Slave Bus Interface S00_AXI
 		C_S00_AXI_DATA_WIDTH	: integer	:= 32;
-		C_S00_AXI_ADDR_WIDTH	: integer	:= 5
+		C_S00_AXI_ADDR_WIDTH	: integer	:= 4
 	);
 	port (
 		-- Users to add ports here
-        i_echantillon1        : in std_logic_vector(11 downto 0);
-        i_echantillon2        : in std_logic_vector(11 downto 0);
-        i_echantillon3        : in std_logic_vector(11 downto 0);
-        i_echantillon4        : in std_logic_vector(11 downto 0);
-        i_data_perspiration   : in std_logic_vector(11 downto 0);
-        i_data_pression       : in std_logic_vector(11 downto 0);
-        i_data_certitude      : in std_logic_vector(7 downto 0);
-        i_data_mensonge       : in std_logic;
-        
-        o_respiration_select  : out std_logic;
-        o_perspiration_select : out std_logic;
+        i_data          : in std_logic_vector(11 downto 0);
 		-- User ports ends
 		-- Do not modify the ports beyond this line
 
@@ -54,29 +44,17 @@ entity PolyBUSip_v1_0 is
 		s00_axi_rvalid	: out std_logic;
 		s00_axi_rready	: in std_logic
 	);
-end PolyBUSip_v1_0;
+end SingleValueIP_v1_0;
 
-architecture arch_imp of PolyBUSip_v1_0 is
+architecture arch_imp of SingleValueIP_v1_0 is
 
 	-- component declaration
-	component PolyBUSip_v1_0_S00_AXI is
+	component SingleValueIP_v1_0_S00_AXI is
 		generic (
 		C_S_AXI_DATA_WIDTH	: integer	:= 32;
-		C_S_AXI_ADDR_WIDTH	: integer	:= 5
+		C_S_AXI_ADDR_WIDTH	: integer	:= 4
 		);
 		port (
-		i_echantillon1        : in std_logic_vector(11 downto 0);
-        i_echantillon2        : in std_logic_vector(11 downto 0);
-        i_echantillon3        : in std_logic_vector(11 downto 0);
-        i_echantillon4        : in std_logic_vector(11 downto 0);
-        i_data_perspiration   : in std_logic_vector(11 downto 0);
-        i_data_pression       : in std_logic_vector(11 downto 0);
-        i_data_certitude      : in std_logic_vector(7 downto 0);
-        i_data_mensonge       : in std_logic;
-        
-        o_respiration_select  : out std_logic;
-        o_perspiration_select : out std_logic;
-		
 		S_AXI_ACLK	: in std_logic;
 		S_AXI_ARESETN	: in std_logic;
 		S_AXI_AWADDR	: in std_logic_vector(C_S_AXI_ADDR_WIDTH-1 downto 0);
@@ -97,31 +75,20 @@ architecture arch_imp of PolyBUSip_v1_0 is
 		S_AXI_RDATA	: out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
 		S_AXI_RRESP	: out std_logic_vector(1 downto 0);
 		S_AXI_RVALID	: out std_logic;
-		S_AXI_RREADY	: in std_logic
+		S_AXI_RREADY	: in std_logic;
+		i_data          : in std_logic_vector(11 downto 0)
 		);
-	end component PolyBUSip_v1_0_S00_AXI;
+	end component SingleValueIP_v1_0_S00_AXI;
 
 begin
 
 -- Instantiation of Axi Bus Interface S00_AXI
-PolyBUSip_v1_0_S00_AXI_inst : PolyBUSip_v1_0_S00_AXI
+SingleValueIP_v1_0_S00_AXI_inst : SingleValueIP_v1_0_S00_AXI
 	generic map (
 		C_S_AXI_DATA_WIDTH	=> C_S00_AXI_DATA_WIDTH,
 		C_S_AXI_ADDR_WIDTH	=> C_S00_AXI_ADDR_WIDTH
 	)
 	port map (
-	    i_echantillon1 => i_echantillon1,
-        i_echantillon2 => i_echantillon2,
-        i_echantillon3 => i_echantillon3,
-        i_echantillon4 => i_echantillon4,
-        i_data_perspiration => i_data_perspiration,
-        i_data_pression    => i_data_pression,
-        i_data_certitude => i_data_certitude,
-        i_data_mensonge => i_data_mensonge,
-        
-        o_respiration_select => o_respiration_select,
-        o_perspiration_select => o_perspiration_select,
-	
 		S_AXI_ACLK	=> s00_axi_aclk,
 		S_AXI_ARESETN	=> s00_axi_aresetn,
 		S_AXI_AWADDR	=> s00_axi_awaddr,
@@ -142,7 +109,8 @@ PolyBUSip_v1_0_S00_AXI_inst : PolyBUSip_v1_0_S00_AXI
 		S_AXI_RDATA	=> s00_axi_rdata,
 		S_AXI_RRESP	=> s00_axi_rresp,
 		S_AXI_RVALID	=> s00_axi_rvalid,
-		S_AXI_RREADY	=> s00_axi_rready
+		S_AXI_RREADY	=> s00_axi_rready,
+		i_data => i_data
 	);
 
 	-- Add user logic here

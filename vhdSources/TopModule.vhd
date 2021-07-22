@@ -240,10 +240,12 @@ architecture Behavioral of TopModule is
     
     signal clk_5MHz                     : std_logic;
     signal d_S_5MHz                     : std_logic;
+    signal clk_100Hz                    : std_logic := '0';
     signal d_strobe_100Hz               : std_logic := '0';  -- cadence echantillonnage AD1
     signal d_strobe_100Hz2              : std_logic := '0';
     signal d_strobe_100Hz_ADC           : std_logic := '0';
     signal d_strobe_100Hz_ADC2          : std_logic := '0';
+    signal d_strobe_1Hz                 : std_logic := '0';
     
     signal reset                        : std_logic; 
     
@@ -325,7 +327,7 @@ begin
     
     inst_calcul_Pouls : Calcul_pouls
     port map (
-        i_clk => clk_5MHz,
+        i_clk => clk_100Hz,
         i_reset => reset,
         i_en => o_echantillon_pret_strobe,
         i_ech => d_echantillon1,
@@ -334,7 +336,7 @@ begin
     
     inst_calcul_respiration : Calcul_pouls
     port map(
-    i_clk => clk_5MHz,
+    i_clk => clk_100Hz,
     i_reset => reset,
     i_en => d_strobe_100Hz, -- strobe disponible pour les signaux qui passent pas dans la boucle ?
     i_ech => d_echantillon3,
@@ -345,7 +347,7 @@ begin
     
     inst_calcul_perspiration : Calcul_persp
     port map (
-    i_clk => clk_5MHz,
+    i_clk => clk_100Hz,
     i_reset => reset,
     i_en => d_strobe_100Hz, -- strobe disponible pour les signaux qui passent pas dans la boucle ?
     i_ech => d_echantillon4,
@@ -363,8 +365,11 @@ begin
     );
     
     inst_compteur_mensonge : CompteurMensonge
+    generic map (
+        threshold => "00111100"
+        )
     port map(
-    i_pourcentage_confiance  => "00000000",
+    i_pourcentage_confiance  => d_param_mensonge,
     i_clk                    => clk_5MHz,
     i_reset                  => reset,
     i_en                     => d_strobe_100Hz,
@@ -403,12 +408,13 @@ begin
            clkm         =>  sys_clock,
            o_S_5MHz     =>  o_ADC_CLK,
            o_CLK_5MHz   => clk_5MHz,
-           o_S_100Hz    => open,
+           o_S_100Hz    => clk_100Hz,
            o_stb_100Hz  => d_strobe_100Hz,
-           o_S_1Hz      => o_ledtemoin_b
+           o_S_1Hz      => d_strobe_1Hz
     );
     
     o_DAC_CLK <= clk_5MHz;
+    o_ledtemoin_b <= d_strobe_1Hz;
     
     BlockDesign : PolyBUSBlockDesign_wrapper
         port map(
@@ -531,9 +537,9 @@ begin
   
     end process output_ports;      
         
-    main_process : process (d_strobe_100Hz)
+    main_process : process (clk_100Hz)
     begin
-        if rising_edge(d_strobe_100Hz) then
+        if rising_edge(clk_100Hz) then
             case i_sw(0) is
                 when '0' =>
                     d_DAC_data1 <= mem_pouls70(d_compteurPouls70);

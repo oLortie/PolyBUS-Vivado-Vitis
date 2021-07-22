@@ -255,7 +255,7 @@ u16 s4i_getCounter()
 {
 	u32 rawData = COUNTERIP_mReadReg(XPAR_COUNTERIP_0_S00_AXI_BASEADDR, COUNTERIP_S00_AXI_SLV_REG0_OFFSET);
 
-	return (rawData & 0xFF000000) >> 24;
+	return rawData & 0xFF;
 }
 
 

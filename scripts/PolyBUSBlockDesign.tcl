@@ -124,6 +124,8 @@ set bCheckIPsPassed 1
 set bCheckIPs 1
 if { $bCheckIPs == 1 } {
    set list_check_ips "\ 
+xilinx.com:user:SingleValueIP:1.0\
+xilinx.com:user:CounterIP:1.0\
 digilentinc.com:IP:PmodOLED:1.0\
 xilinx.com:user:PolyBUSip:1.0\
 xilinx.com:ip:processing_system7:5.5\
@@ -213,6 +215,12 @@ proc create_root_design { parentCell } {
   set o_perspiration_select [ create_bd_port -dir O o_perspiration_select ]
   set o_respiration_select [ create_bd_port -dir O o_respiration_select ]
 
+  # Create instance: BPMIP_0, and set properties
+  set BPMIP_0 [ create_bd_cell -type ip -vlnv xilinx.com:user:SingleValueIP:1.0 BPMIP_0 ]
+
+  # Create instance: CounterIP_0, and set properties
+  set CounterIP_0 [ create_bd_cell -type ip -vlnv xilinx.com:user:CounterIP:1.0 CounterIP_0 ]
+
   # Create instance: PmodOLED_0, and set properties
   set PmodOLED_0 [ create_bd_cell -type ip -vlnv digilentinc.com:IP:PmodOLED:1.0 PmodOLED_0 ]
   set_property -dict [ list \
@@ -221,6 +229,9 @@ proc create_root_design { parentCell } {
 
   # Create instance: PolyBUSip_0, and set properties
   set PolyBUSip_0 [ create_bd_cell -type ip -vlnv xilinx.com:user:PolyBUSip:1.0 PolyBUSip_0 ]
+
+  # Create instance: RESPIRATIONIP_0, and set properties
+  set RESPIRATIONIP_0 [ create_bd_cell -type ip -vlnv xilinx.com:user:SingleValueIP:1.0 RESPIRATIONIP_0 ]
 
   # Create instance: processing_system7_0, and set properties
   set processing_system7_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:processing_system7:5.5 processing_system7_0 ]
@@ -714,29 +725,35 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net ps7_0_axi_periph_M00_AXI [get_bd_intf_pins PolyBUSip_0/S00_AXI] [get_bd_intf_pins ps7_0_axi_periph/M00_AXI]
   connect_bd_intf_net -intf_net ps7_0_axi_periph_M01_AXI [get_bd_intf_pins PmodOLED_0/AXI_LITE_GPIO] [get_bd_intf_pins ps7_0_axi_periph/M01_AXI]
   connect_bd_intf_net -intf_net ps7_0_axi_periph_M02_AXI [get_bd_intf_pins PmodOLED_0/AXI_LITE_SPI] [get_bd_intf_pins ps7_0_axi_periph/M02_AXI]
+  connect_bd_intf_net -intf_net ps7_0_axi_periph_M03_AXI [get_bd_intf_pins CounterIP_0/S00_AXI] [get_bd_intf_pins ps7_0_axi_periph/M03_AXI]
+  connect_bd_intf_net -intf_net ps7_0_axi_periph_M04_AXI [get_bd_intf_pins BPMIP_0/S00_AXI] [get_bd_intf_pins ps7_0_axi_periph/M04_AXI]
+  connect_bd_intf_net -intf_net ps7_0_axi_periph_M05_AXI [get_bd_intf_pins RESPIRATIONIP_0/S00_AXI] [get_bd_intf_pins ps7_0_axi_periph/M05_AXI]
 
   # Create port connections
   connect_bd_net -net PolyBUSip_0_o_perspiration_select [get_bd_ports o_perspiration_select] [get_bd_pins PolyBUSip_0/o_perspiration_select]
   connect_bd_net -net PolyBUSip_0_o_respiration_select [get_bd_ports o_respiration_select] [get_bd_pins PolyBUSip_0/o_respiration_select]
-  connect_bd_net -net i_data_bpm_0_1 [get_bd_ports i_data_bpm] [get_bd_pins PolyBUSip_0/i_data_bpm]
+  connect_bd_net -net i_data_bpm_1 [get_bd_ports i_data_bpm] [get_bd_pins BPMIP_0/i_data]
   connect_bd_net -net i_data_certitude_0_1 [get_bd_ports i_data_certitude] [get_bd_pins PolyBUSip_0/i_data_certitude]
-  connect_bd_net -net i_data_compteur_0_1 [get_bd_ports i_data_compteur] [get_bd_pins PolyBUSip_0/i_data_compteur]
+  connect_bd_net -net i_data_compteur [get_bd_ports i_data_compteur] [get_bd_pins CounterIP_0/i_data_counter]
   connect_bd_net -net i_data_mensonge_0_1 [get_bd_ports i_data_mensonge] [get_bd_pins PolyBUSip_0/i_data_mensonge]
   connect_bd_net -net i_data_perspiration_0_1 [get_bd_ports i_data_perspiration] [get_bd_pins PolyBUSip_0/i_data_perspiration]
   connect_bd_net -net i_data_pression_0_1 [get_bd_ports i_data_pression] [get_bd_pins PolyBUSip_0/i_data_pression]
-  connect_bd_net -net i_data_respiration_0_1 [get_bd_ports i_data_respiration] [get_bd_pins PolyBUSip_0/i_data_respiration]
+  connect_bd_net -net i_data_respiration_1 [get_bd_ports i_data_respiration] [get_bd_pins RESPIRATIONIP_0/i_data]
   connect_bd_net -net i_echantillon1_0_1 [get_bd_ports i_echantillon1] [get_bd_pins PolyBUSip_0/i_echantillon1]
   connect_bd_net -net i_echantillon2_0_1 [get_bd_ports i_echantillon2] [get_bd_pins PolyBUSip_0/i_echantillon2]
   connect_bd_net -net i_echantillon3_0_1 [get_bd_ports i_echantillon3] [get_bd_pins PolyBUSip_0/i_echantillon3]
   connect_bd_net -net i_echantillon4_0_1 [get_bd_ports i_echantillon4] [get_bd_pins PolyBUSip_0/i_echantillon4]
-  connect_bd_net -net processing_system7_0_FCLK_CLK0 [get_bd_pins PmodOLED_0/s_axi_aclk] [get_bd_pins PolyBUSip_0/s00_axi_aclk] [get_bd_pins processing_system7_0/FCLK_CLK0] [get_bd_pins processing_system7_0/M_AXI_GP0_ACLK] [get_bd_pins ps7_0_axi_periph/ACLK] [get_bd_pins ps7_0_axi_periph/M00_ACLK] [get_bd_pins ps7_0_axi_periph/M01_ACLK] [get_bd_pins ps7_0_axi_periph/M02_ACLK] [get_bd_pins ps7_0_axi_periph/M03_ACLK] [get_bd_pins ps7_0_axi_periph/M04_ACLK] [get_bd_pins ps7_0_axi_periph/M05_ACLK] [get_bd_pins ps7_0_axi_periph/S00_ACLK] [get_bd_pins rst_ps7_0_50M/slowest_sync_clk]
+  connect_bd_net -net processing_system7_0_FCLK_CLK0 [get_bd_pins BPMIP_0/s00_axi_aclk] [get_bd_pins CounterIP_0/s00_axi_aclk] [get_bd_pins PmodOLED_0/s_axi_aclk] [get_bd_pins PolyBUSip_0/s00_axi_aclk] [get_bd_pins RESPIRATIONIP_0/s00_axi_aclk] [get_bd_pins processing_system7_0/FCLK_CLK0] [get_bd_pins processing_system7_0/M_AXI_GP0_ACLK] [get_bd_pins ps7_0_axi_periph/ACLK] [get_bd_pins ps7_0_axi_periph/M00_ACLK] [get_bd_pins ps7_0_axi_periph/M01_ACLK] [get_bd_pins ps7_0_axi_periph/M02_ACLK] [get_bd_pins ps7_0_axi_periph/M03_ACLK] [get_bd_pins ps7_0_axi_periph/M04_ACLK] [get_bd_pins ps7_0_axi_periph/M05_ACLK] [get_bd_pins ps7_0_axi_periph/S00_ACLK] [get_bd_pins rst_ps7_0_50M/slowest_sync_clk]
   connect_bd_net -net processing_system7_0_FCLK_RESET0_N [get_bd_pins processing_system7_0/FCLK_RESET0_N] [get_bd_pins rst_ps7_0_50M/ext_reset_in]
-  connect_bd_net -net rst_ps7_0_50M_peripheral_aresetn [get_bd_pins PmodOLED_0/s_axi_aresetn] [get_bd_pins PolyBUSip_0/s00_axi_aresetn] [get_bd_pins ps7_0_axi_periph/ARESETN] [get_bd_pins ps7_0_axi_periph/M00_ARESETN] [get_bd_pins ps7_0_axi_periph/M01_ARESETN] [get_bd_pins ps7_0_axi_periph/M02_ARESETN] [get_bd_pins ps7_0_axi_periph/M03_ARESETN] [get_bd_pins ps7_0_axi_periph/M04_ARESETN] [get_bd_pins ps7_0_axi_periph/M05_ARESETN] [get_bd_pins ps7_0_axi_periph/S00_ARESETN] [get_bd_pins rst_ps7_0_50M/peripheral_aresetn]
+  connect_bd_net -net rst_ps7_0_50M_peripheral_aresetn [get_bd_pins BPMIP_0/s00_axi_aresetn] [get_bd_pins CounterIP_0/s00_axi_aresetn] [get_bd_pins PmodOLED_0/s_axi_aresetn] [get_bd_pins PolyBUSip_0/s00_axi_aresetn] [get_bd_pins RESPIRATIONIP_0/s00_axi_aresetn] [get_bd_pins ps7_0_axi_periph/ARESETN] [get_bd_pins ps7_0_axi_periph/M00_ARESETN] [get_bd_pins ps7_0_axi_periph/M01_ARESETN] [get_bd_pins ps7_0_axi_periph/M02_ARESETN] [get_bd_pins ps7_0_axi_periph/M03_ARESETN] [get_bd_pins ps7_0_axi_periph/M04_ARESETN] [get_bd_pins ps7_0_axi_periph/M05_ARESETN] [get_bd_pins ps7_0_axi_periph/S00_ARESETN] [get_bd_pins rst_ps7_0_50M/peripheral_aresetn]
 
   # Create address segments
+  assign_bd_address -offset 0x43C20000 -range 0x00010000 -target_address_space [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs BPMIP_0/S00_AXI/S00_AXI_reg] -force
+  assign_bd_address -offset 0x43C10000 -range 0x00010000 -target_address_space [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs CounterIP_0/S00_AXI/S00_AXI_reg] -force
   assign_bd_address -offset 0x40001000 -range 0x00001000 -target_address_space [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs PmodOLED_0/AXI_LITE_GPIO/Reg0] -force
   assign_bd_address -offset 0x40010000 -range 0x00010000 -target_address_space [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs PmodOLED_0/AXI_LITE_SPI/Reg0] -force
   assign_bd_address -offset 0x43C00000 -range 0x00010000 -target_address_space [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs PolyBUSip_0/S00_AXI/S00_AXI_reg] -force
+  assign_bd_address -offset 0x43C30000 -range 0x00010000 -target_address_space [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs RESPIRATIONIP_0/S00_AXI/S00_AXI_reg] -force
 
 
   # Restore current instance

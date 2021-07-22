@@ -1,6 +1,6 @@
   ; CalculMensonge.psm
   ;
-  ; This is the start of 'myProgram' for KCPSM6
+  ; This is the start of 'CalculMensonge' for KCPSM6
   ;
   CONSTANT Pouls_port, 00
   CONSTANT Respiration_port_low, 01
@@ -18,9 +18,9 @@
   ;
   ; Soustraction (450 - paramRespi)
   LOAD s4, C2
-  SUB s4, s2                       ; partie low du résultat
+  SUB s4, s2                       ; partie low du resultat
   LOAD s3, 01
-  SUBCY s3, s1                         ; partie high du résultat
+  SUBCY s3, s1                         ; partie high du resultat
   ;
   ; Faire * 128 (shift left 7 fois)
   SL0 s4
@@ -38,7 +38,7 @@
   SL0 s4
   SLA s3
   ;
-  ; Faire le résultat / 512
+  ; Faire le resultat / 512
   LOAD s5, s3
   LOAD s6, s4
   SR0 s5
@@ -64,7 +64,7 @@
   LOAD s7, s5
   LOAD s8, s6
   ;
-  ; Faire le résultat / 1024
+  ; Faire le resultat / 1024
   SR0 s5
   SRA s6
   ;
@@ -72,7 +72,7 @@
   ADD s8, s6
   ADDCY s7, s5
   ;
-  ; Faire le résultat / 2048
+  ; Faire le resultat / 2048
   SR0 s5
   SRA s6
   ;
@@ -80,7 +80,7 @@
   ADD s8, s6
   ADDCY s7, s5
   ;
-  ; Faire le résultat de la division /2
+  ; Faire le resultat de la division /2
   LOAD s5, s7
   LOAD s6, s8
   SR0 s5
@@ -90,7 +90,7 @@
   LOAD s7, s5
   LOAD s8, s6
   ;
-  ; Faire le résultat de la division / 4
+  ; Faire le resultat de la division / 4
   SR0 s5
   SRA s6
   ;
@@ -116,39 +116,39 @@
   SL0 s4
   SLA s3
   ;
-  ; enregistrer ce résultat
+  ; enregistrer ce resultat
   LOAD s6, s4
   LOAD s5, s3
   ;
-  ; Faire le résultat / 128
+  ; Faire le resultat / 128
   SR0 s3
   SRA s4
   SR0 s3
   SRA s4
   ;
-  ; Additiionner le résultat
+  ; Additionner le resultat
   ADD s6, s4
   ADD s5, s3
   ;
-  ; Diviser le résultat par 2
+  ; Diviser le resultat par 2
   LOAD s4, s6
   LOAD s3, s5
   SR0 s3
   SRA s4
   ;
-  ; Enregistrer le résultat
+  ; Enregistrer le resultat
   LOAD s5, s3
   LOAD s6, s4
   ;
-  ; Diviser le résultat par 4
+  ; Diviser le resultat par 4
   SR0 s3
   SRA s4
   ;
-  ; Additionner le résultat
+  ; Additionner le resultat
   ADD s5, s3
   ADD s6, s4
   ;
-  ; Additionner le résultat au total
+  ; Additionner le resultat au total
   ADD s0, s6
   SR0 s0 ; diviser par 2 pour faire une moyenne
   OUTPUT s0, Result_port

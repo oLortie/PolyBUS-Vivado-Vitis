@@ -1,0 +1,16 @@
+
+; ----------------------------------------------------------------
+; On met la valeur du port 1 dans une variable
+; ----------------------------------------------------------------
+INPUT s0, 1
+fini
+
+; ----------------------------------------------------------------
+; On met la valeur du port 1 dans une variable
+; ----------------------------------------------------------------
+INPUT s1, 1
+fini
+STORE s0, 0 ; var parametreRespiration
+STORE s0, 1 ; var parametreRespiration
+sest rendu la avec op = ++
+FETCH s0, 2 ; var parametreRespirationLow

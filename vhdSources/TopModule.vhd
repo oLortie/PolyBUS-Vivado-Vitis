@@ -327,16 +327,16 @@ begin
     
     inst_calcul_Pouls : Calcul_pouls
     port map (
-        i_clk => clk_100Hz,
+        i_clk => clk_5MHz,
         i_reset => reset,
-        i_en => o_echantillon_pret_strobe,
+        i_en => d_strobe_100Hz,
         i_ech => d_echantillon1,
         o_param => d_param_bpm
     );
     
     inst_calcul_respiration : Calcul_pouls
     port map(
-    i_clk => clk_100Hz,
+    i_clk => clk_5MHz,
     i_reset => reset,
     i_en => d_strobe_100Hz, -- strobe disponible pour les signaux qui passent pas dans la boucle ?
     i_ech => d_echantillon3,
@@ -347,7 +347,7 @@ begin
     
     inst_calcul_perspiration : Calcul_persp
     port map (
-    i_clk => clk_100Hz,
+    i_clk => clk_5MHz,
     i_reset => reset,
     i_en => d_strobe_100Hz, -- strobe disponible pour les signaux qui passent pas dans la boucle ?
     i_ech => d_echantillon4,
@@ -356,7 +356,7 @@ begin
     
     inst_calcul_pression : Calcul_pression 
     Port map( 
-           i_strobe => o_echantillon_pret_strobe,
+           i_strobe => d_strobe_100Hz,
            i_signal => d_echantillon2,
            i_clk => clk_5MHz,
            o_pression_sanguine => d_param_pression,

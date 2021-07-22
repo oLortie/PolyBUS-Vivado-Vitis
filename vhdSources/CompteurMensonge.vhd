@@ -32,7 +32,7 @@ USE ieee.numeric_std.ALL;
 --use UNISIM.VComponents.all;
 
 entity CompteurMensonge is
-generic (threshold : std_logic_vector(7 downto 0) := "01111111");
+generic (threshold : std_logic_vector(7 downto 0) := "00000001");
     Port ( i_pourcentage_confiance  : in STD_LOGIC_VECTOR (7 downto 0);
            i_clk                    : in STD_LOGIC;
            i_reset                  : in STD_LOGIC;
@@ -48,7 +48,7 @@ generic (threshold : std_logic_vector(7 downto 0) := threshold);
            i_ech : in STD_LOGIC_VECTOR (7 downto 0);
            i_reset : in STD_LOGIC;
            i_en : in STD_LOGIC;
-           i_val_cpt_conf : in std_logic_vector(7 downto 0);
+           i_val_cpt_conf : in std_logic_vector(8 downto 0);
            o_strobe_compteur_mensonge : out STD_LOGIC;
            o_en_compteur_conf         : out STD_LOGIC;
            o_reset_compteur_conf      : out STD_LOGIC
@@ -67,7 +67,7 @@ end component;
 signal s_en_compteur_mensonge   : std_logic;
 signal s_en_compteur_conf       : std_logic;
 signal s_reset_compteur_conf    : std_logic;
-signal s_val_cpt_conf           : std_logic_vector(7 downto 0);
+signal s_val_cpt_conf           : std_logic_vector(8 downto 0);
 
 begin
 
@@ -80,6 +80,7 @@ port map(
 );
 
 inst_compteur_confirmation : compteur_nbits
+generic map(nbits => 9)
 port map(
     clk => i_clk,
     i_en => s_en_compteur_conf,

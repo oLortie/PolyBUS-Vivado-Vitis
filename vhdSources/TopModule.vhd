@@ -177,7 +177,7 @@ architecture Behavioral of TopModule is
     end component;
     
     component CompteurMensonge is
-    generic (threshold : std_logic_vector(7 downto 0) := "01111111");
+    generic (threshold : std_logic_vector(7 downto 0) := "00101000");
         Port ( i_pourcentage_confiance  : in STD_LOGIC_VECTOR (7 downto 0);
                i_clk                    : in STD_LOGIC;
                i_reset                  : in STD_LOGIC;
@@ -186,7 +186,7 @@ architecture Behavioral of TopModule is
     end component;
     
     component affhexPmodSSD_v3 is
-    generic (const_CLK_Hz: integer := 100_000_000);               -- horloge en Hz, typique 100 MHz 
+    generic (const_CLK_Hz: integer := 5_000_000);               -- horloge en Hz, typique 100 MHz 
         Port (   clk        : in   STD_LOGIC;                     -- horloge systeme, typique 100 MHz (preciser par le constante)
                  reset      : in   STD_LOGIC;
                  DA         : in   STD_LOGIC_VECTOR (7 downto 0); -- donnee a afficher sur 8 bits : chiffre hexa position 1 et 0     
@@ -372,6 +372,7 @@ begin
     );
     
     inst_afficheur_7_seg :  affhexPmodSSD_v3
+    generic map (const_CLK_Hz => 5_000_000)
     port map(
         clk        =>  clk_5MHz,                    -- horloge systeme, dans notre cas c'est 5 MHZ
         reset      =>   reset,

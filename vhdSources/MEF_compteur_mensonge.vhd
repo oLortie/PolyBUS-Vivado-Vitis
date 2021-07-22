@@ -38,7 +38,7 @@ generic (threshold : std_logic_vector(7 downto 0) := "01111111");
            i_ech : in STD_LOGIC_VECTOR (7 downto 0);
            i_reset : in STD_LOGIC;
            i_en : in STD_LOGIC;
-           i_val_cpt_conf : in std_logic_vector(7 downto 0);
+           i_val_cpt_conf : in std_logic_vector(8 downto 0);
            o_strobe_compteur_mensonge : out STD_LOGIC;
            o_en_compteur_conf         : out STD_LOGIC;
            o_reset_compteur_conf      : out STD_LOGIC       
@@ -78,7 +78,7 @@ begin
     if i_en ='1' then
          if i_ech <= threshold then
             etat_suivant <=IDLE;
-         elsif i_val_cpt_conf = "00000010" then
+         elsif i_val_cpt_conf = "100101100" then
             etat_suivant <= ADD;
          end if;
     end if;

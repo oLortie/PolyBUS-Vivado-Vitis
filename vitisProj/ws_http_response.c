@@ -138,6 +138,14 @@ int do_http_post(int sd, char *req, int rlen)
 		}
 
 
+	} else if (s4i_is_cmd_perspirationSelect(req)) {
+		char selectChar = req[29];
+
+		if (selectChar == '0') {
+			s4i_setPerspirationSelect(level1);
+		} else {
+			s4i_setPerspirationSelect(level2);
+		}
 	} else {
 		xil_printf("http POST: unsupported command\r\n");
 		return -1;
@@ -304,7 +312,7 @@ int do_http_get(int sd, char *req, int rlen)
     }
     else if (s4i_is_cmd_parameters(req)) {
     	float bpm = s4i_GetBPM();
-    	float respiration = 0.0F;
+    	float respiration = s4i_GetFrequenceRespiration();
     	float systolic = 0.0F;
     	float diastolic = 0.0F;
     	float perspiration = s4i_GetAnalysePerspiration();

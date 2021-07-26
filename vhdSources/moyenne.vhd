@@ -59,8 +59,10 @@ y <= shift_right(s_unsignedI_signal2, 1);
 
 process(clk)
 begin
+    if rising_edge(clk) then
+        s_unsignedz <= x+y;
+        o_pressionSanguine <= std_logic_vector(s_unsignedz);
+    end if;
 
-s_unsignedz <= x+y;
-o_pressionSanguine <= std_logic_vector(s_unsignedz);
 end process;
 end Behavioral;

@@ -1,0 +1,66 @@
+			; myProgram.psm
+			;
+			; This is the start of 'myProgram' for KCPSM6
+			;
+			;  8-bit LSB d'un échantillon de l'ADC
+			CONSTANT ADC_LSB_port, 00
+			;
+			;  4-bit MSB d'un échantillon de l'ADC
+			CONSTANT ADC_MSB_port, 01
+			;
+			;  
+			CONSTANT Echantillon_Pret_Port, 02
+			;
+			CONSTANT Echantillon_8bits_Port, 04
+			; 
+			CONSTANT CptrSeuil_Port, 08
+			;
+			;
+init:		LOAD sA, 00
+			LOAD s5, 00
+			LOAD s3, FF
+			LOAD s4, 0F
+			;
+start:  	INPUT s0, Echantillon_Pret_Port
+			COMPARE s0, 00
+			JUMP Z, start
+			;
+			INPUT s1, ADC_LSB_port
+			INPUT s2, ADC_MSB_port
+			;
+			COMPARE sA, 00
+			JUMP Z, first_time
+			;
+			COMPARE s3, s1				; compare previous sample stored in [s4,s5] to current sample
+			COMPARECY s4, s2
+			JUMP Z, start
+			;
+			COMPARE s1, FF
+			COMPARECY s2, 0F
+			JUMP NZ, copySample
+			;
+			;
+equal:		ADD s5, 01					; SL1 s5			
+			OUTPUT s5, CptrSeuil_Port 
+			COMPARE s5, 10				; reset to 00 if s5 < 0x10. We only use 4 bits 
+			JUMP C, copySample			
+			LOAD s5, 00
+			;
+first_time:	LOAD sA, 01	
+			;
+copySample:	LOAD s3, s1					; store a copy of the current sample LSB
+			LOAD s4, s2					; store a copy of the current sample MSB
+			;
+			SR0 s1
+			SR0 s1
+			SR0 s1
+			SR0 s1
+			;
+			SL0 s2
+			SL0 s2
+			SL0 s2
+			SL0 s2
+			;
+			OR s2, s1
+			OUTPUT s2, Echantillon_8bits_Port
+			JUMP start

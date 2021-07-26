@@ -73,7 +73,7 @@ process(i_bclk,i_reset)
        end if;
     end process;
 
-process(etat_courant,i_dat) 
+process(etat_courant,i_dat, i_cpt_conf) 
 begin
     case etat_courant is
     WHEN IDLE => etat_suivant <= WAIT_FOR_TRESHOLD;

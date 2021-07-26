@@ -8,7 +8,6 @@
 
 
 
-#include <xgpio.h>
 #include <stdio.h>
 #include "s4i_tools.h"
 #include "o_led.h"
@@ -28,13 +27,13 @@ void o_led_initialize(PmodOLED *oledDevice)
 	OLED_PutString(oledDevice, "Pouls = ");
 
 	OLED_SetCursor(oledDevice, 0, 1);
-	OLED_PutString(oledDevice, "Press = ");
+	OLED_PutString(oledDevice, "compt = ");
 
 	OLED_SetCursor(oledDevice, 0, 2);
 	OLED_PutString(oledDevice, "Respi = ");
 
 	OLED_SetCursor(oledDevice, 0, 3);
-	OLED_PutString(oledDevice, "Perspi = ");
+	OLED_PutString(oledDevice, "Certi = ");
 
 
 	OLED_Update(oledDevice);
@@ -46,37 +45,37 @@ void o_led_refresh_data(PmodOLED *oledDevice){
 
 
 		char voltageChar[5];
-		char PressChar[5];
+		char comptChar[5];
 		char Respichar[5];
-		char Perspichar[5];
+		char CertitudeChar[5];
 
 		// lire la tension provenant du PmodAD1
 		float currentPouls = s4i_GetBPM();
-		float currentPress = s4i_GetParametrePression();
+		u16 currentCount = s4i_getCounter();
 		float currentRespi = s4i_GetFrequenceRespiration();
-		float currentPerspi = s4i_GetAnalysePerspiration();
+		u16 currentCertitude = s4i_getCertitude();
 
 
 		// Affichage du voltage sur le Pmod OLED
 		sprintf(voltageChar,"%2.2f",currentPouls);
-		sprintf(PressChar,"%2.2f",currentPress);
+		sprintf(comptChar,"%u  ",currentCount);
 		sprintf(Respichar,"%2.2f",currentRespi);
-		sprintf(Perspichar,"%2.2f",currentPerspi);
+		sprintf(CertitudeChar,"%u ",currentCertitude);
 
 		OLED_SetCursor(oledDevice, 10, 0);
 		OLED_PutString(oledDevice, voltageChar);
 
 		OLED_SetCursor(oledDevice, 10, 1);
-		OLED_PutString(oledDevice, PressChar);
+		OLED_PutString(oledDevice, comptChar);
 
 		OLED_SetCursor(oledDevice, 9, 2);
 		OLED_PutString(oledDevice, Respichar);
 
 		OLED_SetCursor(oledDevice, 10, 3);
-		OLED_PutString(oledDevice, Perspichar);
+		OLED_PutString(oledDevice, CertitudeChar);
 
 		OLED_SetCursor(oledDevice, 15, 3);
-		OLED_PutString(oledDevice, "V");
+		OLED_PutString(oledDevice, "%");
 		OLED_Update(oledDevice);
 
 }

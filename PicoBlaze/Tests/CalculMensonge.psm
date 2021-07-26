@@ -1,0 +1,63 @@
+  ; CalculMensonge.psm
+  ;
+  ; This is the start of 'myProgram' for KCPSM6
+  ;
+  CONSTANT Pouls_port, 00
+  CONSTANT Respiration_port_low, 01
+  CONSTANT Respiration_port_high, 02
+  CONSTANT Perspiration_port, 03
+  CONSTANT Systolic_port, 04
+  CONSTANT Diastolic_port, 05
+  CONSTANT Result_port, 06
+  ;
+  ; ========================================================================
+  ; Calcul pour le Pouls
+  ; ========================================================================
+  INPUT s1, Pouls_port
+  ;
+  LOAD s4, 5A
+  SUB s4, s1
+  LOAD s3, 00
+  ;
+  ; Faire * 128 (shift left 7 fois) et diviser par 32 (shift right 5 fois)
+  SL0 s4
+  SLA s3
+  SL0 s4
+  SLA s3
+  ;
+  ; enregistrer ce résultat
+  LOAD s6, s4
+  LOAD s5, s3
+  ;
+  ; Faire le résultat / 128
+  SR0 s3
+  SRA s4
+  SR0 s3
+  SRA s4
+  ;
+  ; Additiionner le résultat
+  ADD s6, s4
+  ADD s5, s3
+  ;
+  ; Diviser le résultat par 2
+  LOAD s4, s6
+  LOAD s3, s5
+  SR0 s3
+  SRA s4
+  ;
+  ; Enregistrer le résultat
+  LOAD s5, s3
+  LOAD s6, s4
+  ;
+  ; Diviser le résultat par 4
+  SR0 s3
+  SRA s4
+  ;
+  ; Additionner le résultat
+  ADD s5, s3
+  ADD s6, s4
+  ;
+  ; Additionner le résultat au total
+  LOAD s0, s6
+  OUTPUT s0, Result_port
+

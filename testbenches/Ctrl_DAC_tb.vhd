@@ -40,13 +40,13 @@ architecture Behavioral of Ctrl_DAC_tb is
     component Ctrl_DAC
     Port (
         reset                       : in    std_logic;  
-        clk_DAC                     : in    std_logic; 						-- Horloge à fournir à l'ADC
-        i_data1                     : in    std_logic_vector (11 downto 0); -- échantillon à envoyer   
+        clk_DAC                     : in    std_logic; 						-- Horloge ï¿½ fournir ï¿½ l'ADC
+        i_data1                     : in    std_logic_vector (11 downto 0); -- ï¿½chantillon ï¿½ envoyer   
         i_data2                     : in    std_logic_vector (11 downto 0);     
-        i_DAC_Strobe                : in    std_logic;                      -- Synchronisation: strobe déclencheur de la séquence de réception
+        i_DAC_Strobe                : in    std_logic;                      -- Synchronisation: strobe dï¿½clencheur de la sï¿½quence de rï¿½ception
         
         o_DAC_nCS                   : out   std_logic;                      -- Signal Chip select vers le DAC  
-        o_bit_value1                : out   std_logic;                       -- valeur du bit à envoyer
+        o_bit_value1                : out   std_logic;                       -- valeur du bit ï¿½ envoyer
         o_bit_value2                : out   std_logic 
         );
     end component;
@@ -84,6 +84,15 @@ architecture Behavioral of Ctrl_DAC_tb is
         i_ech : in STD_LOGIC_VECTOR (11 downto 0);
         o_param : out STD_LOGIC_VECTOR (11 downto 0));
     end component;
+     
+    component CompteurMensonge is
+    generic (threshold : std_logic_vector(7 downto 0) := "01111111");
+    Port ( i_pourcentage_confiance  : in STD_LOGIC_VECTOR (7 downto 0);
+           i_clk                    : in STD_LOGIC;
+           i_reset                  : in STD_LOGIC;
+           i_en                     : in STD_LOGIC;
+           o_count_mensonge         : out STD_LOGIC_VECTOR(7 downto 0));
+    end component;
     
     component Calcul_pression is
     Port ( 
@@ -95,6 +104,17 @@ architecture Behavioral of Ctrl_DAC_tb is
            i_reset : in STD_LOGIC);
     end component;
     
+    component affhexPmodSSD_v3 is
+    generic (const_CLK_Hz: integer := 5_000_000);               -- horloge en Hz, typique 100 MHz 
+    Port (   clk        : in   STD_LOGIC;                     -- horloge systeme, typique 100 MHz (preciser par le constante)
+             reset      : in   STD_LOGIC;
+             DA         : in   STD_LOGIC_VECTOR (7 downto 0); -- donnee a afficher sur 8 bits : chiffre hexa position 1 et 0     
+             i_aff_mem  : in   STD_LOGIC;                     -- demande memorisation affichage continu, si 0: continu
+             JPmod      : out  STD_LOGIC_VECTOR (7 downto 0)  -- sorties directement adaptees au connecteur PmodSSD
+           );
+    end component;
+    
+  
     signal reset_sim        : std_logic;
     signal clk_DAC_sim      : std_logic := '0';
     signal i_data1_sim       : std_logic_vector (11 downto 0);
@@ -119,13 +139,16 @@ architecture Behavioral of Ctrl_DAC_tb is
     signal s_outputPression                 : std_logic_vector(11 downto 0);
     signal s_outputEnable                   : std_logic;
     
+    signal s_count_mensonge                 : std_logic_vector(7 downto 0);
+    signal PMODSSD                          : std_logic_Vector(7 downto 0);
+    
     constant CLK_PERIOD : time := 200 ns;
     constant DAC_STROBE_PERIOD : time := 10 ms;
     constant seconde : time := 4000 ms;
       
     type table_forme is array (integer range 0 to 99) of std_logic_vector(11 downto 0);
     constant mem_forme_onde_R : table_forme := (
- -- forme d'une onde carrée
+ -- forme d'une onde carrï¿½e
  -- chaque cycle a 48 echantillons
     x"000",
 x"000",
@@ -143,68 +166,69 @@ x"000",
 x"000",
 x"001",
 x"002",
+x"006",
+x"00D",
+x"01A",
+x"032",
+x"05C",
+x"0A1",
+x"10E",
+x"1AF",
+x"290",
+x"3BC",
+x"531",
+x"6E5",
+x"8C0",
+x"A9D",
+x"C4D",
+x"DA1",
+x"E71",
+x"EA8",
+x"E43",
+x"D57",
+x"C0C",
+x"A93",
+x"91F",
+x"7DB",
+x"6E6",
+x"64F",
+x"617",
+x"634",
+x"694",
+x"722",
+x"7C9",
+x"874",
+x"912",
+x"992",
+x"9EB",
+x"A14",
+x"A0B",
+x"9CE",
+x"961",
+x"8CB",
+x"813",
+x"744",
+x"668",
+x"589",
+x"4AF",
+x"3E3",
+x"328",
+x"283",
+x"1F6",
+x"17F",
+x"11F",
+x"0D2",
+x"097",
+x"06A",
+x"049",
+x"031",
+x"021",
+x"015",
+x"00D",
+x"008",
 x"005",
-x"00C",
-x"018",
-x"02E",
-x"055",
-x"095",
-x"0F9",
-x"18D",
-x"25E",
-x"372",
-x"4CB",
-x"65E",
-x"814",
-x"9CC",
-x"B5A",
-x"C94",
-x"D54",
-x"D86",
-x"D28",
-x"C4E",
-x"B1B",
-x"9BE",
-x"865",
-x"739",
-x"654",
-x"5C6",
-x"590",
-x"5A8",
-x"5FD",
-x"67E",
-x"715",
-x"7B0",
-x"83F",
-x"8B3",
-x"904",
-x"92A",
-x"921",
-x"8EA",
-x"887",
-x"7FE",
-x"757",
-x"69B",
-x"5D3",
-x"508",
-x"442",
-x"388",
-x"2DF",
-x"249",
-x"1C8",
-x"15D",
-x"105",
-x"0BF",
-x"089",
-x"061",
-x"043",
-x"02D",
-x"01E",
-x"013",
-x"00C",
-x"007",
-x"004",
-x"002",
+x"003",
+x"001",
 x"001",
 x"000",
 x"000",
@@ -225,8 +249,8 @@ x"000",
 x"000",
 x"000",
 x"000",
-x"000",
-x"000"
+x"001"
+
 
     );
   
@@ -261,6 +285,25 @@ begin
             o_echantillon2  => o_ech2_ADC
     );
     
+    inst_compteur_mensonge : CompteurMensonge
+    port map(
+         i_pourcentage_confiance  => o_ech1_ADC(7 downto 0),
+         i_clk                    => clk_DAC_sim,
+         i_reset                  => reset_sim,
+         i_en                     => o_echantilllon_pret_ADC,
+         o_count_mensonge         => s_count_mensonge 
+    );
+    
+    inst_afficheur_7_seg :  affhexPmodSSD_v3
+    port map(
+        clk        =>  clk_DAC_sim,                    -- horloge systeme, typique 100 MHz (preciser par le constante)
+        reset      =>   reset_sim,
+        DA         => s_count_mensonge, -- donnee a afficher sur 8 bits : chiffre hexa position 1 et 0     
+        i_aff_mem  => '0',                     -- demande memorisation affichage continu, si 0: continu
+        JPmod      => PMODSSD
+    );
+    
+      
     inst_calcul_pouls : Calcul_pouls    
     Port map( 
            i_clk => clk_DAC_sim,

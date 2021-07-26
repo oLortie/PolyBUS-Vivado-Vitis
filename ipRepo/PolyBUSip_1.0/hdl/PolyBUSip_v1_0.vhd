@@ -20,10 +20,10 @@ entity PolyBUSip_v1_0 is
         i_echantillon2        : in std_logic_vector(11 downto 0);
         i_echantillon3        : in std_logic_vector(11 downto 0);
         i_echantillon4        : in std_logic_vector(11 downto 0);
-        i_data_bpm            : in std_logic_vector(11 downto 0);
-        i_data_respiration    : in std_logic_vector(11 downto 0);
         i_data_perspiration   : in std_logic_vector(11 downto 0);
-        i_data_pression      : in std_logic_vector(11 downto 0);
+        i_data_pression       : in std_logic_vector(11 downto 0);
+        i_data_certitude      : in std_logic_vector(7 downto 0);
+        i_data_mensonge       : in std_logic;
         
         o_respiration_select  : out std_logic;
         o_perspiration_select : out std_logic;
@@ -69,10 +69,10 @@ architecture arch_imp of PolyBUSip_v1_0 is
         i_echantillon2        : in std_logic_vector(11 downto 0);
         i_echantillon3        : in std_logic_vector(11 downto 0);
         i_echantillon4        : in std_logic_vector(11 downto 0);
-        i_data_bpm            : in std_logic_vector(11 downto 0);
-        i_data_respiration    : in std_logic_vector(11 downto 0);
         i_data_perspiration   : in std_logic_vector(11 downto 0);
-        i_data_pression      : in std_logic_vector(11 downto 0);
+        i_data_pression       : in std_logic_vector(11 downto 0);
+        i_data_certitude      : in std_logic_vector(7 downto 0);
+        i_data_mensonge       : in std_logic;
         
         o_respiration_select  : out std_logic;
         o_perspiration_select : out std_logic;
@@ -114,10 +114,10 @@ PolyBUSip_v1_0_S00_AXI_inst : PolyBUSip_v1_0_S00_AXI
         i_echantillon2 => i_echantillon2,
         i_echantillon3 => i_echantillon3,
         i_echantillon4 => i_echantillon4,
-        i_data_bpm     => i_data_bpm,
-        i_data_respiration  => i_data_respiration,
         i_data_perspiration => i_data_perspiration,
         i_data_pression    => i_data_pression,
+        i_data_certitude => i_data_certitude,
+        i_data_mensonge => i_data_mensonge,
         
         o_respiration_select => o_respiration_select,
         o_perspiration_select => o_perspiration_select,

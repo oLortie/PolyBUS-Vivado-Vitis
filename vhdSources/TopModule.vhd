@@ -58,6 +58,7 @@ port (
     o_DAC_D0        : out std_logic;
     o_DAC_D1        : out std_logic;
     o_DAC_CLK       : out std_logic
+    
 );
 end TopModule;
 
@@ -99,12 +100,14 @@ architecture Behavioral of TopModule is
             i_data_bpm : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_data_perspiration : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_data_respiration : in STD_LOGIC_VECTOR ( 11 downto 0 );
-            i_data_pression   : in std_logic_vector (11 downto 0);
+            i_data_pression    : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_echantillon1 : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_echantillon2 : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_echantillon3 : in STD_LOGIC_VECTOR ( 11 downto 0 );
             i_echantillon4 : in STD_LOGIC_VECTOR ( 11 downto 0 );
-            o_leds_tri_o : out STD_LOGIC_VECTOR ( 3 downto 0 );
+            i_data_certitude : in STD_LOGIC_VECTOR ( 7 downto 0 );
+            i_data_compteur : in STD_LOGIC_VECTOR ( 7 downto 0 );
+            i_data_mensonge : in STD_LOGIC;
             o_perspiration_select : out STD_LOGIC;
             o_respiration_select : out STD_LOGIC
             );
@@ -152,9 +155,7 @@ architecture Behavioral of TopModule is
            i_ech : in STD_LOGIC_VECTOR (11 downto 0);
            o_param : out STD_LOGIC_VECTOR (11 downto 0));
     end component;
-    
-    
-    
+     
     component Calcul_persp is 
     port( 
     i_clk : in STD_LOGIC;
@@ -175,6 +176,25 @@ architecture Behavioral of TopModule is
            i_reset : in STD_LOGIC);
     end component;
     
+    component CompteurMensonge is
+    generic (threshold : std_logic_vector(7 downto 0) := "01111111");
+        Port ( i_pourcentage_confiance  : in STD_LOGIC_VECTOR (7 downto 0);
+               i_clk                    : in STD_LOGIC;
+               i_reset                  : in STD_LOGIC;
+               i_en                     : in STD_LOGIC;
+               o_count_mensonge         : out STD_LOGIC_VECTOR(7 downto 0));
+    end component;
+    
+    component affhexPmodSSD_v3 is
+    generic (const_CLK_Hz: integer := 100_000_000);               -- horloge en Hz, typique 100 MHz 
+        Port (   clk        : in   STD_LOGIC;                     -- horloge systeme, typique 100 MHz (preciser par le constante)
+                 reset      : in   STD_LOGIC;
+                 DA         : in   STD_LOGIC_VECTOR (7 downto 0); -- donnee a afficher sur 8 bits : chiffre hexa position 1 et 0     
+                 i_aff_mem  : in   STD_LOGIC;                     -- demande memorisation affichage continu, si 0: continu
+                 JPmod      : out  STD_LOGIC_VECTOR (7 downto 0)  -- sorties directement adaptees au connecteur PmodSSD
+               );
+    end component;
+    
     component Synchro_Horloges is
     generic (const_CLK_syst_MHz: integer := freq_sys_MHz);
     Port ( 
@@ -185,14 +205,47 @@ architecture Behavioral of TopModule is
         o_stb_100Hz : out  std_logic; -- strobe 100Hz synchro sur clk_5MHz 
         o_S_1Hz     : out  std_logic  -- Signal temoin 1 Hz
     );
-    end component;  
+    end component;
+    
+    component kcpsm6 is
+    generic(               hwbuild : std_logic_vector(7 downto 0) := X"00";
+                  interrupt_vector : std_logic_vector(11 downto 0) := X"3FF";
+           scratch_pad_memory_size : integer := 64);
+    port (                 address : out std_logic_vector(11 downto 0);
+                       instruction : in std_logic_vector(17 downto 0);
+                       bram_enable : out std_logic;
+                           in_port : in std_logic_vector(7 downto 0);
+                          out_port : out std_logic_vector(7 downto 0);
+                           port_id : out std_logic_vector(7 downto 0);
+                      write_strobe : out std_logic;
+                    k_write_strobe : out std_logic;
+                       read_strobe : out std_logic;
+                         interrupt : in std_logic;
+                     interrupt_ack : out std_logic;
+                             sleep : in std_logic;
+                             reset : in std_logic;
+                               clk : in std_logic);
+    end component;
+    
+    component CalculMensonge is
+    generic(             C_FAMILY : string := "S6"; 
+                C_RAM_SIZE_KWORDS : integer := 1;
+             C_JTAG_LOADER_ENABLE : integer := 0);
+    Port (      address : in std_logic_vector(11 downto 0);
+            instruction : out std_logic_vector(17 downto 0);
+                 enable : in std_logic;
+                    rdl : out std_logic;                    
+                    clk : in std_logic);
+    end component;
     
     signal clk_5MHz                     : std_logic;
     signal d_S_5MHz                     : std_logic;
+    signal clk_100Hz                    : std_logic := '0';
     signal d_strobe_100Hz               : std_logic := '0';  -- cadence echantillonnage AD1
     signal d_strobe_100Hz2              : std_logic := '0';
     signal d_strobe_100Hz_ADC           : std_logic := '0';
     signal d_strobe_100Hz_ADC2          : std_logic := '0';
+    signal d_strobe_1Hz                 : std_logic := '0';
     
     signal reset                        : std_logic; 
     
@@ -210,9 +263,12 @@ architecture Behavioral of TopModule is
     signal d_param_pression             : std_logic_vector(11 downto 0);
     signal d_respiration_select         : std_logic;
     signal d_perspiration_select        : std_logic;
+    signal d_param_mensonge             : std_logic_vector(7 downto 0);
     signal d_pression_ready             : std_logic;
+    signal s_count_mensonge             : std_logic_vector(7 downto 0 );
     
-       
+    
+    signal s_temp                       : std_logic_vector(7 downto 0);
     
     signal d_compteurRespiration025 : integer range 0 to 500 := 0;
     signal d_compteurRespiration05 : integer range 0 to 500 := 0;
@@ -222,6 +278,24 @@ architecture Behavioral of TopModule is
     
     signal d_compteurDelaiStrobe : integer range 0 to 501 := 0;
     signal d_compteDelai : std_logic := '0';
+    
+    --
+    -- Signals for connection of KCPSM6 and Program Memory.
+    --
+    
+    signal         address : std_logic_vector(11 downto 0);
+    signal     instruction : std_logic_vector(17 downto 0);
+    signal     bram_enable : std_logic;
+    signal         in_port : std_logic_vector(7 downto 0);
+    signal        out_port : std_logic_vector(7 downto 0);
+    signal         port_id : std_logic_vector(7 downto 0);
+    signal    write_strobe : std_logic;
+    signal  k_write_strobe : std_logic;
+    signal     read_strobe : std_logic;
+    signal       interrupt : std_logic;
+    signal   interrupt_ack : std_logic;
+    signal    kcpsm6_sleep : std_logic;
+    signal    kcpsm6_reset : std_logic;
 
 begin
     reset    <= i_btn(0);    
@@ -241,14 +315,14 @@ begin
     inst_Ctrl_ADC1 : Ctrl_AD1
     port Map ( 
         reset => reset,
-        clk_ADC => clk_5MHz,
-        i_DO1 => i_ADC_D0,
-        i_DO2 => i_ADC_D1,       
-        o_ADC_nCS => o_ADC_NCS,
-        i_ADC_Strobe => d_strobe_100Hz_ADC,
-        o_echantillon_pret_strobe => o_echantillon_pret_strobe,
-        o_echantillon1 => d_echantillon1,
-        o_echantillon2 => d_echantillon2
+        clk_ADC => clk_5MHz,                                    -- pour horloge externe de l'ADC
+        i_DO1 => i_ADC_D0,                                      -- bit de donn�es provenant de l'ADC
+        i_DO2 => i_ADC_D1,                                      -- bit de donn�es provenant de l'ADC
+        o_ADC_nCS => o_ADC_NCS,                                 -- chip select pour le convertisseur (ADC)
+        i_ADC_Strobe => d_strobe_100Hz_ADC,                     -- synchronisation: d�clencheur de la s�quence d'�chantillonnage
+        o_echantillon_pret_strobe => o_echantillon_pret_strobe, -- strobe indicateur d'une r�ception compl�te d'un �chantillon
+        o_echantillon1 => d_echantillon1,                       -- valeur de l'�chantillon re�u (12 bits)
+        o_echantillon2 => d_echantillon2                        -- valeur de l'�chantillon re�u (12 bits)
     );
     
     inst_calcul_Pouls : Calcul_pouls
@@ -269,6 +343,8 @@ begin
     o_param => d_param_respiration
     );
     
+    --d_param_respiration <= "000100101100";
+    
     inst_calcul_perspiration : Calcul_persp
     port map (
     i_clk => clk_5MHz,
@@ -280,7 +356,7 @@ begin
     
     inst_calcul_pression : Calcul_pression 
     Port map( 
-           i_strobe => o_echantillon_pret_strobe,
+           i_strobe => d_strobe_100Hz,
            i_signal => d_echantillon2,
            i_clk => clk_5MHz,
            o_pression_sanguine => d_param_pression,
@@ -288,12 +364,33 @@ begin
            i_reset => reset
     );
     
+    inst_compteur_mensonge : CompteurMensonge
+    generic map (
+        threshold => "00111100"
+        )
+    port map(
+    i_pourcentage_confiance  => d_param_mensonge,
+    i_clk                    => clk_5MHz,
+    i_reset                  => reset,
+    i_en                     => d_strobe_100Hz,
+    o_count_mensonge         => s_count_mensonge 
+    );
+    --s_count_mensonge <= "00001111";
+    
+    inst_afficheur_7_seg :  affhexPmodSSD_v3
+    port map(
+        clk        =>  clk_5MHz,                    -- horloge systeme, dans notre cas c'est 5 MHZ
+        reset      =>   reset,
+        DA         => s_count_mensonge,         -- donnee a afficher sur 8 bits : chiffre hexa position 1 et 0     
+        i_aff_mem  => '0',                     -- demande memorisation affichage continu, si 0: continu
+        JPmod      => s_temp
+    );
     
     
     bin2Thermo : FctBin2Thermo
     Port Map (
         i_echantillon => d_echantillon1,
-        o_thermo => PMOD_8LD
+        o_thermo => Pmod_8LD
     );
     
      mux_select_Entree_AD1 : process (i_btn(3), i_ADC_D0, i_ADC_D1)
@@ -312,12 +409,13 @@ begin
            clkm         =>  sys_clock,
            o_S_5MHz     =>  o_ADC_CLK,
            o_CLK_5MHz   => clk_5MHz,
-           o_S_100Hz    => open,
+           o_S_100Hz    => clk_100Hz,
            o_stb_100Hz  => d_strobe_100Hz,
-           o_S_1Hz      => o_ledtemoin_b
+           o_S_1Hz      => d_strobe_1Hz
     );
     
     o_DAC_CLK <= clk_5MHz;
+    o_ledtemoin_b <= d_strobe_1Hz;
     
     BlockDesign : PolyBUSBlockDesign_wrapper
         port map(
@@ -342,7 +440,7 @@ begin
             FIXED_IO_ps_clk => FIXED_IO_ps_clk,
             FIXED_IO_ps_porb => FIXED_IO_ps_porb,
             FIXED_IO_ps_srstb => FIXED_IO_ps_srstb,
-            Pmod_OLED_pin1_io => Pmod_OLED(0),
+            Pmod_OLED_pin1_io => Pmod_OLED(0),  --a changer apres le test
             Pmod_OLED_pin2_io => Pmod_OLED(1),
             Pmod_OLED_pin3_io => Pmod_OLED(2),
             Pmod_OLED_pin4_io => Pmod_OLED(3),
@@ -354,25 +452,102 @@ begin
             i_echantillon2 => d_echantillon2,
             i_echantillon3 => d_echantillon3,
             i_echantillon4 => d_echantillon4,
-            i_data_bpm => std_logic_vector(d_param_bpm),
-            i_data_respiration => std_logic_vector(d_param_respiration),
-            i_data_perspiration => d_param_perspiration,  
-            i_data_pression   => d_param_pression,
-            o_leds_tri_o => o_leds,
+            i_data_bpm => d_param_bpm,
+            i_data_respiration => d_param_respiration,
+            i_data_perspiration => d_param_perspiration,
+            i_data_pression => d_param_pression,
+            i_data_certitude => d_param_mensonge,
+            i_data_compteur => s_count_mensonge,
+            i_data_mensonge => '0',
             o_respiration_select => d_respiration_select,
             o_perspiration_select => d_perspiration_select
         );
         
-    main_process : process (d_strobe_100Hz)
+    processor: kcpsm6
+    generic map (                 
+        hwbuild => X"00", 
+        interrupt_vector => X"3FF",
+        scratch_pad_memory_size => 64) -- other options are 128, 256
+    port map(      
+                   address => address,
+               instruction => instruction,
+               bram_enable => bram_enable,
+                   port_id => port_id,
+              write_strobe => write_strobe,
+            k_write_strobe => k_write_strobe,
+                  out_port => out_port,
+               read_strobe => read_strobe,
+                   in_port => in_port,
+                 interrupt => interrupt,
+             interrupt_ack => interrupt_ack,
+                     sleep => kcpsm6_sleep,
+                     reset => kcpsm6_reset,
+                       clk => sys_clock
+           );
+           
+    kcpsm6_sleep <= '0';
+    interrupt <= interrupt_ack;
+    
+    program_rom: CalculMensonge                     --Name to match your PSM file
+    generic map(             
+            C_FAMILY => "7S",                       --Family 'S6', 'V6' or '7S'
+            C_RAM_SIZE_KWORDS => 2,                 --Program size '1', '2' or '4'
+            C_JTAG_LOADER_ENABLE => 0               --Include JTAG Loader when set to '1' 
+               )      
+    port map(      
+               address => address,      
+           instruction => instruction,
+                enable => bram_enable,
+                   rdl => kcpsm6_reset,
+                   clk => sys_clock
+              );
+              
+    --========================================================
+    -- INPUT PORTS
+    --========================================================
+    input_ports: process(sys_clock)
+      begin
+        if sys_clock'event and sys_clock = '1' then
+    
+          case port_id(2 downto 0) is
+            when "000" =>    in_port <= d_param_bpm(7 downto 0);
+            when "001" =>    in_port <= d_param_respiration(7 downto 0);
+            when "010" =>    in_port <= "0000" & d_param_respiration(11 downto 8);
+            when "011" =>    in_port <= d_param_perspiration(7 downto 0);
+            when "100" =>    in_port <= "00000000";
+            when "101" =>    in_port <= "00000000";
+       
+            when others =>    in_port <= "XXXXXXXX";  
+    
+          end case;
+    
+        end if;
+    
+      end process input_ports;
+      
+    output_ports: process(sys_clock)
+    begin  
+      if sys_clock'event and sys_clock = '1' then
+        -- 'write_strobe' is used to qualify all writes to general output ports.
+        if write_strobe = '1' then
+          if port_id = "00000110" then -- port 06
+            d_param_mensonge <= out_port(7 downto 0);
+          end if;
+        end if;
+      end if; 
+  
+    end process output_ports;      
+        
+    main_process : process (clk_100Hz)
     begin
-        if rising_edge(d_strobe_100Hz) then
+        if rising_edge(clk_100Hz) then
             case i_sw(0) is
                 when '0' =>
                     d_DAC_data1 <= mem_pouls70(d_compteurPouls70);
                 when '1' =>
                     d_DAC_data1 <= mem_pouls85(d_compteurPouls85);
                 when others =>
-                    d_DAC_data1 <= "000000000000";
+                    d_DAC_data1 <= mem_pouls70(d_compteurPouls70);
             end case;
             
             case i_sw(1) is
@@ -381,27 +556,27 @@ begin
                 when '1' =>
                     d_DAC_data2 <= mem_pre13080(d_compteur100);
                 when others =>
-                    d_DAC_data2 <= "000000000000";
+                    d_DAC_data2 <= mem_pre12080(d_compteur100);
             end case;
             
-            --case d_respiration_select is
-            case i_sw(2) is
+            case d_respiration_select is
+            --case i_sw(2) is
                 when '0' =>
                     d_echantillon3 <= mem_respi025Hz(d_compteurRespiration025);
                 when '1' =>
                     d_echantillon3 <= mem_respi05Hz(d_compteurRespiration05);
                 when others =>
-                    d_echantillon3 <= "000000000000";
+                    d_echantillon3 <= mem_respi025Hz(d_compteurRespiration025);
             end case;
             
-            --case d_perspiration_select is
-            case i_sw(3) is
+            case d_perspiration_select is
+            --case i_sw(3) is
                 when '0' =>
                     d_echantillon4 <= mem_persp1(d_compteur100);
                 when '1' =>
                     d_echantillon4 <= mem_persp2(d_compteur100);
                 when others =>
-                    d_echantillon4 <= "000000000000";
+                    d_echantillon4 <= mem_persp2(d_compteur100);
             end case;
        
             

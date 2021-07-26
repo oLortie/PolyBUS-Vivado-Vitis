@@ -20,10 +20,10 @@ entity PolyBUSip_v1_0_S00_AXI is
         i_echantillon2        : in std_logic_vector(11 downto 0);
         i_echantillon3        : in std_logic_vector(11 downto 0);
         i_echantillon4        : in std_logic_vector(11 downto 0);
-        i_data_bpm            : in std_logic_vector(11 downto 0);
-        i_data_respiration    : in std_logic_vector(11 downto 0);
         i_data_perspiration   : in std_logic_vector(11 downto 0);
         i_data_pression       : in std_logic_vector(11 downto 0);
+        i_data_certitude      : in std_logic_vector(7 downto 0);
+        i_data_mensonge       : in std_logic;
         
         o_respiration_select  : out std_logic;
         o_perspiration_select : out std_logic;
@@ -388,7 +388,7 @@ begin
 	      when b"000" =>
 	           reg_data_out(11 downto 0) <= i_echantillon1;
 	           reg_data_out(23 downto 12) <= i_echantillon2;
-	           reg_data_out(31 downto 24) <= (others => '0');
+	           reg_data_out(31 downto 24) <= i_data_certitude;
 	      when b"001" =>
 	           reg_data_out(11 downto 0) <= i_echantillon3;
 	           reg_data_out(23 downto 12) <= i_echantillon4;
@@ -396,11 +396,10 @@ begin
 	      when b"010" =>
 	           reg_data_out(11 downto 0) <= i_data_perspiration;
 	           reg_data_out(23 downto 12) <= i_data_pression;
-	           reg_data_out(31 downto 24) <= (others => '0');
+	           reg_data_out(24) <= i_data_mensonge;
+	           reg_data_out(31 downto 25) <= (others => '0');
 	      when b"011" =>
-	           reg_data_out(11 downto 0) <= i_data_bpm;
-	           reg_data_out(23 downto 12) <= i_data_respiration;
-	           reg_data_out(31 downto 24) <= (others => '0');
+	           reg_data_out <= slv_reg3;
 	      when b"100" =>
 	        reg_data_out <= slv_reg4;
 	      when b"101" =>

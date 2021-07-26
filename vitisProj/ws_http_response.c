@@ -313,14 +313,12 @@ int do_http_get(int sd, char *req, int rlen)
     else if (s4i_is_cmd_parameters(req)) {
     	float bpm = s4i_GetBPM();
     	float respiration = s4i_GetFrequenceRespiration();
-    	float systolic = 0.0F;
-    	float diastolic = 0.0F;
+    	float bloodPressure = 0.0F;
     	float perspiration = s4i_GetAnalysePerspiration();
-    	int lie = 0;
+    	u16 certitude = s4i_getCertitude();
 
     	char parameters_buf[192]; // Normally approx 135 chars but modify if we add a lot more data
-		sprintf(parameters_buf, "{\"bpm\" : %f, \"respiration\" : %f, \"systolic\" : %f, \"diastolic\" : %f, \"perspiration\" : %f, \"lie\" : %d}", bpm, respiration, systolic, diastolic, perspiration, lie);
-		//xil_printf("strlen(parameters_buf) = %d", strlen(parameters_buf));
+		sprintf(parameters_buf, "{\"bpm\" : %f, \"respiration\" : %f, \"bloodPressure\" : %f, \"perspiration\" : %f, \"certitude\" : %d}", bpm, respiration, bloodPressure, perspiration, certitude);
 
 		unsigned int parameters_len = strlen(parameters_buf);
 		unsigned int len = generate_http_header(buf, "js", parameters_len);

@@ -24,16 +24,10 @@ void o_led_initialize(PmodOLED *oledDevice)
 	// Pr�parer l'�cran pour afficher l'�tat des boutons et des switch
 	OLED_ClearBuffer(oledDevice);
 	OLED_SetCursor(oledDevice, 0, 0);
-	OLED_PutString(oledDevice, "Pouls = ");
-
-	OLED_SetCursor(oledDevice, 0, 1);
-	OLED_PutString(oledDevice, "compt = ");
-
-	OLED_SetCursor(oledDevice, 0, 2);
-	OLED_PutString(oledDevice, "Respi = ");
+	OLED_PutString(oledDevice, "Certitude = ");
 
 	OLED_SetCursor(oledDevice, 0, 3);
-	OLED_PutString(oledDevice, "Certi = ");
+	OLED_PutString(oledDevice, "Compteur  = ");
 
 
 	OLED_Update(oledDevice);
@@ -43,40 +37,28 @@ void o_led_initialize(PmodOLED *oledDevice)
 
 void o_led_refresh_data(PmodOLED *oledDevice){
 
-
-		char voltageChar[5];
 		char comptChar[5];
-		char Respichar[5];
 		char CertitudeChar[5];
 
 		// lire la tension provenant du PmodAD1
-		float currentPouls = s4i_GetBPM();
 		u16 currentCount = s4i_getCounter();
-		float currentRespi = s4i_GetFrequenceRespiration();
 		u16 currentCertitude = s4i_getCertitude();
 
 
 		// Affichage du voltage sur le Pmod OLED
-		sprintf(voltageChar,"%2.2f",currentPouls);
 		sprintf(comptChar,"%u  ",currentCount);
-		sprintf(Respichar,"%2.2f",currentRespi);
 		sprintf(CertitudeChar,"%u ",currentCertitude);
 
-		OLED_SetCursor(oledDevice, 10, 0);
-		OLED_PutString(oledDevice, voltageChar);
-
-		OLED_SetCursor(oledDevice, 10, 1);
-		OLED_PutString(oledDevice, comptChar);
-
-		OLED_SetCursor(oledDevice, 9, 2);
-		OLED_PutString(oledDevice, Respichar);
-
-		OLED_SetCursor(oledDevice, 10, 3);
+		OLED_SetCursor(oledDevice, 12, 0);
 		OLED_PutString(oledDevice, CertitudeChar);
 
-		OLED_SetCursor(oledDevice, 15, 3);
+		OLED_SetCursor(oledDevice, 15, 0);
 		OLED_PutString(oledDevice, "%");
 		OLED_Update(oledDevice);
+
+		OLED_SetCursor(oledDevice, 12, 3);
+		OLED_PutString(oledDevice, comptChar);
+
 
 }
 

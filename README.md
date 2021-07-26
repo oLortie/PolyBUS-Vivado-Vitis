@@ -19,14 +19,23 @@ PolyBUS
 3. Ouvrir vitis dans le workspace PolyBUS/work/VitisWorkspace et s'assurer que le projet a bien été généré
 
 
-****INFORMATION POUR GENERER LE FICHIER myProgram.vhd POUR LE PICOBLAZE A PARTIR DU CODE ASSEMBLEUR KCPSM6*****
-1. Modifier myProgram.psm avec vos changements
-2. Compiler avec kcpsm6.exe (cliquer et entrer myProgram.psm) pour generer le nouveau fichier myProgram.vhd
-3. Ajouter myProgram.vhd au projet Vivado s'il ne l'est pas déjà
+****INFORMATION POUR GENERER LE FICHIER DE CODE ASSEMBLEUR KCMP6*****
+1. Ouvrir une console de commande Windows
+2. Vérifier que Python 3 est bien installé sur votre ordinateur avec la commande qui indique la version installée : 
+	python 
+3. Aller dans le répertoire PolyBUS/assemblyCompiler
+4. Exécuter la commande suivante :
+	python3 ./main.py CalculMensonge.src > CalculMensonge.psm
+
+
+****INFORMATION POUR GENERER LE FICHIER CalculMensonge.vhd POUR LE PICOBLAZE A PARTIR DU CODE ASSEMBLEUR KCPSM6*****
+1. Générer CalculMensonge.psm avec le compilateur avec vos changements
+2. Compiler avec kcpsm6.exe (cliquer et entrer CalculMensonge.psm) pour generer le nouveau fichier CalculMensonge.vhd
+3. Ajouter CalculMensonge.vhd au projet Vivado s'il n'est pas déjà là
 
 
 **INFORMATION POUR SETUP DU SCRIPT DE GENERATION DE SIGNAUX**
-1. Ouvrir une console de commande
+1. Ouvrir une console de commande Windows
 2. Vérifier que Python est bien installé sur votre ordinateur avec la commande : python 
 	Si Python est bien installé, il devrait vous afficher la version 
 3. Installer pip si ce n'est pas deja fait

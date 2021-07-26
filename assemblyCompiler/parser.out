@@ -1,0 +1,708 @@
+Created by PLY (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> statements
+Rule 1     statements -> statement
+Rule 2     statements -> statements statement
+Rule 3     statement -> expression SEMICOLON
+Rule 4     expression -> VARID EQUAL expression
+Rule 5     expression -> VARID EQUAL EQUAL expression
+Rule 6     expression -> portdef EQUAL expression
+Rule 7     expression -> expression PLUS expression
+Rule 8     expression -> expression MINUS expression
+Rule 9     expression -> expression PLUS PLUS NUMBER
+Rule 10    expression -> expression MINUS MINUS expression
+Rule 11    expression -> expression LSHIFT NUMBER
+Rule 12    expression -> expression RSHIFT NUMBER
+Rule 13    expression -> term
+Rule 14    term -> factor
+Rule 15    factor -> NUMBER
+Rule 16    factor -> VARID
+Rule 17    factor -> LPAREN expression RPAREN
+Rule 18    factor -> portdef
+Rule 19    portdef -> PORT LBRACK NUMBER RBRACK
+
+Terminals, with rules where they appear
+
+EQUAL                : 4 5 5 6
+LBRACK               : 19
+LPAREN               : 17
+LSHIFT               : 11
+MINUS                : 8 10 10
+NUMBER               : 9 11 12 15 19
+PLUS                 : 7 9 9
+PORT                 : 19
+RBRACK               : 19
+RPAREN               : 17
+RSHIFT               : 12
+SEMICOLON            : 3
+VARID                : 4 5 16
+error                : 
+
+Nonterminals, with rules where they appear
+
+expression           : 3 4 5 6 7 7 8 8 9 10 10 11 12 17
+factor               : 14
+portdef              : 6 18
+statement            : 1 2
+statements           : 2 0
+term                 : 13
+
+
+state 0
+
+    (0) S' -> . statements
+    (1) statements -> . statement
+    (2) statements -> . statements statement
+    (3) statement -> . expression SEMICOLON
+    (4) expression -> . VARID EQUAL expression
+    (5) expression -> . VARID EQUAL EQUAL expression
+    (6) expression -> . portdef EQUAL expression
+    (7) expression -> . expression PLUS expression
+    (8) expression -> . expression MINUS expression
+    (9) expression -> . expression PLUS PLUS NUMBER
+    (10) expression -> . expression MINUS MINUS expression
+    (11) expression -> . expression LSHIFT NUMBER
+    (12) expression -> . expression RSHIFT NUMBER
+    (13) expression -> . term
+    (19) portdef -> . PORT LBRACK NUMBER RBRACK
+    (14) term -> . factor
+    (15) factor -> . NUMBER
+    (16) factor -> . VARID
+    (17) factor -> . LPAREN expression RPAREN
+    (18) factor -> . portdef
+
+    VARID           shift and go to state 4
+    PORT            shift and go to state 8
+    NUMBER          shift and go to state 6
+    LPAREN          shift and go to state 10
+
+    statements                     shift and go to state 1
+    statement                      shift and go to state 2
+    expression                     shift and go to state 3
+    portdef                        shift and go to state 5
+    term                           shift and go to state 7
+    factor                         shift and go to state 9
+
+state 1
+
+    (0) S' -> statements .
+    (2) statements -> statements . statement
+    (3) statement -> . expression SEMICOLON
+    (4) expression -> . VARID EQUAL expression
+    (5) expression -> . VARID EQUAL EQUAL expression
+    (6) expression -> . portdef EQUAL expression
+    (7) expression -> . expression PLUS expression
+    (8) expression -> . expression MINUS expression
+    (9) expression -> . expression PLUS PLUS NUMBER
+    (10) expression -> . expression MINUS MINUS expression
+    (11) expression -> . expression LSHIFT NUMBER
+    (12) expression -> . expression RSHIFT NUMBER
+    (13) expression -> . term
+    (19) portdef -> . PORT LBRACK NUMBER RBRACK
+    (14) term -> . factor
+    (15) factor -> . NUMBER
+    (16) factor -> . VARID
+    (17) factor -> . LPAREN expression RPAREN
+    (18) factor -> . portdef
+
+    VARID           shift and go to state 4
+    PORT            shift and go to state 8
+    NUMBER          shift and go to state 6
+    LPAREN          shift and go to state 10
+
+    statement                      shift and go to state 11
+    expression                     shift and go to state 3
+    portdef                        shift and go to state 5
+    term                           shift and go to state 7
+    factor                         shift and go to state 9
+
+state 2
+
+    (1) statements -> statement .
+
+    VARID           reduce using rule 1 (statements -> statement .)
+    PORT            reduce using rule 1 (statements -> statement .)
+    NUMBER          reduce using rule 1 (statements -> statement .)
+    LPAREN          reduce using rule 1 (statements -> statement .)
+    $end            reduce using rule 1 (statements -> statement .)
+
+
+state 3
+
+    (3) statement -> expression . SEMICOLON
+    (7) expression -> expression . PLUS expression
+    (8) expression -> expression . MINUS expression
+    (9) expression -> expression . PLUS PLUS NUMBER
+    (10) expression -> expression . MINUS MINUS expression
+    (11) expression -> expression . LSHIFT NUMBER
+    (12) expression -> expression . RSHIFT NUMBER
+
+    SEMICOLON       shift and go to state 12
+    PLUS            shift and go to state 13
+    MINUS           shift and go to state 14
+    LSHIFT          shift and go to state 15
+    RSHIFT          shift and go to state 16
+
+
+state 4
+
+    (4) expression -> VARID . EQUAL expression
+    (5) expression -> VARID . EQUAL EQUAL expression
+    (16) factor -> VARID .
+
+    EQUAL           shift and go to state 17
+    SEMICOLON       reduce using rule 16 (factor -> VARID .)
+    PLUS            reduce using rule 16 (factor -> VARID .)
+    MINUS           reduce using rule 16 (factor -> VARID .)
+    LSHIFT          reduce using rule 16 (factor -> VARID .)
+    RSHIFT          reduce using rule 16 (factor -> VARID .)
+    RPAREN          reduce using rule 16 (factor -> VARID .)
+
+
+state 5
+
+    (6) expression -> portdef . EQUAL expression
+    (18) factor -> portdef .
+
+    EQUAL           shift and go to state 18
+    SEMICOLON       reduce using rule 18 (factor -> portdef .)
+    PLUS            reduce using rule 18 (factor -> portdef .)
+    MINUS           reduce using rule 18 (factor -> portdef .)
+    LSHIFT          reduce using rule 18 (factor -> portdef .)
+    RSHIFT          reduce using rule 18 (factor -> portdef .)
+    RPAREN          reduce using rule 18 (factor -> portdef .)
+
+
+state 6
+
+    (15) factor -> NUMBER .
+
+    SEMICOLON       reduce using rule 15 (factor -> NUMBER .)
+    PLUS            reduce using rule 15 (factor -> NUMBER .)
+    MINUS           reduce using rule 15 (factor -> NUMBER .)
+    LSHIFT          reduce using rule 15 (factor -> NUMBER .)
+    RSHIFT          reduce using rule 15 (factor -> NUMBER .)
+    RPAREN          reduce using rule 15 (factor -> NUMBER .)
+
+
+state 7
+
+    (13) expression -> term .
+
+    SEMICOLON       reduce using rule 13 (expression -> term .)
+    PLUS            reduce using rule 13 (expression -> term .)
+    MINUS           reduce using rule 13 (expression -> term .)
+    LSHIFT          reduce using rule 13 (expression -> term .)
+    RSHIFT          reduce using rule 13 (expression -> term .)
+    RPAREN          reduce using rule 13 (expression -> term .)
+
+
+state 8
+
+    (19) portdef -> PORT . LBRACK NUMBER RBRACK
+
+    LBRACK          shift and go to state 19
+
+
+state 9
+
+    (14) term -> factor .
+
+    SEMICOLON       reduce using rule 14 (term -> factor .)
+    PLUS            reduce using rule 14 (term -> factor .)
+    MINUS           reduce using rule 14 (term -> factor .)
+    LSHIFT          reduce using rule 14 (term -> factor .)
+    RSHIFT          reduce using rule 14 (term -> factor .)
+    RPAREN          reduce using rule 14 (term -> factor .)
+
+
+state 10
+
+    (17) factor -> LPAREN . expression RPAREN
+    (4) expression -> . VARID EQUAL expression
+    (5) expression -> . VARID EQUAL EQUAL expression
+    (6) expression -> . portdef EQUAL expression
+    (7) expression -> . expression PLUS expression
+    (8) expression -> . expression MINUS expression
+    (9) expression -> . expression PLUS PLUS NUMBER
+    (10) expression -> . expression MINUS MINUS expression
+    (11) expression -> . expression LSHIFT NUMBER
+    (12) expression -> . expression RSHIFT NUMBER
+    (13) expression -> . term
+    (19) portdef -> . PORT LBRACK NUMBER RBRACK
+    (14) term -> . factor
+    (15) factor -> . NUMBER
+    (16) factor -> . VARID
+    (17) factor -> . LPAREN expression RPAREN
+    (18) factor -> . portdef
+
+    VARID           shift and go to state 4
+    PORT            shift and go to state 8
+    NUMBER          shift and go to state 6
+    LPAREN          shift and go to state 10
+
+    expression                     shift and go to state 20
+    portdef                        shift and go to state 5
+    term                           shift and go to state 7
+    factor                         shift and go to state 9
+
+state 11
+
+    (2) statements -> statements statement .
+
+    VARID           reduce using rule 2 (statements -> statements statement .)
+    PORT            reduce using rule 2 (statements -> statements statement .)
+    NUMBER          reduce using rule 2 (statements -> statements statement .)
+    LPAREN          reduce using rule 2 (statements -> statements statement .)
+    $end            reduce using rule 2 (statements -> statements statement .)
+
+
+state 12
+
+    (3) statement -> expression SEMICOLON .
+
+    VARID           reduce using rule 3 (statement -> expression SEMICOLON .)
+    PORT            reduce using rule 3 (statement -> expression SEMICOLON .)
+    NUMBER          reduce using rule 3 (statement -> expression SEMICOLON .)
+    LPAREN          reduce using rule 3 (statement -> expression SEMICOLON .)
+    $end            reduce using rule 3 (statement -> expression SEMICOLON .)
+
+
+state 13
+
+    (7) expression -> expression PLUS . expression
+    (9) expression -> expression PLUS . PLUS NUMBER
+    (4) expression -> . VARID EQUAL expression
+    (5) expression -> . VARID EQUAL EQUAL expression
+    (6) expression -> . portdef EQUAL expression
+    (7) expression -> . expression PLUS expression
+    (8) expression -> . expression MINUS expression
+    (9) expression -> . expression PLUS PLUS NUMBER
+    (10) expression -> . expression MINUS MINUS expression
+    (11) expression -> . expression LSHIFT NUMBER
+    (12) expression -> . expression RSHIFT NUMBER
+    (13) expression -> . term
+    (19) portdef -> . PORT LBRACK NUMBER RBRACK
+    (14) term -> . factor
+    (15) factor -> . NUMBER
+    (16) factor -> . VARID
+    (17) factor -> . LPAREN expression RPAREN
+    (18) factor -> . portdef
+
+    PLUS            shift and go to state 22
+    VARID           shift and go to state 4
+    PORT            shift and go to state 8
+    NUMBER          shift and go to state 6
+    LPAREN          shift and go to state 10
+
+    expression                     shift and go to state 21
+    portdef                        shift and go to state 5
+    term                           shift and go to state 7
+    factor                         shift and go to state 9
+
+state 14
+
+    (8) expression -> expression MINUS . expression
+    (10) expression -> expression MINUS . MINUS expression
+    (4) expression -> . VARID EQUAL expression
+    (5) expression -> . VARID EQUAL EQUAL expression
+    (6) expression -> . portdef EQUAL expression
+    (7) expression -> . expression PLUS expression
+    (8) expression -> . expression MINUS expression
+    (9) expression -> . expression PLUS PLUS NUMBER
+    (10) expression -> . expression MINUS MINUS expression
+    (11) expression -> . expression LSHIFT NUMBER
+    (12) expression -> . expression RSHIFT NUMBER
+    (13) expression -> . term
+    (19) portdef -> . PORT LBRACK NUMBER RBRACK
+    (14) term -> . factor
+    (15) factor -> . NUMBER
+    (16) factor -> . VARID
+    (17) factor -> . LPAREN expression RPAREN
+    (18) factor -> . portdef
+
+    MINUS           shift and go to state 24
+    VARID           shift and go to state 4
+    PORT            shift and go to state 8
+    NUMBER          shift and go to state 6
+    LPAREN          shift and go to state 10
+
+    expression                     shift and go to state 23
+    portdef                        shift and go to state 5
+    term                           shift and go to state 7
+    factor                         shift and go to state 9
+
+state 15
+
+    (11) expression -> expression LSHIFT . NUMBER
+
+    NUMBER          shift and go to state 25
+
+
+state 16
+
+    (12) expression -> expression RSHIFT . NUMBER
+
+    NUMBER          shift and go to state 26
+
+
+state 17
+
+    (4) expression -> VARID EQUAL . expression
+    (5) expression -> VARID EQUAL . EQUAL expression
+    (4) expression -> . VARID EQUAL expression
+    (5) expression -> . VARID EQUAL EQUAL expression
+    (6) expression -> . portdef EQUAL expression
+    (7) expression -> . expression PLUS expression
+    (8) expression -> . expression MINUS expression
+    (9) expression -> . expression PLUS PLUS NUMBER
+    (10) expression -> . expression MINUS MINUS expression
+    (11) expression -> . expression LSHIFT NUMBER
+    (12) expression -> . expression RSHIFT NUMBER
+    (13) expression -> . term
+    (19) portdef -> . PORT LBRACK NUMBER RBRACK
+    (14) term -> . factor
+    (15) factor -> . NUMBER
+    (16) factor -> . VARID
+    (17) factor -> . LPAREN expression RPAREN
+    (18) factor -> . portdef
+
+    EQUAL           shift and go to state 27
+    VARID           shift and go to state 4
+    PORT            shift and go to state 8
+    NUMBER          shift and go to state 6
+    LPAREN          shift and go to state 10
+
+    expression                     shift and go to state 28
+    portdef                        shift and go to state 5
+    term                           shift and go to state 7
+    factor                         shift and go to state 9
+
+state 18
+
+    (6) expression -> portdef EQUAL . expression
+    (4) expression -> . VARID EQUAL expression
+    (5) expression -> . VARID EQUAL EQUAL expression
+    (6) expression -> . portdef EQUAL expression
+    (7) expression -> . expression PLUS expression
+    (8) expression -> . expression MINUS expression
+    (9) expression -> . expression PLUS PLUS NUMBER
+    (10) expression -> . expression MINUS MINUS expression
+    (11) expression -> . expression LSHIFT NUMBER
+    (12) expression -> . expression RSHIFT NUMBER
+    (13) expression -> . term
+    (19) portdef -> . PORT LBRACK NUMBER RBRACK
+    (14) term -> . factor
+    (15) factor -> . NUMBER
+    (16) factor -> . VARID
+    (17) factor -> . LPAREN expression RPAREN
+    (18) factor -> . portdef
+
+    VARID           shift and go to state 4
+    PORT            shift and go to state 8
+    NUMBER          shift and go to state 6
+    LPAREN          shift and go to state 10
+
+    portdef                        shift and go to state 5
+    expression                     shift and go to state 29
+    term                           shift and go to state 7
+    factor                         shift and go to state 9
+
+state 19
+
+    (19) portdef -> PORT LBRACK . NUMBER RBRACK
+
+    NUMBER          shift and go to state 30
+
+
+state 20
+
+    (17) factor -> LPAREN expression . RPAREN
+    (7) expression -> expression . PLUS expression
+    (8) expression -> expression . MINUS expression
+    (9) expression -> expression . PLUS PLUS NUMBER
+    (10) expression -> expression . MINUS MINUS expression
+    (11) expression -> expression . LSHIFT NUMBER
+    (12) expression -> expression . RSHIFT NUMBER
+
+    RPAREN          shift and go to state 31
+    PLUS            shift and go to state 13
+    MINUS           shift and go to state 14
+    LSHIFT          shift and go to state 15
+    RSHIFT          shift and go to state 16
+
+
+state 21
+
+    (7) expression -> expression PLUS expression .
+    (7) expression -> expression . PLUS expression
+    (8) expression -> expression . MINUS expression
+    (9) expression -> expression . PLUS PLUS NUMBER
+    (10) expression -> expression . MINUS MINUS expression
+    (11) expression -> expression . LSHIFT NUMBER
+    (12) expression -> expression . RSHIFT NUMBER
+
+    SEMICOLON       reduce using rule 7 (expression -> expression PLUS expression .)
+    PLUS            reduce using rule 7 (expression -> expression PLUS expression .)
+    MINUS           reduce using rule 7 (expression -> expression PLUS expression .)
+    RPAREN          reduce using rule 7 (expression -> expression PLUS expression .)
+    LSHIFT          shift and go to state 15
+    RSHIFT          shift and go to state 16
+
+  ! LSHIFT          [ reduce using rule 7 (expression -> expression PLUS expression .) ]
+  ! RSHIFT          [ reduce using rule 7 (expression -> expression PLUS expression .) ]
+  ! PLUS            [ shift and go to state 13 ]
+  ! MINUS           [ shift and go to state 14 ]
+
+
+state 22
+
+    (9) expression -> expression PLUS PLUS . NUMBER
+
+    NUMBER          shift and go to state 32
+
+
+state 23
+
+    (8) expression -> expression MINUS expression .
+    (7) expression -> expression . PLUS expression
+    (8) expression -> expression . MINUS expression
+    (9) expression -> expression . PLUS PLUS NUMBER
+    (10) expression -> expression . MINUS MINUS expression
+    (11) expression -> expression . LSHIFT NUMBER
+    (12) expression -> expression . RSHIFT NUMBER
+
+    SEMICOLON       reduce using rule 8 (expression -> expression MINUS expression .)
+    PLUS            reduce using rule 8 (expression -> expression MINUS expression .)
+    MINUS           reduce using rule 8 (expression -> expression MINUS expression .)
+    RPAREN          reduce using rule 8 (expression -> expression MINUS expression .)
+    LSHIFT          shift and go to state 15
+    RSHIFT          shift and go to state 16
+
+  ! LSHIFT          [ reduce using rule 8 (expression -> expression MINUS expression .) ]
+  ! RSHIFT          [ reduce using rule 8 (expression -> expression MINUS expression .) ]
+  ! PLUS            [ shift and go to state 13 ]
+  ! MINUS           [ shift and go to state 14 ]
+
+
+state 24
+
+    (10) expression -> expression MINUS MINUS . expression
+    (4) expression -> . VARID EQUAL expression
+    (5) expression -> . VARID EQUAL EQUAL expression
+    (6) expression -> . portdef EQUAL expression
+    (7) expression -> . expression PLUS expression
+    (8) expression -> . expression MINUS expression
+    (9) expression -> . expression PLUS PLUS NUMBER
+    (10) expression -> . expression MINUS MINUS expression
+    (11) expression -> . expression LSHIFT NUMBER
+    (12) expression -> . expression RSHIFT NUMBER
+    (13) expression -> . term
+    (19) portdef -> . PORT LBRACK NUMBER RBRACK
+    (14) term -> . factor
+    (15) factor -> . NUMBER
+    (16) factor -> . VARID
+    (17) factor -> . LPAREN expression RPAREN
+    (18) factor -> . portdef
+
+    VARID           shift and go to state 4
+    PORT            shift and go to state 8
+    NUMBER          shift and go to state 6
+    LPAREN          shift and go to state 10
+
+    expression                     shift and go to state 33
+    portdef                        shift and go to state 5
+    term                           shift and go to state 7
+    factor                         shift and go to state 9
+
+state 25
+
+    (11) expression -> expression LSHIFT NUMBER .
+
+    SEMICOLON       reduce using rule 11 (expression -> expression LSHIFT NUMBER .)
+    PLUS            reduce using rule 11 (expression -> expression LSHIFT NUMBER .)
+    MINUS           reduce using rule 11 (expression -> expression LSHIFT NUMBER .)
+    LSHIFT          reduce using rule 11 (expression -> expression LSHIFT NUMBER .)
+    RSHIFT          reduce using rule 11 (expression -> expression LSHIFT NUMBER .)
+    RPAREN          reduce using rule 11 (expression -> expression LSHIFT NUMBER .)
+
+
+state 26
+
+    (12) expression -> expression RSHIFT NUMBER .
+
+    SEMICOLON       reduce using rule 12 (expression -> expression RSHIFT NUMBER .)
+    PLUS            reduce using rule 12 (expression -> expression RSHIFT NUMBER .)
+    MINUS           reduce using rule 12 (expression -> expression RSHIFT NUMBER .)
+    LSHIFT          reduce using rule 12 (expression -> expression RSHIFT NUMBER .)
+    RSHIFT          reduce using rule 12 (expression -> expression RSHIFT NUMBER .)
+    RPAREN          reduce using rule 12 (expression -> expression RSHIFT NUMBER .)
+
+
+state 27
+
+    (5) expression -> VARID EQUAL EQUAL . expression
+    (4) expression -> . VARID EQUAL expression
+    (5) expression -> . VARID EQUAL EQUAL expression
+    (6) expression -> . portdef EQUAL expression
+    (7) expression -> . expression PLUS expression
+    (8) expression -> . expression MINUS expression
+    (9) expression -> . expression PLUS PLUS NUMBER
+    (10) expression -> . expression MINUS MINUS expression
+    (11) expression -> . expression LSHIFT NUMBER
+    (12) expression -> . expression RSHIFT NUMBER
+    (13) expression -> . term
+    (19) portdef -> . PORT LBRACK NUMBER RBRACK
+    (14) term -> . factor
+    (15) factor -> . NUMBER
+    (16) factor -> . VARID
+    (17) factor -> . LPAREN expression RPAREN
+    (18) factor -> . portdef
+
+    VARID           shift and go to state 4
+    PORT            shift and go to state 8
+    NUMBER          shift and go to state 6
+    LPAREN          shift and go to state 10
+
+    expression                     shift and go to state 34
+    portdef                        shift and go to state 5
+    term                           shift and go to state 7
+    factor                         shift and go to state 9
+
+state 28
+
+    (4) expression -> VARID EQUAL expression .
+    (7) expression -> expression . PLUS expression
+    (8) expression -> expression . MINUS expression
+    (9) expression -> expression . PLUS PLUS NUMBER
+    (10) expression -> expression . MINUS MINUS expression
+    (11) expression -> expression . LSHIFT NUMBER
+    (12) expression -> expression . RSHIFT NUMBER
+
+    SEMICOLON       reduce using rule 4 (expression -> VARID EQUAL expression .)
+    RPAREN          reduce using rule 4 (expression -> VARID EQUAL expression .)
+    PLUS            shift and go to state 13
+    MINUS           shift and go to state 14
+    LSHIFT          shift and go to state 15
+    RSHIFT          shift and go to state 16
+
+  ! PLUS            [ reduce using rule 4 (expression -> VARID EQUAL expression .) ]
+  ! MINUS           [ reduce using rule 4 (expression -> VARID EQUAL expression .) ]
+  ! LSHIFT          [ reduce using rule 4 (expression -> VARID EQUAL expression .) ]
+  ! RSHIFT          [ reduce using rule 4 (expression -> VARID EQUAL expression .) ]
+
+
+state 29
+
+    (6) expression -> portdef EQUAL expression .
+    (7) expression -> expression . PLUS expression
+    (8) expression -> expression . MINUS expression
+    (9) expression -> expression . PLUS PLUS NUMBER
+    (10) expression -> expression . MINUS MINUS expression
+    (11) expression -> expression . LSHIFT NUMBER
+    (12) expression -> expression . RSHIFT NUMBER
+
+    SEMICOLON       reduce using rule 6 (expression -> portdef EQUAL expression .)
+    RPAREN          reduce using rule 6 (expression -> portdef EQUAL expression .)
+    PLUS            shift and go to state 13
+    MINUS           shift and go to state 14
+    LSHIFT          shift and go to state 15
+    RSHIFT          shift and go to state 16
+
+  ! PLUS            [ reduce using rule 6 (expression -> portdef EQUAL expression .) ]
+  ! MINUS           [ reduce using rule 6 (expression -> portdef EQUAL expression .) ]
+  ! LSHIFT          [ reduce using rule 6 (expression -> portdef EQUAL expression .) ]
+  ! RSHIFT          [ reduce using rule 6 (expression -> portdef EQUAL expression .) ]
+
+
+state 30
+
+    (19) portdef -> PORT LBRACK NUMBER . RBRACK
+
+    RBRACK          shift and go to state 35
+
+
+state 31
+
+    (17) factor -> LPAREN expression RPAREN .
+
+    SEMICOLON       reduce using rule 17 (factor -> LPAREN expression RPAREN .)
+    PLUS            reduce using rule 17 (factor -> LPAREN expression RPAREN .)
+    MINUS           reduce using rule 17 (factor -> LPAREN expression RPAREN .)
+    LSHIFT          reduce using rule 17 (factor -> LPAREN expression RPAREN .)
+    RSHIFT          reduce using rule 17 (factor -> LPAREN expression RPAREN .)
+    RPAREN          reduce using rule 17 (factor -> LPAREN expression RPAREN .)
+
+
+state 32
+
+    (9) expression -> expression PLUS PLUS NUMBER .
+
+    SEMICOLON       reduce using rule 9 (expression -> expression PLUS PLUS NUMBER .)
+    PLUS            reduce using rule 9 (expression -> expression PLUS PLUS NUMBER .)
+    MINUS           reduce using rule 9 (expression -> expression PLUS PLUS NUMBER .)
+    LSHIFT          reduce using rule 9 (expression -> expression PLUS PLUS NUMBER .)
+    RSHIFT          reduce using rule 9 (expression -> expression PLUS PLUS NUMBER .)
+    RPAREN          reduce using rule 9 (expression -> expression PLUS PLUS NUMBER .)
+
+
+state 33
+
+    (10) expression -> expression MINUS MINUS expression .
+    (7) expression -> expression . PLUS expression
+    (8) expression -> expression . MINUS expression
+    (9) expression -> expression . PLUS PLUS NUMBER
+    (10) expression -> expression . MINUS MINUS expression
+    (11) expression -> expression . LSHIFT NUMBER
+    (12) expression -> expression . RSHIFT NUMBER
+
+    SEMICOLON       reduce using rule 10 (expression -> expression MINUS MINUS expression .)
+    PLUS            reduce using rule 10 (expression -> expression MINUS MINUS expression .)
+    MINUS           reduce using rule 10 (expression -> expression MINUS MINUS expression .)
+    RPAREN          reduce using rule 10 (expression -> expression MINUS MINUS expression .)
+    LSHIFT          shift and go to state 15
+    RSHIFT          shift and go to state 16
+
+  ! LSHIFT          [ reduce using rule 10 (expression -> expression MINUS MINUS expression .) ]
+  ! RSHIFT          [ reduce using rule 10 (expression -> expression MINUS MINUS expression .) ]
+  ! PLUS            [ shift and go to state 13 ]
+  ! MINUS           [ shift and go to state 14 ]
+
+
+state 34
+
+    (5) expression -> VARID EQUAL EQUAL expression .
+    (7) expression -> expression . PLUS expression
+    (8) expression -> expression . MINUS expression
+    (9) expression -> expression . PLUS PLUS NUMBER
+    (10) expression -> expression . MINUS MINUS expression
+    (11) expression -> expression . LSHIFT NUMBER
+    (12) expression -> expression . RSHIFT NUMBER
+
+    SEMICOLON       reduce using rule 5 (expression -> VARID EQUAL EQUAL expression .)
+    RPAREN          reduce using rule 5 (expression -> VARID EQUAL EQUAL expression .)
+    PLUS            shift and go to state 13
+    MINUS           shift and go to state 14
+    LSHIFT          shift and go to state 15
+    RSHIFT          shift and go to state 16
+
+  ! PLUS            [ reduce using rule 5 (expression -> VARID EQUAL EQUAL expression .) ]
+  ! MINUS           [ reduce using rule 5 (expression -> VARID EQUAL EQUAL expression .) ]
+  ! LSHIFT          [ reduce using rule 5 (expression -> VARID EQUAL EQUAL expression .) ]
+  ! RSHIFT          [ reduce using rule 5 (expression -> VARID EQUAL EQUAL expression .) ]
+
+
+state 35
+
+    (19) portdef -> PORT LBRACK NUMBER RBRACK .
+
+    EQUAL           reduce using rule 19 (portdef -> PORT LBRACK NUMBER RBRACK .)
+    SEMICOLON       reduce using rule 19 (portdef -> PORT LBRACK NUMBER RBRACK .)
+    PLUS            reduce using rule 19 (portdef -> PORT LBRACK NUMBER RBRACK .)
+    MINUS           reduce using rule 19 (portdef -> PORT LBRACK NUMBER RBRACK .)
+    LSHIFT          reduce using rule 19 (portdef -> PORT LBRACK NUMBER RBRACK .)
+    RSHIFT          reduce using rule 19 (portdef -> PORT LBRACK NUMBER RBRACK .)
+    RPAREN          reduce using rule 19 (portdef -> PORT LBRACK NUMBER RBRACK .)
+

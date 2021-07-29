@@ -74,9 +74,10 @@ proc checkRequiredFiles { origin_dir} {
    "$origin_dir/../vhdSources/kcpsm6.vhd" \
    "$origin_dir/../vhdSources/CalculMensonge.vhd" \
    "$origin_dir/../constraints/PolyBUSConstraints.xdc" \
-   "$origin_dir/../vhdSources/MEF_compteur_mensonge.vhd"]\
-   "$origin_dir/../vhdSources/CompteurMensonge.vhd"]\
-   "$origin_dir/../vhdSources/affhex_pmodssd_v3.vhd"]\
+   "$origin_dir/../vhdSources/MEF_compteur_mensonge.vhd"\
+   "$origin_dir/../vhdSources/CompteurMensonge.vhd"\
+   "$origin_dir/../vhdSources/affhex_pmodssd_v3.vhd"\
+   "$origin_dir/../vhdSources/calcul_pression2.vhd"]\
   ]
   foreach ifile $files {
     if { ![file isfile $ifile] } {
@@ -244,6 +245,7 @@ set files [list \
  [file normalize "${origin_dir}/../vhdSources/MEF.vhd"]\
  [file normalize "${origin_dir}/../vhdSources/affhex_pmodssd_v3.vhd"]\
  [file normalize "${origin_dir}/../vhdSources/CompteurMensonge.vhd"]\
+ [file normalize "${origin_dir}/../vhdSources/calcul_pression2.vhd"]\
  [file normalize "${origin_dir}/../vhdSources/MEF_compteur_mensonge.vhd"]\
 ]
 add_files -norecurse -fileset $obj $files
@@ -374,6 +376,11 @@ set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
 
 set file "$origin_dir/../vhdSources/Calcul_pression.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/../vhdSources/Calcul_pression2.vhd"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj

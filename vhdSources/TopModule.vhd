@@ -176,6 +176,16 @@ architecture Behavioral of TopModule is
            i_reset : in STD_LOGIC);
     end component;
     
+    component calcul_pression2 is
+    Port ( clk : in STD_LOGIC;
+           i_en : in STD_LOGIC;
+           i_echantillon : in STD_LOGIC_VECTOR (11 downto 0);
+           i_reset : in STD_LOGIC;
+           o_result : out STD_LOGIC_VECTOR (11 downto 0);
+           o_state : out STD_LOGIC_VECTOR(3 downto 0);
+           o_lastReceived : out STD_LOGIC_VECTOR(11 downto 0));
+    end component;
+    
     component CompteurMensonge is
     generic (threshold : std_logic_vector(7 downto 0) := "01111111");
         Port ( i_pourcentage_confiance  : in STD_LOGIC_VECTOR (7 downto 0);
@@ -251,16 +261,16 @@ architecture Behavioral of TopModule is
     
     signal o_echantillon_pret_strobe    : std_logic;
     signal d_ADC_Dselect                : std_logic;
-    signal d_DAC_data1                  : std_logic_vector (11 downto 0);
-    signal d_DAC_data2                  : std_logic_vector (11 downto 0);
-    signal d_echantillon1               : std_logic_vector (11 downto 0);
-    signal d_echantillon2               : std_logic_vector (11 downto 0); 
-    signal d_echantillon3               : std_logic_vector (11 downto 0); 
-    signal d_echantillon4               : std_logic_vector (11 downto 0);  
+    signal d_DAC_data1                  : std_logic_vector (11 downto 0) := "000000000000";
+    signal d_DAC_data2                  : std_logic_vector (11 downto 0) := "000000000000";
+    signal d_echantillon1               : std_logic_vector (11 downto 0) := "000000000000";
+    signal d_echantillon2               : std_logic_vector (11 downto 0) := "000000000000"; 
+    signal d_echantillon3               : std_logic_vector (11 downto 0) := "000000000000"; 
+    signal d_echantillon4               : std_logic_vector (11 downto 0) := "000000000000";  
     signal d_param_bpm                  : std_logic_vector(11 downto 0);
     signal d_param_respiration          : std_logic_vector(11 downto 0);
     signal d_param_perspiration         : std_logic_vector(11 downto 0);
-    signal d_param_pression             : std_logic_vector(11 downto 0);
+    signal d_param_pression             : std_logic_vector(11 downto 0) := "000000000000";
     signal d_respiration_select         : std_logic;
     signal d_perspiration_select        : std_logic;
     signal d_param_mensonge             : std_logic_vector(7 downto 0);
@@ -269,6 +279,8 @@ architecture Behavioral of TopModule is
     
     
     signal s_temp                       : std_logic_vector(7 downto 0);
+    signal s_tempState                  : std_logic_vector(3 downto 0);
+    signal s_tempLastReceived           : std_logic_vector(11 downto 0);
     
     signal d_compteurRespiration025 : integer range 0 to 500 := 0;
     signal d_compteurRespiration05 : integer range 0 to 500 := 0;
@@ -343,8 +355,6 @@ begin
     o_param => d_param_respiration
     );
     
-    --d_param_respiration <= "000100101100";
-    
     inst_calcul_perspiration : Calcul_persp
     port map (
     i_clk => clk_5MHz,
@@ -353,16 +363,20 @@ begin
     i_ech => d_echantillon4,
     o_param => d_param_perspiration
     );
+
+    inst_cacul_pression : calcul_pression2
+    Port Map (
+        clk => clk_5MHz,
+        i_reset => reset,
+        i_en => o_echantillon_pret_strobe,
+        i_echantillon => d_echantillon2,
+        o_result => d_param_pression,
+        o_state => s_tempState,
+        o_lastReceived => s_tempLastReceived
+        );
+        
+    o_leds <= s_tempState;
     
-    inst_calcul_pression : Calcul_pression 
-    Port map( 
-           i_strobe => d_strobe_100Hz,
-           i_signal => d_echantillon2,
-           i_clk => clk_5MHz,
-           o_pression_sanguine => d_param_pression,
-           o_enable => d_pression_ready,
-           i_reset => reset
-    );
     
     inst_compteur_mensonge : CompteurMensonge
     generic map (
@@ -375,13 +389,12 @@ begin
     i_en                     => d_strobe_100Hz,
     o_count_mensonge         => s_count_mensonge 
     );
-    --s_count_mensonge <= "00001111";
     
     inst_afficheur_7_seg :  affhexPmodSSD_v3
     port map(
         clk        =>  clk_5MHz,                    -- horloge systeme, dans notre cas c'est 5 MHZ
         reset      =>   reset,
-        DA         => s_count_mensonge,         -- donnee a afficher sur 8 bits : chiffre hexa position 1 et 0     
+        DA         => d_param_pression(7 downto 0),         -- donnee a afficher sur 8 bits : chiffre hexa position 1 et 0     
         i_aff_mem  => '0',                     -- demande memorisation affichage continu, si 0: continu
         JPmod      => s_temp
     );

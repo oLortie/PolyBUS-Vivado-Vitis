@@ -313,7 +313,7 @@ int do_http_get(int sd, char *req, int rlen)
     else if (s4i_is_cmd_parameters(req)) {
     	float bpm = s4i_GetBPM();
     	float respiration = s4i_GetFrequenceRespiration();
-    	float bloodPressure = 0.0F;
+    	float bloodPressure = s4i_GetParametrePression();//0.0F;
     	float perspiration = s4i_GetAnalysePerspiration();
     	u16 certitude = s4i_getCertitude();
 

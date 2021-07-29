@@ -1,16 +1,30 @@
+left <__main__.Number object at 0x000001EE64A45A60>, right <__main__.VarID object at 0x000001EE64AB2100>, op ++
+LOAD s0, 9
+STORE s0, 0 ; var parametre_high
 
 ; ----------------------------------------------------------------
-; On met la valeur du port 1 dans une variable
+; Assignation sur 16 bits
 ; ----------------------------------------------------------------
-INPUT s0, 1
-fini
 
 ; ----------------------------------------------------------------
-; On met la valeur du port 1 dans une variable
+; Addition ou Soustraction sur 16 bits
 ; ----------------------------------------------------------------
-INPUT s1, 1
-fini
-STORE s0, 0 ; var parametreRespiration
-STORE s0, 1 ; var parametreRespiration
-sest rendu la avec op = ++
-FETCH s0, 2 ; var parametreRespirationLow
+LOAD s0, fa ; partie high
+LOAD s1, 00; partie low
+FETCH s2, 0 ; var parametre_high
+ADD s1, s2
+ADDCY s2, s3
+setermine
+r1 is 1
+
+; ----------------------------------------------------------------
+; Addition ou Soustraction sur 16 bits
+; ----------------------------------------------------------------
+LOAD s2, fa ; partie high
+LOAD s3, 00; partie low
+FETCH s4, 0 ; var parametre_high
+ADD s3, s4
+ADDCY s4, s5
+setermine
+STORE s1, 1 ; var sortie
+STORE s1, 2 ; var sortie

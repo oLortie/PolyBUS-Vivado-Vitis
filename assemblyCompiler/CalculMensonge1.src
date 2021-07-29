@@ -2,12 +2,13 @@
 # code pour le compilateur en Python pour le calcul avec equation de certitude de mensonge
 
 # On prend les valeurs des ports 1 et 2 pour mettre sur 2 registres
-parametreRespiration = $[1];
+#parametreRespiration_low = $[1];
+parametre_high=9;
 #parametreB=$[1];
 
 # Soustraction (450 - paramRespi)
 # sortie = parametreA+parametreB+2;
-sortie = parametreRespirationLow ++ 7;
+sortie == 64000 ++ parametre_high;
 #b = parametreRespirationLow >> 12;
 
 #$[4]=sortie;

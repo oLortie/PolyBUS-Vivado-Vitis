@@ -69,8 +69,10 @@ class Machine:
     # Get the next available register
     def getRegister(self):
         for i in range(0, len(self.registers)):
+            #print("This is i : %d" % i)
             if not self.registers[i]:
                 self.registers[i] = True
+
                 return i
         raise("No more registers!")
 
@@ -104,9 +106,11 @@ class BinOp(Expr):
         self.op = op
 
     def eval(self, machine):
+        printComment("Addition ou Soustraction")
+
         ops = {
             "+": "ADD",
-            "-": "SUB",
+            "-": "SUB"
         }
         
         r1 = self.left.eval(machine)
@@ -120,23 +124,30 @@ class BinOp(Expr):
 #
 class BinOp16(Expr):
     def __init__(self, left, op, right):
+        print("left %s, right %s, op %s" % (left, right, op))
         self.left = left
         self.right = right
         self.op = op
 
     def eval(self, machine):
-        print("sest rendu la avec op = %s" % self.op)
+        #print("sest rendu la avec op = %s" % self.op)
+        printComment("Addition ou Soustraction sur 16 bits")
 
-        ops = {
-            "++": "ADD",
-            "--": "SUB"
-        }
+        #r1_1 = self.left.eval(machine)
 
         r1 = self.left.eval(machine)
         r2 = self.right.eval(machine)
 
-        print("%s s%i, s%i" % (ops[self.op], r1, r2))
-        machine.freeRegister(r2)
+        # if (self.op == "++"):
+        #     print("ADD s%i, s%i" % (r1, r2))
+        #     print("ADDCY s%i, s%i" % (r1 + 1, r2 + 1))
+        # elif (self.op == "--"):
+        #     print("SUB s%i, s%i" % (r1, r2))
+        #     print("SUBCY s%i, s%i" % (r1 + 1, r2 + 1))
+
+        #print("%s s%i, s%i" % (ops[self.op], r1, r2))
+        # machine.freeRegister(r2)
+        #print("se termine")
         return r1
 
 #
@@ -171,10 +182,8 @@ class AssignOp(Expr):
     
     def eval(self, machine):
         r1 = self.right.eval(machine)
-        r2 = self.right.eval(machine)
-        print("STORE s%i, %i ; var %s"%(r1, machine.getAddress(self.varid + "_low"), self.varid))
-        print("STORE s%i, %i ; var %s" % (r1, machine.getAddress(self.varid + "_high"), self.varid))
 
+        print("STORE s%i, %i ; var %s" % (r1, machine.getAddress(self.varid), self.varid))
         machine.freeRegister(r1)
         return 0
 
@@ -184,8 +193,12 @@ class AssignOp16(Expr):
         self.right = right
 
     def eval(self, machine):
+        printComment("Assignation sur 16 bits")
         r1 = self.right.eval(machine)
-        print("STORE s%i, %i ; var %s" % (r1, machine.getAddress(self.varid), self.varid))
+        print("r1 is %d" % r1)
+        r2 = self.right.eval(machine)
+        print("STORE s%i, %i ; var %s"%(r1, machine.getAddress(self.varid + "_low"), self.varid))
+        print("STORE s%i, %i ; var %s" % (r1, machine.getAddress(self.varid + "_high"), self.varid))
         machine.freeRegister(r1)
         return 0
 
@@ -194,8 +207,23 @@ class Number(Expr):
         self.value = value
 
     def eval(self, machine):
-        r1 = machine.getRegister()
-        print("LOAD s%i, %i"%(r1, hex(self.value)))
+
+        hexValue = hex(self.value)[2:] # Removing added 0x
+
+        #print("hex number : %s" % hexValue)
+
+        if len(hexValue) <= 2:
+            r1 = machine.getRegister()
+            # Changes to Hexadecimal magically
+            print("LOAD s%i, %X" % (r1, self.value))
+        elif len(hexValue) <= 4:
+            r1 = machine.getRegister()
+            print("LOAD s%i, %s ; partie high" % (r1, hexValue[0:2]))
+            r1 = machine.getRegister()
+            print("LOAD s%i, %s; partie low" % (r1, hexValue[2:]))
+        else:
+            print("Erreur: nombre plus grand que 16 bits")
+
         return r1
 
 class VarID(Expr):
@@ -215,22 +243,22 @@ class InputOp(Expr):
         printComment("On met la valeur du port %i dans une variable" % self.portnum)
 
         r1 = machine.getRegister()
+
         print("INPUT s%i, %i"%(r1, self.portnum))
 
-        print("fini")
         return r1
 
 # Function added to store 2 consecutive values of ports to 2 consecutive memory addresses
-class InputOp16(Expr):
-    def __init__(self, portnum):
-        self.portnum = portnum
-
-    def eval(self, machine):
-        printComment("On met la valeur des ports %i et %i dans 2 registres consecutifs" % (self.portnum, self.portnum + 1))
-
-        r1 = machine.getRegister()
-        print("INPUT s%i, %i"%(r1, self.portnum))
-        return r1
+# class InputOp16(Expr):
+#     def __init__(self, portnum):
+#         self.portnum = portnum
+#
+#     def eval(self, machine):
+#         printComment("On met la valeur des ports %i et %i dans 2 registres consecutifs" % (self.portnum, self.portnum + 1))
+#
+#         r1 = machine.getRegister()
+#         print("INPUT s%i, %i"%(r1, self.portnum))
+#         return r1
 
 class OutputOp(Expr):
     def __init__(self, left, right):
@@ -275,8 +303,6 @@ tokens = (
    'SEMICOLON',
    'LSHIFT',
    'RSHIFT',
-   # 'PLUS16',
-   # 'MINUS16'
 )
 
 # Regular expression rules for simple tokens
@@ -352,7 +378,7 @@ def p_expression_assign(p):
 
 def p_expression_assign16(p):
     '''expression : VARID EQUAL EQUAL expression'''
-    p[0] = AssignOp16(p[1], p[3])
+    p[0] = AssignOp16(p[1], p[4])
 
 def p_expression_output(p):
     '''expression : portdef EQUAL expression'''
@@ -364,7 +390,7 @@ def p_expression_binop(p):
     p[0] = BinOp(p[1], p[2], p[3])
 
 def p_expression_16binop(p):
-    '''expression : expression PLUS PLUS NUMBER
+    '''expression : expression PLUS PLUS expression
                   | expression MINUS MINUS expression'''
     p[0] = BinOp16(p[1], ("%c%c" % (p[2],p[3])), p[4])
 
@@ -396,10 +422,6 @@ def p_factor_expr(p):
 def p_factor_port(p):
     'factor : portdef'
     p[0] = InputOp(p[1])
-
-# def p_factor_port16(p):
-#     'factor : portdef'
-#     p[0] = InputOp16(p[1])
 
 def p_portdef(p):
     'portdef : PORT LBRACK NUMBER RBRACK'
